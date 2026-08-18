@@ -1,11 +1,11 @@
 ---
 name: translate-skill
-description: 将 mattpocock/skills 的内容翻译、刷新或复核到简体中文本地化仓库 vinvcn/mattpocock-skills-zh-CN 时使用这个项目级 skill。适用于 skill files、README content、CLAUDE.md、CONTEXT.md、docs，以及其他需要保留行为关键 identifiers 的上游用户可见内容。
+description: 将 mattpocock/skills 的内容翻译、刷新或复核到简体中文本地化仓库 manzusaka/devtrain-skills 时使用这个项目级 skill。适用于 skill files、README content、CLAUDE.md、CONTEXT.md、docs，以及其他需要保留行为关键 identifiers 的上游用户可见内容。
 ---
 
 # Translate Skill
 
-Use this skill to translate upstream `mattpocock/skills` content into Simplified Chinese for `vinvcn/mattpocock-skills-zh-CN`.
+Use this skill to translate upstream `mattpocock/skills` content into Simplified Chinese for `manzusaka/devtrain-skills`.
 
 This skill is for **content localization**, not Git synchronization.
 
@@ -65,7 +65,7 @@ mattpocock/skills
 with the localized repo path:
 
 ```text
-vinvcn/mattpocock-skills-zh-CN
+manzusaka/devtrain-skills
 ```
 
 Only make this replacement where the command or prose is telling users how to install or use the localized repo.
@@ -122,7 +122,7 @@ When translating one file:
 4. Translate only natural-language prose.
 5. Restore protected spans exactly.
 6. Check that commands, code blocks, paths, URLs, identifiers, and frontmatter keys are unchanged.
-7. Check that localized install commands use `vinvcn/mattpocock-skills-zh-CN`.
+7. Check that localized install commands use `manzusaka/devtrain-skills`.
 8. Return the translated file content or a patch, plus any review flags.
 
 ## Workflow for a repo refresh
@@ -145,7 +145,7 @@ When refreshing from upstream:
 每次上游内容刷新后，必须完成并记录以下检查：
 
 1. 运行 `node scripts/check-translation.mjs`，确认 Markdown 结构、frontmatter、README install path 和 license invariant 没被破坏。
-2. 检查公开 skill 索引一致性：`engineering/`、`productivity/`、`misc/` 下的 skills 必须同时出现在顶层 `README.md` 和 `.claude-plugin/plugin.json`；`personal/`、`in-progress/`、`deprecated/` 不应出现在 plugin 或顶层公开索引中。
+2. 检查公开 skill 索引一致性：`engineering/`、`flows/` 和 `productivity/` 下的 skills 必须同时出现在顶层 `README.md` 和 `.claude-plugin/plugin.json`，其他目录不得出现在这两个公开索引中。
 3. 对比 `upstream/main` 的 in-scope 文件清单，确认没有缺失上游文件，也没有保留已经从上游移除且不属于本地策略的 stale files。
 4. 检查共同 Markdown 文件的行为关键内容：frontmatter keys 和 `name` 值不变，fenced code blocks 平衡，路径、命令、URL、identifier 不被误改。
 5. 运行 `git diff --check` 和 `git diff --cached --check`，确认没有 whitespace 或 patch hygiene 问题。
@@ -201,7 +201,7 @@ README sync log:
 - ...
 
 Invariant checks:
-- install commands point to vinvcn/mattpocock-skills-zh-CN
+- install commands point to manzusaka/devtrain-skills
 - code blocks preserved
 - frontmatter keys preserved
 - paths and identifiers preserved

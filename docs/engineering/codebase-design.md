@@ -49,7 +49,7 @@ Depth 刻意*不*被定义为 implementation 行数对 interface 行数的比值
 
 **我到底如何在 TypeScript 里构建一个 deep module？**
 
-这是关于这个 skill 被问得最多的一个问题，而 skill 并不回答它。它定义了一个 deep module *是*什么；它不说什么阻止一条 stray import 越过 interface 触达。Issue [#458](https://github.com/mattpocock/skills/issues/458) 说得直白：「let's say we're happy with the interface, it hides the details, etc. But how do we enforce it? I think without linting or clear guardrails, humans and LLMs alike will start making it messy over time.」在那条 thread 里 Matt 的回答是三个选项：把它包进一个 class 或 IIFE，并接受 class 变得巨大；把它做成 monorepo 里的一个 package，并接受 monorepo 工具链；或者用一个像 [dependency-cruiser](https://github.com/sverweij/dependency-cruiser) 这样的 linter 来禁止绕过 interface 的 imports。他曾另外把 Effect 称为最好的机制，dependency-cruiser 次之。仓库的 `in-progress/` bucket 里有一个 `setup-ts-deep-modules` skill，它铺开一份 `src/packages/<name>/index.ts` 约定，但它是没有 docs 页面的 beta-channel skill，而且它没有随附发布的 lint rule。
+这是关于这个 skill 被问得最多的一个问题，而 skill 并不回答它。它定义了一个 deep module *是*什么；它不说什么阻止一条 stray import 越过 interface 触达。Issue [#458](https://github.com/mattpocock/skills/issues/458) 说得直白：「let's say we're happy with the interface, it hides the details, etc. But how do we enforce it? I think without linting or clear guardrails, humans and LLMs alike will start making it messy over time.」在那条 thread 里 Matt 的回答是三个选项：把它包进一个 class 或 IIFE，并接受 class 变得巨大；把它做成 monorepo 里的一个 package，并接受 monorepo 工具链；或者用一个像 [dependency-cruiser](https://github.com/sverweij/dependency-cruiser) 这样的 linter 来禁止绕过 interface 的 imports。他曾另外把 Effect 称为最好的机制，dependency-cruiser 次之。
 
 **我把一场 session 指向它，它烧掉了 100k [tokens](https://www.aihero.dev/ai-coding-dictionary/token) 去重新设计我从没问过的东西。**
 

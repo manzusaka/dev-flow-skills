@@ -1,5 +1,0 @@
-interface:
-  display_name: "Claude 交接"
-  short_description: "把工作交给后台 agent"
-policy:
-  allow_implicit_invocation: false
