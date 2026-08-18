@@ -93,4 +93,5 @@ npx skills@latest add manzusaka/devtrain-skills
 **Model-invoked**
 
 - **[grilling](./skills/productivity/grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 design tree 的每个分支都被解决。它是 `grill-me`、`grill-with-docs`、`triage`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用访谈 primitive。
+- **[init-agent-docs](./skills/productivity/init-agent-docs/SKILL.md)** - 在 workspace 初始化初期创建或整合 `AGENTS.md` 与 `CLAUDE.md`：共享 instructions 归入 `AGENTS.md`，Claude Code 通过标准 import 引用它。
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** - 为 agents 编写文档：skills、AGENTS.md/CLAUDE.md，以及任何 agent 通过 pointer 到达的文档。

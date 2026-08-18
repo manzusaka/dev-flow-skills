@@ -1,0 +1,3 @@
+interface:
+  display_name: "初始化 Agent 文档"
+  short_description: "初始化并整合 AGENTS.md 与 CLAUDE.md"
