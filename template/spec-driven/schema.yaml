@@ -1,0 +1,207 @@
+name: spec-driven
+version: 1
+description: 默认 OpenSpec 工作流 - proposal → specs → design → tasks
+artifacts:
+  - id: proposal
+    generates: proposal.md
+    description: 阐述变更缘由的初始 proposal 文档
+    template: proposal.md
+    instruction: |
+      创建 proposal 文档，说明为什么（WHY）需要这次变更。
+
+      章节：
+      - **Why**：用 1-2 句话说明问题或机会。这解决了什么问题？为什么是现在？
+      - **What Changes**：以列表形式描述变更。明确写出新增能力、修改内容或移除项。破坏性变更用 **BREAKING** 标注。
+      - **Capabilities**：指出哪些 specs 将被创建或修改：
+        - **New Capabilities**：列出引入的新能力。每一项对应一个新的 `specs/<capability-path>/spec.md`。你新引入的路径片段使用 kebab-case（例如 `user-auth` 或 `identity/user-auth`），并遵循项目现有的 spec 组织方式。
+        - **Modified Capabilities**：列出需求（REQUIREMENTS）发生变化的既有能力。仅当 spec 层面的行为发生变化时才列出（只改实现细节不算）。每一项都需要一个增量规范（delta spec）文件。使用 `openspec/specs/` 下已存在的精确路径。若没有需求变化则留空。
+      - **Impact**：受影响的代码、API、依赖或系统。
+
+      重要：Capabilities 章节至关重要。它构成 proposal 阶段与 specs 阶段之间的契约。
+      填写前请先调研既有的 specs。此处列出的每个能力都需要一个对应的 spec 文件。
+
+      每个变更要么至少声明一个能力（新增或修改），要么显式声明不需要 specs：
+      `openspec-cn validate` 会拒绝零 delta 的变更，除非该变更的 `.openspec.yaml`
+      设置了 `skip_specs: true`。仅当确实没有 spec 层面的行为变化时（纯重构、
+      工具链、文档）才使用 `skip_specs: true` —— specs 描述的是行为，
+      所以如果行为没有变化，也就不应该有 spec 变化。
+      不要为了通过校验而臆造需求。
+
+      保持简洁（1-2 页）。聚焦于"为什么"而非"怎么做" ——
+      实现细节应写在 design.md 中。
+
+      这是整个流程的基础 —— specs、design 和 tasks 都建立在它之上。
+    requires: []
+
+  - id: specs
+    generates: "specs/**/*.md"
+    description: 本次变更的详细规范
+    template: spec.md
+    instruction: |
+      创建规范文件，定义系统应该做什么（WHAT）。
+
+      spec 是行为契约，不是实现计划。
+
+      好的 spec 内容包含：
+      - 用户或下游系统所依赖的可观测行为
+      - 输入、输出与错误条件
+      - 外部约束（安全性、隐私、可靠性、兼容性）
+      - 可被测试或显式验证的场景
+
+      spec 中应避免：
+      - 内部类名/函数名
+      - 库或框架的选型
+      - 逐步的实现细节
+      - 详细的执行计划（这些属于 design.md 或 tasks.md）
+
+      快速判断法：如果实现可以变化而不改变外部可见行为，那它很可能不属于 spec。
+
+      为 proposal 的 Capabilities 章节中列出的每个能力创建一个 spec 文件。
+      `<capability-path>` 是相对于 `specs/` 的 spec 目录（例如
+      `user-auth` 或 `identity/user-auth`）。请保留完整路径：
+      - 新能力：使用 proposal 中给出的精确路径，创建于 `specs/<capability-path>/spec.md`。proposal 中新引入的任何路径片段都必须是 kebab-case。遵循项目现有的组织方式；当项目采用扁平布局时，不要新增一层领域目录。
+      - 修改的能力：在 `specs/<capability-path>/spec.md` 创建 delta 时，使用 `openspec/specs/<capability-path>/` 下已存在的精确路径。不要移动或重命名该能力。
+
+      必须至少有一个 spec 文件，除非该变更的 `.openspec.yaml`
+      设置了 `skip_specs: true`（表示没有 spec 层面的行为变化）——
+      `openspec-cn validate` 会拒绝没有该标记的零 delta 变更。
+      如果 proposal 未列出任何能力且未设置 `skip_specs`，请先回头修订 proposal。
+
+      Delta 操作（使用 ## 标题）：
+      - **ADDED Requirements**：新增能力
+      - **MODIFIED Requirements**：变更的行为 —— 必须（MUST）包含完整的更新后内容
+      - **REMOVED Requirements**：废弃的特性 —— 必须（MUST）包含 **Reason** 与 **Migration**
+      - **RENAMED Requirements**：仅名称变更 —— 使用 FROM:/TO: 格式
+
+      格式要求：
+      - 每条需求：`### Requirement: <名称>`，其后接描述
+      - 规范性需求使用 SHALL/MUST（避免 should/may）
+      - 每个场景：`#### Scenario: <名称>`，采用 WHEN/THEN 格式
+      - **关键**：场景必须（MUST）正好使用 4 个井号（`####`）。使用 3 个井号或列表项会静默失败。
+      - 每条需求必须（MUST）至少包含一个场景。
+
+      仅限新能力：增量规范以 `## Purpose` 章节开头 ——
+      用一到两句话（50 个字符以上，否则 `openspec-cn validate --strict`
+      会报告其过于简略）描述该能力的用途。归档时会将其
+      复制到所创建的主 spec 中；缺少它时，新的主 spec 会留下
+      `TBD ... Update Purpose after archive` 占位符，需要手工填写。
+      不要为既有能力的 delta 添加 `## Purpose` ——
+      该 spec 已经有一个，delta 中的会被忽略。要修改
+      既有能力的 Purpose（包括残留的 `TBD` 占位符），
+      请直接编辑 `openspec/specs/<capability-path>/spec.md`。
+
+      MODIFIED 需求的工作流程：
+      1. 在 openspec/specs/<capability-path>/spec.md 中定位既有需求
+      2. 复制整个需求块（从 `### Requirement:` 到其所有场景）
+      3. 粘贴到 `## MODIFIED Requirements` 下，并编辑以反映新行为
+      4. 确保标题文本完全一致（忽略空白差异）
+
+      常见陷阱：MODIFIED 只写部分内容会在归档时丢失细节。
+      如果是在不改变既有行为的前提下新增关注点，请改用 ADDED。
+
+      示例（一个新能力，因此以 `## Purpose` 开头）：
+      ```
+      ## Purpose
+
+      让用户以可移植的格式导出自己在产品中的数据。
+
+      ## ADDED Requirements
+
+      ### Requirement: User can export data
+      The system SHALL allow users to export their data in CSV format.
+
+      #### Scenario: Successful export
+      - **WHEN** user clicks "Export" button
+      - **THEN** system downloads a CSV file with all user data
+
+      ## REMOVED Requirements
+
+      ### Requirement: Legacy export
+      **Reason**: Replaced by new export system
+      **Migration**: Use new export endpoint at /api/v2/export
+      ```
+
+      specs 应当是可测试的 —— 每个场景都是一个潜在的测试用例。
+    requires:
+      - proposal
+
+  - id: design
+    generates: design.md
+    description: 包含实现细节的技术设计文档
+    template: design.md
+    instruction: |
+      创建 design 文档，说明如何（HOW）实现这次变更。
+
+      何时需要 design.md（满足任一条件才创建）：
+      - 横切变更（涉及多个服务/模块）或引入新的架构模式
+      - 新增外部依赖或数据模型有重大变化
+      - 涉及安全、性能或迁移复杂度
+      - 存在歧义，需要在编码前先做技术决策
+
+      章节：
+      - **Context**：仅写解释该方案所必需的现状与约束。动机部分引用 proposal 而不要复述（例如"参见 proposal.md - Why"）。
+      - **Goals / Non-Goals**：本设计要达成什么、明确排除什么。不要复述 proposal 的范围 —— 只补充设计层面的边界。
+      - **Decisions**：关键技术选型及其理由（为什么选 X 而不是 Y？）。为每个决策附上考虑过的备选方案。
+      - **Risks / Trade-offs**：已知的局限、可能出问题的地方。格式：[风险] → 缓解措施
+      - **Migration Plan**：部署步骤、回滚策略（如适用）
+      - **Open Questions**：可以安全地留待以后回答、且不会改变 specs、
+        方案或任务拆分的未知项。若没有则省略。
+
+      Open Questions 用于真正可延后的未知项，而不是你跳过的决策。
+      如果某个问题会改变 specs、既定方案或任务拆分，
+      现在就要解决它 —— 去询问用户，而不是靠猜。
+
+      聚焦于架构与方案，而非逐行实现。
+      proposal 讲清为什么和做什么；design 讲清怎么做。动机引用
+      proposal，specs 写好后需求引用 specs ——
+      如果某个章节只是复述它们，那就直接指向它们。
+
+      好的设计文档会解释技术决策背后的"为什么"。
+    requires:
+      - proposal
+
+  - id: tasks
+    generates: tasks.md
+    description: 可追踪进度的实现清单
+    template: tasks.md
+    instruction: |
+      创建任务列表，拆解实现工作。
+
+      编写任务前，检查 design.md 中的 Open Questions。如果其中任何一项
+      会改变要构建的内容，先与用户一起解决 —— 不要
+      把未言明的假设固化进任务列表。
+
+      **重要：严格遵循下面的模板。** apply 阶段通过解析
+      复选框格式来追踪进度。不使用 `- [ ]` 的任务不会被追踪。
+
+      指引：
+      - 将相关任务归入 ## 编号标题下
+      - 每个任务必须（MUST）是复选框：`- [ ] X.Y 任务描述`
+      - 任务应足够小，可在一次会话内完成
+      - 按依赖关系排序（什么必须先做？）
+
+      示例：
+      ```
+      ## 1. 准备工作
+
+      - [ ] 1.1 创建新的模块结构
+      - [ ] 1.2 在 package.json 中添加依赖
+
+      ## 2. 核心实现
+
+      - [ ] 2.1 实现数据导出函数
+      - [ ] 2.2 添加 CSV 格式化工具
+      ```
+
+      需要构建什么参考 specs，怎么构建参考 design。
+      每个任务都应当是可验证的 —— 你能判断它何时完成。
+    requires:
+      - specs
+      - design
+
+apply:
+  requires: [tasks]
+  tracks: tasks.md
+  instruction: |
+    阅读上下文文件，逐项完成待办任务，边做边标记完成。
+    遇到阻塞或需要澄清时暂停。
