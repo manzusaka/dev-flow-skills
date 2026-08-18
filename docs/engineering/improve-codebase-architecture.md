@@ -47,7 +47,7 @@ report 以一条 **Top recommendation** 收尾——它最想先处理的那一�
 
 ## What happens after you pick one
 
-选中一个候选项就会开启一场围绕它的 [grilling](https://aihero.dev/skills-grilling) session：约束、seam 后面放着什么、哪些测试能存活、加深后的 interface 应该长什么样。那场 session 的输出是一个决策，而不是一个 diff。从那里开始走常规 flow——把决策带进 [to-spec](https://aihero.dev/skills-to-spec)，然后 [to-tickets](https://aihero.dev/skills-to-tickets)，然后 [implement](https://aihero.dev/skills-implement)。
+选中一个候选项就会开启一场围绕它的 [grilling](https://aihero.dev/skills-grilling) session：约束、seam 后面放着什么、哪些测试能存活、加深后的 interface 应该长什么样。那场 session 的输出是一个决策，而不是一个 diff。从那里开始走常规 flow——把决策带进 [to-spec](https://aihero.dev/skills-to-spec)，生成 OpenSpec proposal，再继续 planning 与 implementation。
 
 ## Common questions
 
@@ -61,7 +61,7 @@ report 从 CDN 加载 Tailwind 和 Mermaid，所以打开它时需要网络访�
 
 **它给了我十二个候选项。我在同一个 session 里逐个处理，还是开启一个新的？**
 
-每次 session 一个候选项。在一场对话里逐个处理多个，会把 report、grilling、domain-model 编辑和代码变更一下子全塞进 [context window](https://www.aihero.dev/ai-coding-dictionary/context-window)。report 只活在一个临时文件里，所以要携带候选项本身而不是文件：挑一个、grill 它、把决策带进 `/to-spec`，把其余的变成你之后可以独立拾起的 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)。把选中的改进放进一份 spec，而不是直接去实现。这是一个反复出现的问题，skill 本身没有文档化的工作流。
+每次 session 一个候选项。在一场对话里逐个处理多个，会把 report、grilling、domain-model 编辑和代码变更一下子全塞进 [context window](https://www.aihero.dev/ai-coding-dictionary/context-window)。report 只活在一个临时文件里，所以要携带候选项本身而不是文件：挑一个、grill 它、把决策带进 `/to-spec`，把其余候选留待之后独立处理。把选中的改进放进 OpenSpec proposal，而不是直接去实现。
 
 **我应该怎么 prompt 它？**
 

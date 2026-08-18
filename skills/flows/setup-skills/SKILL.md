@@ -37,7 +37,7 @@ disable-model-invocation: true
 
 **Section A - Issue tracker.**
 
-> Explainer: "issue tracker" 是这个 repo 存放 issues 的地方。`to-tickets`、`triage` 和 `to-spec` 等 skills 会从中读取并写入；它们需要知道是调用 `gh issue create`、在 `.scratch/` 下写 markdown 文件，还是遵循你描述的其他工作流。请选择你实际用于跟踪这个 repo 工作的位置。
+> Explainer: "issue tracker" 是这个 repo 存放 issues 的地方。`to-tickets` 和 `triage` 等 skills 会从中读取并写入；它们需要知道是调用 `gh issue create`、在 `.scratch/` 下写 markdown 文件，还是遵循你描述的其他工作流。请选择你实际用于跟踪这个 repo 工作的位置。
 
 默认姿态：这些 skills 是为 GitHub 设计的。如果 `git remote` 指向 GitHub，推荐 GitHub。如果 `git remote` 指向 GitLab（`gitlab.com` 或 self-hosted host），推荐 GitLab。否则（或用户偏好），提供：
 

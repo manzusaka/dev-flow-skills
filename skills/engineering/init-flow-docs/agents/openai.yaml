@@ -1,0 +1,3 @@
+interface:
+  display_name: "初始化 Flow 文档"
+  short_description: "初始化上下文、ADR 与 OpenSpec templates"

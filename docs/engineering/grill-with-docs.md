@@ -58,7 +58,7 @@ glossary 才是重点。Domain language 才是这个 skill 真正在构建的东
 那是这个 skill 没能加载它的两个依赖。因为 `SKILL.md` 是一行委托，一个没有拾起 [grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling) 的 agent 会去猜 grilling 是什么意思，于是你得到一份不加区分的提问倾倒。部分加载是更令人困惑的情况——`grilling` 加载了、`domain-modeling` 没有——于是你得到一场很好的访谈，却没有书面痕迹。它与 model 和 [effort](https://www.aihero.dev/ai-coding-dictionary/effort) 级别相关，也是这个 skill 被报告最多的问题。如果你怀疑这一点，直接问 agent 它加载了哪些 skills。
 
 **我其他那些决策都去哪了？**
-只进了对话。这是对这个 skill 最实质的公开抱怨：glossary 不是 spec，大多数回答不配获得 ADR，也没有任何账本把每个已敲定的回答一路关联到 spec、ticket 和 test。精确的答案——排序保证、否定式需求、数值默认值——在下游被软化成更弱的口语化表述，结果看起来完整，却漏掉了你实际决定的东西。当下可用的缓解措施是：保留 session，把它直接喂给 [to-spec](https://aihero.dev/skills-to-spec)，并拿 spec 对照你自己的回答重新读一遍，而不是假设它已经捕获了它们。
+只进了对话。这是对这个 skill 最实质的公开抱怨：glossary 不是 proposal，大多数回答不配获得 ADR，也没有任何账本把每个已敲定的回答一路关联到 capability、test 和 task。精确的答案——排序保证、否定式需求、数值默认值——在下游被软化成更弱的口语化表述，结果看起来完整，却漏掉了你实际决定的东西。保留 session，把它直接喂给 [to-spec](https://aihero.dev/skills-to-spec)，并拿生成的 `proposal.md` 对照自己的回答重新读一遍。
 
 **我可以把它指向一个完全没有文档的现有 repo 吗？**
 可以。对于一个没有 ADR、没有 domain language、也没有设计原则的 codebase，这正是正确的 skill——调用它并说"帮我把我的 repo 写成文档"。社区模式把它与 [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 配对，用于构建或修复一份 `CONTEXT.md`。要做好引导它的准备：它会阅读代码并就它发现的东西问你，而由你来指出 codebase 里已有的那些词当中哪些是对的。
@@ -82,7 +82,7 @@ glossary 才是重点。Domain language 才是这个 skill 真正在构建的东
 `grill-with-docs` 是 main build chain 的开头：
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → OpenSpec planning → implement → code-review
 ```
 
-它排在一切被写成 spec 之前——它产出共同的理解和敲定的词汇，[to-spec](https://aihero.dev/skills-to-spec) 随后无需重新访谈你就将其合成为 spec。它亲近的邻居是 [grill-me](https://aihero.dev/skills-grill-me)——同一场访谈但不带 repo、不带文件——以及 [domain-modeling](https://aihero.dev/skills-domain-modeling)——它所驱动的那套 glossary-and-ADR 纪律；两者都立在 [grilling](https://aihero.dev/skills-grilling) 原语之上。在它上游，[wayfinder](https://aihero.dev/skills-wayfinder) 绘制大到一次 session 装不下的 efforts，并能把地图的一部分交还给它。当你不确定哪个 skill 或 flow 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+它排在一切被写成 OpenSpec change 之前——它产出共同理解和敲定的词汇，[to-spec](https://aihero.dev/skills-to-spec) 随后无需重新访谈就将其合成为 proposal。它亲近的邻居是 [grill-me](https://aihero.dev/skills-grill-me) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling)；两者都立在 [grilling](https://aihero.dev/skills-grilling) 原语之上。在它上游，[wayfinder](https://aihero.dev/skills-wayfinder) 绘制大到一次 session 装不下的 efforts。当你不确定哪个 skill 或 flow 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

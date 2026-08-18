@@ -17,5 +17,4 @@
 模型或用户都可以调用（description 包含足够丰富的触发措辞，方便模型自动找到它们）。
 
 - **[grilling](./grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 decision tree 的每个分支都被解决。
-- **[init-agent-docs](./init-agent-docs/SKILL.md)** - 初始化或整合仓库级 `AGENTS.md` 与 `CLAUDE.md`，保留 shared、Claude-only 与 nested instructions 的正确作用域。
 - **[writing-for-agents](./writing-for-agents/SKILL.md)** - 为 agent 编写文档：skills、`AGENTS.md`/`CLAUDE.md`，以及任何 agent 通过指针触达的文档。

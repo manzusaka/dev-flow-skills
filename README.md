@@ -56,6 +56,8 @@ npx skills@latest add manzusaka/devtrain-skills
 - **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：构建一个会对这个 bug 变红的 feedback loop → minimise → hypothesise → instrument → fix → regression-test。
 - **[research](./skills/engineering/research/SKILL.md)** - 对照 high-trust primary sources 调研问题，并把带引用的 findings 保存为 Markdown 文件。
 - **[tdd](./skills/engineering/tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
+- **[init-flow-docs](./skills/engineering/init-flow-docs/SKILL.md)** - 初始化或整理项目的 `CONTEXT.md`、ADR、OpenSpec schema 与 artifact templates。
+- **[init-agent-docs](./skills/engineering/init-agent-docs/SKILL.md)** - 在 workspace 初始化初期创建或整合 `AGENTS.md` 与 `CLAUDE.md`：共享 instructions 归入 `AGENTS.md`，Claude Code 通过标准 import 引用它。
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** - 主动构建和打磨项目 domain model：挑战术语、用 edge-case scenarios 做压力测试，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** - 设计 deep modules 的共享纪律和词汇：小 interface、clean seam、通过 interface 测试。
 - **[code-review](./skills/engineering/code-review/SKILL.md)** - 对 fixed point 以来的 diff 做双轴 review：Standards 与 Spec 分开检查，并用并行 sub-agents 运行。
@@ -64,14 +66,14 @@ npx skills@latest add manzusaka/devtrain-skills
 
 #### Flows
 
-围绕 issue tracker 的规划和交付流程。
+围绕 OpenSpec planning 与 issue tracker 的规划和交付流程。
 
 **User-invoked**
 
-- **[setup-skills](./skills/flows/setup-skills/SKILL.md)** - 配置 issue tracker、triage labels 和 domain docs 布局。每个 repo 运行一次。
+- **[setup-skills](./skills/flows/setup-skills/SKILL.md)** - 为 tracker-based flows 配置 issue tracker、triage labels 和 domain docs 布局。
 - **[triage](./skills/flows/triage/SKILL.md)** - 通过 triage roles state machine 推进 issues。
 - **[wayfinder](./skills/flows/wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 issue tracker 上的 decision tickets 共享 map，逐一解决直到通往 destination 的路清晰。
-- **[to-spec](./skills/flows/to-spec/SKILL.md)** - 把当前对话整理成 spec 并发布到 issue tracker。不做访谈，只综合已经讨论过的内容。
+- **[to-spec](./skills/flows/to-spec/SKILL.md)** - 把当前对话整理成 OpenSpec change proposal，创建兼容的变更元数据与 `proposal.md`。
 - **[to-tickets](./skills/flows/to-tickets/SKILL.md)** - 把 plan、spec 或 conversation 拆成 tracer-bullet tickets，每个 ticket 声明 blocking edges——在 local file 中写成文本，或在真实 tracker 上写成 native blocking links。
 
 **Model-invoked**
@@ -93,5 +95,4 @@ npx skills@latest add manzusaka/devtrain-skills
 **Model-invoked**
 
 - **[grilling](./skills/productivity/grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 design tree 的每个分支都被解决。它是 `grill-me`、`grill-with-docs`、`triage`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用访谈 primitive。
-- **[init-agent-docs](./skills/productivity/init-agent-docs/SKILL.md)** - 在 workspace 初始化初期创建或整合 `AGENTS.md` 与 `CLAUDE.md`：共享 instructions 归入 `AGENTS.md`，Claude Code 通过标准 import 引用它。
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** - 为 agents 编写文档：skills、AGENTS.md/CLAUDE.md，以及任何 agent 通过 pointer 到达的文档。

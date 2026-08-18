@@ -20,7 +20,7 @@
 
 Router 只点名 skills，它不安装它们。它指向的一切都必须已安装，推荐才具有可操作性，而且它只认识本仓库中那些已推广的 skills。
 
-依赖 tracker 的 routes——triage、`to-spec`、`to-tickets`、`implement`——假设 [setup-skills](https://aihero.dev/skills-setup-skills) 已经在仓库中配置好了一个 issue tracker。router 会乐于在那之前就推荐它们。
+依赖 tracker 的 routes——triage、`to-tickets`、`implement`——假设 [setup-skills](https://aihero.dev/skills-setup-skills) 已经在仓库中配置好了一个 issue tracker。`to-spec` 改为依赖 `/init-flow-docs` 初始化的 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。router 会乐于在这些前置条件完成前就推荐它们。
 
 ## Flows, not skills
 
@@ -49,7 +49,7 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 **难道没有一张按正确顺序排列的 skills 列表吗？**
 
-人们一直在 README 里要这么一张列表。这个 skill 就是那张列表——它存在的意义就在于此。一张静态表格会写出 `wayfinder → to-spec → to-tickets → implement → code-review`，而对大多数处境来说它都是错的，因为有趣的部分是那些分支——有没有 codebase，build 是否跨越多场 session，这个疑问能否靠交谈来敲定。诚实的代价是 router 靠手维护，会滞后于仓库。`/grilling` 和 `/resolving-merge-conflicts` 都在 router 点名它们之前很久就已发布。
+人们一直在 README 里要这么一张列表。这个 skill 就是那张列表——它存在的意义就在于此。一张静态表格会写出 `wayfinder → to-spec → OpenSpec planning → implement → code-review`，而对大多数处境来说它都是错的，因为有趣的部分是那些分支——有没有 codebase，build 是否跨越多场 session，这个疑问能否靠交谈来敲定。诚实的代价是 router 靠手维护，会滞后于仓库。`/grilling` 和 `/resolving-merge-conflicts` 都在 router 点名它们之前很久就已发布。
 
 **它告诉我一半的 skills 没安装。**
 
@@ -57,7 +57,7 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 **它描述了一个 skill 的行为，而那个 skill 并不那么做。**
 
-也是真的，也没有修复。Router 依据自己对每个 skill 的一行摘要来作答，而不是依据 skill 本身。一次详细报告在同一场会话里追到了三个实例，其中有一个是仅凭「把这条 thread 变成一份 spec」的简介就建议跳过 [to-spec](https://aihero.dev/skills-to-spec)——`to-spec/SKILL.md` 从未被打开过。在每个实例里，它都只在用户推回去之后才验证，而且从不主动为之。那里跳过 `to-spec` 代价是一次真实存在的 seam 检查，而产出的 tickets 也低估了工作量。当 router 对另一个 skill 断言某个承重的信息时，先让它打开那个 `SKILL.md`。同样的原则适用于地图完全没有覆盖的问题，比如是否使用 [plan mode](https://www.aihero.dev/ai-coding-dictionary/agent-mode)：那个答案是 [model](https://www.aihero.dev/ai-coding-dictionary/model) 的推断，而不是在这里写下来的东西。
+也是真的，也没有修复。Router 依据自己对每个 skill 的一行摘要来作答，而不是依据 skill 本身。一次详细报告在同一场会话里追到了三个实例，其中有一个仅凭简介就建议跳过 [to-spec](https://aihero.dev/skills-to-spec)，而 `to-spec/SKILL.md` 从未被打开过。那里跳过 `to-spec` 的代价是漏掉 seam 确认与 OpenSpec proposal。当 router 对另一个 skill 断言某个承重的信息时，先让它打开那个 `SKILL.md`。
 
 **为什么是散文，而不是一份编号的清单？**
 

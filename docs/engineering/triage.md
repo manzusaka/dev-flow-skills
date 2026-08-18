@@ -64,10 +64,10 @@ Discovery 只呈现*外部* PRs，因为协作者一个进行中的 branch 不�
 
 ## Common questions
 
-**我运行了 `/to-spec` 和 `/to-tickets`，现在那些 tickets 坐在那里未 triage。我要在它们上面运行 `/triage` 吗？**
+**我运行了 `/to-tickets`，现在那些 tickets 坐在那里未 triage。我要在它们上面运行 `/triage` 吗？**
 不。它们已经是 agent-ready 的——`to-tickets` 在发布时应用 `ready-for-agent` label，正是让一个 AFK runner 无需再走一遍就领起它们。撞上这个的用户运行了 spec flow，在输出上看到 `needs-triage`，然后发现他们的 AFK runner 忽略了一切。`triage` 是外部到达工作的 on-ramp；spec flow 是你自己发起工作的车道。它们在 `ready-for-agent` 相遇，而不是之前。
 
-**现在有了 `to-spec` → `to-tickets` → `implement` flow，`triage` 还相关吗？**
+**现在有了 OpenSpec planning 和 `to-tickets` → `implement` flow，`triage` 还相关吗？**
 只有在你有人境工作的时候。`triage` 早于那条主干，做的是不同的工作：它是别人提交的 reports 的车道。如果你的 tracker 里一切来自你自己的规划，你很少会打开它。如果你维护任何公开的东西，或你的团队向你提报 bugs，它就是前门。主要用途是拿着来自外部贡献者 issues 的开源 repos。
 
 **agent 试图应用 `ready-for-agent`，而 `gh` 说这个 label 不存在。**

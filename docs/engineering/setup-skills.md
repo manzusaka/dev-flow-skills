@@ -10,7 +10,7 @@
 
 你通过输入 `/setup-skills` 调用它——[agent](https://www.aihero.dev/ai-coding-dictionary/agent) 不会自行触发。它被刻意标记为不可调用，所以没有其他 skill 能替你触发它。
 
-**每个 repo 使用一次，在首次使用任何其他 engineering skill 之前**。如果 [triage](https://aihero.dev/skills-triage)、[to-spec](https://aihero.dev/skills-to-spec)、[to-tickets](https://aihero.dev/skills-to-tickets) 或 [wayfinder](https://aihero.dev/skills-wayfinder) 开始猜测你的 issues 放在哪里，或套用你的 tracker 并不存在的 labels，说明它们还没在这里完成配置。一个已经进行到项目一半的 repo 也是运行它的好地方；这个 skill 会读取已经存在的内容，之前的工作不会浪费。
+**每个使用 tracker-based flows 的 repo 运行一次**。如果 [triage](https://aihero.dev/skills-triage)、[to-tickets](https://aihero.dev/skills-to-tickets) 或 [wayfinder](https://aihero.dev/skills-wayfinder) 开始猜测你的 issues 放在哪里，或套用你的 tracker 并不存在的 labels，说明它们还没在这里完成配置。一个已经进行到项目一半的 repo 也是运行它的好地方；这个 skill 会读取已经存在的内容，之前的工作不会浪费。
 
 ## Prerequisites
 
@@ -91,4 +91,4 @@ tracker 选项：
 
 ## Where it fits
 
-`setup-skills` 是 engineering flow 的 **run-once setup**，是其他一切默认的前提，而不是 chain 中的一个步骤。它的邻居是它的读者：[triage](https://aihero.dev/skills-triage)，它套用在里写下的 label vocabulary；[to-spec](https://aihero.dev/skills-to-spec) 和 [to-tickets](https://aihero.dev/skills-to-tickets)，它们发布到在这里命名的 tracker；以及 [wayfinder](https://aihero.dev/skills-wayfinder)，它读取同一个 tracker 文件的 "Wayfinding operations" 小节，以知道 maps 和子 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) 是如何存储的。它记录的 domain-doc 布局，正是 [domain-modeling](https://aihero.dev/skills-domain-modeling) 之后要填满的——它非惰性地创建 `CONTEXT.md` 和 ADRs，当一个 term 或 decision 真正被解决时，所以 setup 之后一个空 repo 是预期的状态。至于下一步该用哪个 skill，[ask-matt](https://aihero.dev/skills-ask-matt) 为整套工具路由。
+`setup-skills` 是 tracker-based flows 的 **run-once setup**，而不是 chain 中的一个步骤。它的读者是 [triage](https://aihero.dev/skills-triage)、[to-tickets](https://aihero.dev/skills-to-tickets) 和 [wayfinder](https://aihero.dev/skills-wayfinder)。`to-spec` 不再读取这里的 tracker 配置；它依赖 `/init-flow-docs` 初始化的 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。至于下一步该用哪个 skill，[ask-matt](https://aihero.dev/skills-ask-matt) 为整套工具路由。

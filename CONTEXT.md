@@ -5,7 +5,7 @@
 ## Language
 
 **Issue tracker**:
-托管某个 repo issues 的工具，例如 GitHub Issues、Linear、本地 `.scratch/` markdown 约定，或类似系统。`to-tickets`、`to-spec` 和 `triage` 等 skills 会从中读取并写入。
+托管某个 repo issues 的工具，例如 GitHub Issues、Linear、本地 `.scratch/` markdown 约定，或类似系统。`to-tickets` 和 `triage` 等 skills 会从中读取并写入。
 _Avoid_: backlog manager, backlog backend, issue host
 
 **Issue**:

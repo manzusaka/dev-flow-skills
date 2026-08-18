@@ -13,8 +13,8 @@
 | 你有一个 spec issue，且 build 横跨几个 sessions | `/to-tickets`，或 `/to-tickets #<spec_issue>` |
 | plan 只在 conversation 里，从未写成文字 | `/to-tickets` 直接读取 thread——不需要 spec |
 | 整个 change 适合一个 context window | [implement](https://aihero.dev/skills-implement)——跳过 tickets |
-| 什么都没决定 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，然后 [to-spec](https://aihero.dev/skills-to-spec) |
-| 一张 [wayfinder](https://aihero.dev/skills-wayfinder) map 已 cleared | 先 [to-spec](https://aihero.dev/skills-to-spec) 折叠 map，然后 `/to-tickets` |
+| 什么都没决定 | 先运行 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
+| 选择 OpenSpec planning 而不是 tracker tickets | 使用 [to-spec](https://aihero.dev/skills-to-spec)，后续由 OpenSpec tasks 承载实现拆分 |
 
 `to-tickets` 产出的 tickets 按构造就是 agent-ready 的。不要在它们上面运行 [triage](https://aihero.dev/skills-triage)——triage 是为从别人那里到达的工作准备的。
 
@@ -70,8 +70,8 @@ Over-decomposition 是这个 skill 上被报告最多的摩擦，而且在从业
 **本地 tickets 去哪了？v1.1 的 notes 说一个根层级的 `tickets.md`。**
 是的，那是一个 bug——一个共享文件在并行 agents 写入它时也会竞争。本地模式现在按依赖顺序，在 `.scratch/<feature-slug>/issues/<NN>-<slug>.md` 下每个 ticket 写一个文件，匹配本地 tracker template 已经描述的布局。`NN` 前缀是一个真实的 ticket ID，所以 `/implement 03` 可以工作，而不是重打一个长标题。
 
-**它读我的 spec 时一直截断。**
-一份非常大的 spec 可能超过一个 tracker issue 能干净回传的大小，也没有本地副本可回退——agent 然后烧掉 [tool calls](https://www.aihero.dev/ai-coding-dictionary/tool-call) 重新抓取 chunks，永远到不了头。不要在 `/to-spec` 和 `/to-tickets` 之间 [clear](https://www.aihero.dev/ai-coding-dictionary/clearing) 或 [compact](https://www.aihero.dev/ai-coding-dictionary/compaction)。在同一个 context window 里运行它们，spec 就完全不必被抓回来。
+**它读我的 spec issue 时一直截断。**
+Tracker issue 过大时，优先把内容保存为本地文件并把路径传给 `/to-tickets`。`/to-spec` 现在写入 OpenSpec proposal，不再通过 tracker issue 传递内容；OpenSpec 流程应继续生成 tasks，而不是再调用本 skill。
 
 **acceptance criteria 什么都评不了——有些在任何工作完成之前就通过了。**
 Template 要求 criteria，却没说什么它们能否失败，所以这种事会发生。有三种形状反复出现：一个在 base commit 上就已经为真的 criterion、一个只能由另一个 ticket 拥有的工作满足的 criterion，以及一个重述请求而非从 artifact 推导的 criterion。Vertical slicing 阻止了其中大部分——一个交付了之前不存在 behavior 的 slice 按构造在 base commit 上就是 red 的——但这项检查值得手工做。对每个 criterion，说出能证明它为假的观察，并确认它在 implementer 起点的 commit 上失败。
@@ -90,10 +90,10 @@ Skill 止步于 artifact，没有 auto-dispatch 模式。分派是手工的：�
 
 ## Where it fits
 
-`to-tickets` 是 main build chain 中的一个步骤：
+`to-tickets` 是 tracker-based delivery flow 中的 slicing 步骤：
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+conversation 或 tracker spec → to-tickets → implement → code-review
 ```
 
-上游是 [to-spec](https://aihero.dev/skills-to-spec)，它交来一份已定稿的 spec 供你切片——把两者保持在一个不间断的 context window 里。下游是 [implement](https://aihero.dev/skills-implement)，它每个全新 session 构建一个 ticket，为 tests 驱动 [tdd](https://aihero.dev/skills-tdd)，并以 [code-review](https://aihero.dev/skills-code-review) 收尾。当你不确定哪个 skill 或 flow 合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+上游可以是当前 conversation、plan 或 tracker 中的 existing issue。下游是 [implement](https://aihero.dev/skills-implement)，它每个全新 session 构建一个 ticket，为 tests 驱动 [tdd](https://aihero.dev/skills-tdd)，并以 [code-review](https://aihero.dev/skills-code-review) 收尾。OpenSpec planning 使用自己的 `tasks.md`，不需要经过 `to-tickets`。当你不确定哪个 flow 合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

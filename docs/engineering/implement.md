@@ -87,7 +87,7 @@
 `implement` 是 main chain 的 build step，倒数第二：
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → OpenSpec planning → implement → code-review
 ```
 
 它的邻居是 [to-tickets](https://aihero.dev/skills-to-tickets)——产出它所消费的 tickets 并声明决定其顺序的 blocking edges；[tdd](https://aihero.dev/skills-tdd)——它在每个 seam 上内部驱动它；以及 [code-review](https://aihero.dev/skills-code-review)——它在提交之前运行它。它位于规划类 skills 的下游并信任它们。它不会重新验证交给它的东西的形状，所以一张结构糟糕的地图或一个横向分层的 ticket 会照原样被构建。

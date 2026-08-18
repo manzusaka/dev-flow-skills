@@ -1,5 +1,5 @@
 interface:
   display_name: "转为 Spec"
-  short_description: "把对话转成 spec"
+  short_description: "把对话转成 OpenSpec proposal"
 policy:
   allow_implicit_invocation: false
