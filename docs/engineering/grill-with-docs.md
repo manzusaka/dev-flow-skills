@@ -82,7 +82,7 @@ glossary 才是重点。Domain language 才是这个 skill 真正在构建的东
 `grill-with-docs` 是 main build chain 的开头：
 
 ```txt
-grill-with-docs → to-spec → OpenSpec planning → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
 它排在一切被写成 OpenSpec change 之前——它产出共同理解和敲定的词汇，[to-spec](https://aihero.dev/skills-to-spec) 随后无需重新访谈就将其合成为 proposal。它亲近的邻居是 [grill-me](https://aihero.dev/skills-grill-me) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling)；两者都立在 [grilling](https://aihero.dev/skills-grilling) 原语之上。在它上游，[wayfinder](https://aihero.dev/skills-wayfinder) 绘制大到一次 session 装不下的 efforts。当你不确定哪个 skill 或 flow 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

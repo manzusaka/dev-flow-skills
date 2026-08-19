@@ -1,44 +1,45 @@
 ## What it does
 
-`implement` 构建那些已经被决定好的工作。你把它指向一个 [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket)、一份 [spec](https://www.aihero.dev/ai-coding-dictionary/spec)，或你在对话里刚刚达成的计划，它就写代码、在 seams 上驱动 [tdd](https://aihero.dev/skills-tdd)、边走边 typecheck、最后运行 [code-review](https://aihero.dev/skills-code-review)，并提交到当前 branch。
+`implement` 构建那些已经被决定好的工作。你把它指向一个 OpenSpec `tasks.md` group、一个 [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket)、一份 [spec](https://www.aihero.dev/ai-coding-dictionary/spec)，或你在对话里刚刚达成的计划，它就写代码、在 seams 上驱动 [tdd](https://aihero.dev/skills-tdd)、边走边 typecheck、最后运行 [code-review](https://aihero.dev/skills-code-review)，并提交到当前 branch。
 
 它从不重新打开计划。没有访谈、没有澄清轮、没有提出不同方案。上游敲定的任何东西就是输入，这个 skill 的全部工作就是把它变成一次 commit。这正是它区别于对一个全新的 [agent](https://www.aihero.dev/ai-coding-dictionary/agent) 输入"build this"的地方——后者会在构建的同时乐于重新设计这件工作。
 
 ## When to reach for it
 
-你通过输入 `/implement` 调用它——agent 不会自行取用它。它带着 `disable-model-invocation: true` 发布，所以其他 skill 也不能调用它。无论 [ask-matt](https://aihero.dev/skills-ask-matt) 还是 [to-tickets](https://aihero.dev/skills-to-tickets) 说"然后每个 ticket 走 `/implement`"，那都是给你的指令，而不是 agent 会在未提示下自己去做的事。
+你通过输入 `/implement` 调用它——agent 不会自行取用它。它带着 `disable-model-invocation: true` 发布，所以其他 skill 也不能调用它。无论 [ask-matt](https://aihero.dev/skills-ask-matt) 还是 [to-tickets](https://aihero.dev/skills-to-tickets) 说"然后每个 task group 走 `/implement`"，那都是给你的指令，而不是 agent 会在未提示下自己去做的事。
 
 工作当前住在哪里，决定了这是否是正确的 skill：
 
 | 工作… | 该用哪个 |
 | --- | --- |
 | 是 tracker 上的一个 ticket | `/implement #42`，每次 [session](https://www.aihero.dev/ai-coding-dictionary/session) 一个 ticket，ticket 之间 [clearing](https://www.aihero.dev/ai-coding-dictionary/clearing) context |
-| 是一份 spec，尚未拆分，而构建横跨多个 sessions | 先用 [to-tickets](https://aihero.dev/skills-to-tickets)，然后每个 ticket 走 `/implement` |
+| 是一个只有 proposal、尚未 planning 的 OpenSpec change | 先用 [to-tickets](https://aihero.dev/skills-to-tickets)，然后每个 `tasks.md` group 走 `/implement` |
 | 是一份 spec，而且构建很小 | 直接对着 spec 走 `/implement` |
 | 只存在于你刚刚那场对话里，而且仍然很小 | 就在那里、在同一个 window 里走 `/implement` |
 | 还没有写在任何地方 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，如果没有 codebase 则用 [grill-me](https://aihero.dev/skills-grill-me) |
 | 是一个你想 test-first 的具体行为，没有 spec | 直接 [tdd](https://aihero.dev/skills-tdd) |
 | 已经构建好了，你想让它被检查 | 直接 [code-review](https://aihero.dev/skills-code-review) |
 
-同一个 session 的情况值得点名，因为 skill 自己的第一行没有覆盖它。`SKILL.md` 说的是 "the spec or tickets"，这会怂恿 [model](https://www.aihero.dev/ai-coding-dictionary/model) 去找一个并不存在的文件。如果计划只活在对话线程里，调用时就说清楚。
+同一个 session 的情况值得点名。如果计划只活在对话线程里，调用时就说清楚；如果来源是 OpenSpec，传入 change name 和本次要实现的 `tasks.md` group，避免把整个 change 一次吞下。
 
 ## Prerequisites
 
 `implement` 提交到你当前所在的 branch。它不会创建分支，也不会问。开始之前确认你正处于你想要工作落在其上的 branch。
 
-如果 tickets 来自 [to-tickets](https://aihero.dev/skills-to-tickets)，它们所在的 tracker 由 [setup-skills](https://aihero.dev/skills-setup-skills) 配置。`code-review` 读取同一配置，以便在收尾时找到源起 spec。
+OpenSpec tasks 来自 [to-tickets](https://aihero.dev/skills-to-tickets) 时，开始前读取同一 change 的 proposal、delta specs、design 和 tasks。Tracker ticket 仍由 [setup-skills](https://aihero.dev/skills-setup-skills) 配置；两种输入不要混淆。
 
 ## What one run does
 
 一次运行是五个节拍，按顺序：
 
-1. 读取 ticket 或 spec，厘清 seams。
+1. 读取选定 task group、ticket 或 spec，厘清 seams。
 2. 在预先认可的 seams 上驱动 [tdd](https://aihero.dev/skills-tdd)，一次一个 red-green 切片。
 3. 频繁 typecheck，边走边运行单个测试文件。
 4. 最后把完整测试套件跑一遍。
-5. 运行 [code-review](https://aihero.dev/skills-code-review)，然后提交到当前 branch。
+5. 运行 [code-review](https://aihero.dev/skills-code-review)。
+6. OpenSpec 输入只勾选实际完成的 checkboxes，然后提交到当前 branch。
 
-一次运行覆盖一个 ticket。[to-tickets](https://aihero.dev/skills-to-tickets) 产出的 tickets 是 tracer-bullet 垂直切片，大小按装进一个全新的 [context window](https://www.aihero.dev/ai-coding-dictionary/context-window) 来定，所以预期的节奏是：清空 context、implement 一个 ticket、提交、再清空。每个 ticket 都是自包含的，这正是让上一个 ticket 的 context 可以丢弃的原因。
+一次运行覆盖一个 task group 或 tracker ticket。[to-tickets](https://aihero.dev/skills-to-tickets) 产出的 `tasks.md` groups 是 tracer-bullet 垂直切片，大小按装进一个全新的 [context window](https://www.aihero.dev/ai-coding-dictionary/context-window) 来定，所以预期节奏是：清空 context、implement 一个 group、勾选已完成 tasks、提交、再清空。
 
 ## Pre-agreed seams
 
@@ -48,13 +49,13 @@
 
 ## Common questions
 
-**它完成了，但我的 ticket 仍然是 open 的，验收标准也仍然未被勾选。**
+**它完成了，但我的工作项仍然没有更新。**
 
-正确，而且在意料之中。`implement` 没有完成步骤。它在 commit 处结束，从不触碰工作项——这在 GitHub Issues 和本地 markdown tracker 上都得到了确认，所以这不是 tracker 集成问题。它也不会对 `code-review` 产出的 findings 采取行动，更不会勾选源起 issue 上的 `- [ ]` 框。你自己去关闭 ticket 并核对标准。这在依赖链上咬得最狠，因为 `to-tickets` 把 frontier 定义为所有 blockers 都已关闭的 tickets。如果没有任何东西被关闭，就永远不会有什么东西变得可见地 unblocked。
+OpenSpec 输入应在实现、测试和 review 都通过后勾选本次完成的 `tasks.md` checkboxes；相邻任务保持未完成。Tracker ticket 的关闭仍由用户或 tracker workflow 处理，`implement` 不会自行关闭远端 issue。
 
-**我可以一次指向我所有的 tickets，或者并行运行几个吗？**
+**我可以一次指向所有 task groups，或者并行运行几个吗？**
 
-不行。一次调用，一个 ticket。跨 ticket 队列的批量派发和 [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) 扇出都被反复请求过，而两者都不存在。在同一个 checkout 里并排运行多个 `/implement` sessions，比"不受支持"更糟：一份现场报告描述了某个 session 里的 `git commit --amend` 落在另一个 session 的 commit 上、一条 stash 从 `refs/stash` 里消失、以及 commit 落到错误的 branch 上——全部发生在一个下午、横跨三个 issues。这些 sessions 共享同一个 working directory、同一个 index 和同一个 HEAD。Git worktrees 是社区的变通方案，而且注意 `refs/stash` 也跨 worktrees 共享，所以单靠 worktrees 并不能修复 stash 的情形。如果你今天就想要并行，你得自己把它组装起来。
+不行。一次调用，一个 task group 或 ticket。跨队列的批量派发和 [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) 扇出都不存在。在同一个 checkout 里并排运行多个 `/implement` sessions 会共享 working directory、index 和 HEAD；需要并行时由调用方提供隔离的 worktrees 和调度，而不是让本 skill 猜测安全边界。
 
 **它可以开 pull request 而不是 commit 吗？**
 
@@ -66,9 +67,9 @@
 
 另外，有些人刻意完全不想要运行内的 review，因为一个审查自己刚写的代码的 agent 会偏向自己的方案。在一个全新的 session 里对着一个 fixed point 运行 [code-review](https://aihero.dev/skills-code-review) 是合法的替代方案，也正是那个 skill 把它的两个轴线放在独立的 sub-agents 里运行的原因。
 
-**一个 ticket 烧掉了 150k tokens。我用错了吗？**
+**一个 task group 烧掉了 150k tokens。我用错了吗？**
 
-很可能是 ticket 太大，而不是 skill 被误用。一次运行要做 codebase 探索、每个 seam 一个 red-green 循环、一整套完整测试和一次 review，所以一个不平凡的 ticket 超过 100k [tokens](https://www.aihero.dev/ai-coding-dictionary/token) 是正常的，而不是某种东西坏掉的迹象。杠杆在上游：在 [to-tickets](https://aihero.dev/skills-to-tickets) 里把 tickets 调到合适大小，让每个都能装进一个全新的 window。如果单个 ticket 老是爆掉，就拆分它，而不是调高 [effort](https://www.aihero.dev/ai-coding-dictionary/effort) 级别。
+很可能是 slice 太大。一次运行要做 codebase 探索、red-green loops、完整测试和 review；杠杆在上游：在 [to-tickets](https://aihero.dev/skills-to-tickets) 中把 `tasks.md` groups 调到能装进一个 fresh window。单个 group 反复超限时拆分 vertical slice，而不是调高 effort。
 
 **在一个全新 session 里跑 `/implement #2`，却处理了完全无关的东西。**
 
@@ -76,21 +77,21 @@
 
 ## It's working if
 
-- session 以读取 ticket 或 spec 并复述它将构建什么来开场，而不是问你该构建什么。
+- session 以读取 task group、ticket 或 spec 并复述它将构建什么来开场，而不是问你该构建什么。
 - 你能在 trace 里看到一次真实的 `/tdd` 调用，而不只是在 diff 里出现测试。
 - Typecheck 和单个测试文件在运行期间反复执行，完整套件在临近结束时跑一次。
 - 运行在你当前 branch 上到达一次 commit，而你无需提示它继续。
-- diff 是一个 ticket 分量的变更：贯穿每一层的垂直切片，而不是几个 tickets 被扫成一堆。
+- diff 是一个 task group 或 ticket 分量的变更：一条完整 vertical slice，而不是几个 groups 被扫成一堆。
 
 ## Where it fits
 
 `implement` 是 main chain 的 build step，倒数第二：
 
 ```txt
-grill-with-docs → to-spec → OpenSpec planning → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-它的邻居是 [to-tickets](https://aihero.dev/skills-to-tickets)——产出它所消费的 tickets 并声明决定其顺序的 blocking edges；[tdd](https://aihero.dev/skills-tdd)——它在每个 seam 上内部驱动它；以及 [code-review](https://aihero.dev/skills-code-review)——它在提交之前运行它。它位于规划类 skills 的下游并信任它们。它不会重新验证交给它的东西的形状，所以一张结构糟糕的地图或一个横向分层的 ticket 会照原样被构建。
+它的邻居是 [to-tickets](https://aihero.dev/skills-to-tickets)——产出它所消费的 OpenSpec tasks；[tdd](https://aihero.dev/skills-tdd)——它在每个 seam 上内部驱动它；以及 [code-review](https://aihero.dev/skills-code-review)——它在提交之前运行它。它位于 planning 下游并信任已确认的 specs、design 和 tasks，不重新打开方案。
 
 这份信任正是 [wayfinder](https://aihero.dev/skills-wayfinder) 在 [to-spec](https://aihero.dev/skills-to-spec) 处并入这条 chain、而不是把它的地图直接循环进 `implement` 的原因。只有当场得出 effort 确实很小时，才从一张地图直接去 `implement`。
 

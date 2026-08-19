@@ -76,7 +76,7 @@ openspec/changes/<change-name>/
         └── spec.md
 ```
 
-这些后续 artifacts 由后续 OpenSpec planning 创建，不属于 `/to-spec` 本次调用的授权范围。
+这些后续 artifacts 由 `/to-tickets <change-name>` 创建，不属于 `/to-spec` 本次调用的授权范围。
 
 ## It's working if
 
@@ -93,7 +93,7 @@ openspec/changes/<change-name>/
 `to-spec` 是已确定 conversation 进入 OpenSpec planning 的入口：
 
 ```text
-grill-with-docs → to-spec → OpenSpec planning → implementation → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-它的上游负责做决定；它负责创建 proposal；后续流程根据 proposal 补齐 delta specs、design 和 tasks。
+它的上游负责确定需求；它负责创建 proposal；`to-tickets` 根据 proposal 补齐 delta specs、design 和 tasks。

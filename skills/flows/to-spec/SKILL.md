@@ -106,4 +106,4 @@ skip_specs: true
 
 如果 `openspec-cn` CLI 可用，运行 `openspec-cn status --change <change-name>` 检查 OpenSpec 能识别该 change；CLI 不可用时只做文件结构检查，不把安装 CLI 作为前提。
 
-向用户报告 change name、生成路径、schema、capabilities 和已确认 seams，并说明 proposal 已就绪，可以进入后续 OpenSpec planning。
+向用户报告 change name、生成路径、schema、capabilities 和已确认 seams，并说明 proposal 已就绪；下一步由用户显式运行 `/to-tickets <change-name>` 补齐 specs、design 和 tasks。

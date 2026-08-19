@@ -1,5 +1,5 @@
 interface:
-  display_name: "拆分为 Tickets"
-  short_description: "把计划拆成 tracer-bullet tickets"
+  display_name: "生成 OpenSpec 计划"
+  short_description: "从 proposal 生成 specs、design 与 tasks"
 policy:
   allow_implicit_invocation: false

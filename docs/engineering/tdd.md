@@ -88,7 +88,7 @@ Mocks 只用于系统边界——外部 APIs、时间、随机性，有时是 fi
 `tdd` 是 main chain 的 build 步骤内部的引擎，而不是它自己的一个步骤：
 
 ```txt
-grill-with-docs → to-spec → OpenSpec planning → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
 [to-spec](https://aihero.dev/skills-to-spec) 预先商定 test seams，[implement](https://aihero.dev/skills-implement) 按 ticket 驱动 `tdd`，[code-review](https://aihero.dev/skills-code-review) 事后检查只用了已商定的 seams——并拥有 `tdd` 不再做的 refactoring。它的另一个邻居是 [codebase-design](https://aihero.dev/skills-codebase-design)，`tdd` 所说的 seam 和 deep-module 词汇的共享来源。你也可以单独使用它，只要有具体 behavior 要构建、又不在一个完整 spec 的推进中。当你不确定哪个 skill 适合你的处境时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

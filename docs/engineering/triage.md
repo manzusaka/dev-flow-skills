@@ -2,7 +2,7 @@
 
 `triage` 让你项目 tracker 上的 issues 经过一个小型 **triage roles** state machine 推进——一个 category role 和一个 state role——并留下要么一份 agent-ready brief、要么一个给 reporter 的具体问题、要么一个带记录原因的已关闭 issue。
 
-它只用于**不是你创建的** issues。原始的 bug reports、进来的 feature requests、一个未经通告就到达的外部 pull request——从外部以 reporter 留下的任何形状落到 tracker 里的工作。[to-tickets](https://aihero.dev/skills-to-tickets) 产出的 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) 按构造已经是 agent-ready 的，在它们上面运行 `triage` 充其量是浪费工作。规则是干脆的：`/triage` 只用于进来的 issues，不用于你自己创建的 issues。
+它只用于**不是你创建的** issues。原始的 bug reports、进来的 feature requests、一个未经通告就到达的外部 pull request——从外部以 reporter 留下的任何形状落到 tracker 里的工作。规则是干脆的：`/triage` 只用于进来的 issues，不用于自己发起的 OpenSpec changes。
 
 第二件把它与手工打 label 区分开的事：它推荐并等待。它带着推理告诉你它的 category 和 state 判断，外加它在 codebase 里发现了什么，并在你指示之前不应用任何东西。
 
@@ -15,7 +15,7 @@
 | 一个满是别人原始 reports 的 tracker | `/triage` |
 | 你自己一个粗略的想法，什么都没写下来 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
 | 一次要变成 [spec](https://www.aihero.dev/ai-coding-dictionary/spec) 的已定稿 conversation | [to-spec](https://aihero.dev/skills-to-spec) |
-| 一份要拆成 agent-ready tickets 的 spec | [to-tickets](https://aihero.dev/skills-to-tickets) |
+| 一个已有 proposal、需要补齐 OpenSpec planning 的 change | [to-tickets](https://aihero.dev/skills-to-tickets) |
 | 一个已确认、需要 root cause 而非 label 的 bug | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
 
 ## Prerequisites
@@ -64,8 +64,8 @@ Discovery 只呈现*外部* PRs，因为协作者一个进行中的 branch 不�
 
 ## Common questions
 
-**我运行了 `/to-tickets`，现在那些 tickets 坐在那里未 triage。我要在它们上面运行 `/triage` 吗？**
-不。它们已经是 agent-ready 的——`to-tickets` 在发布时应用 `ready-for-agent` label，正是让一个 AFK runner 无需再走一遍就领起它们。撞上这个的用户运行了 spec flow，在输出上看到 `needs-triage`，然后发现他们的 AFK runner 忽略了一切。`triage` 是外部到达工作的 on-ramp；spec flow 是你自己发起工作的车道。它们在 `ready-for-agent` 相遇，而不是之前。
+**我运行了 `/to-tickets`，要对生成的 tasks 运行 `/triage` 吗？**
+不。`to-tickets` 生成的是本地 OpenSpec specs、design 和 tasks，不是 tracker issues。`triage` 是外部 requests 的 on-ramp；OpenSpec planning 是自己发起工作的主干。
 
 **现在有了 OpenSpec planning 和 `to-tickets` → `implement` flow，`triage` 还相关吗？**
 只有在你有人境工作的时候。`triage` 早于那条主干，做的是不同的工作：它是别人提交的 reports 的车道。如果你的 tracker 里一切来自你自己的规划，你很少会打开它。如果你维护任何公开的东西，或你的团队向你提报 bugs，它就是前门。主要用途是拿着来自外部贡献者 issues 的开源 repos。
@@ -96,4 +96,4 @@ Discovery 只呈现*外部* PRs，因为协作者一个进行中的 branch 不�
 
 ## Where it fits
 
-`triage` 是一个 **on-ramp**，不是 main chain 中的一个步骤。Main flow 从你有的一个想法运行——grill、spec、tickets、implement、review——而 `triage` 是留给取而代之*到达*的工作的并行车道。它在同一个地方合并：一个带 brief、标 `ready-for-agent` 的 issue，[implement](https://aihero.dev/skills-implement) 领起它，就像领起 [to-tickets](https://aihero.dev/skills-to-tickets) 的一个 ticket。当一个请求在能被 brief 之前需要打磨时，`triage` 一起运行 [grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling)，一次一轮问题，所以决定在做出时落入 `CONTEXT.md` 和 ADRs。当你不确定自己在哪条车道时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+`triage` 是一个 **on-ramp**，不是 main chain 中的一个步骤。Main flow 从自己的想法运行——grill、proposal、planning、implement、review——而 `triage` 是留给外部到达工作的并行车道。带 brief、标 `ready-for-agent` 的 issue 可以直接交给 [implement](https://aihero.dev/skills-implement)；OpenSpec change 则由 [to-tickets](https://aihero.dev/skills-to-tickets) 生成 tasks 后进入 implement。当一个 request 在能被 brief 之前需要打磨时，`triage` 一起运行 [grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling)。当你不确定自己在哪条车道时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

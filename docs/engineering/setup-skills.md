@@ -10,7 +10,7 @@
 
 你通过输入 `/setup-skills` 调用它——[agent](https://www.aihero.dev/ai-coding-dictionary/agent) 不会自行触发。它被刻意标记为不可调用，所以没有其他 skill 能替你触发它。
 
-**每个使用 tracker-based flows 的 repo 运行一次**。如果 [triage](https://aihero.dev/skills-triage)、[to-tickets](https://aihero.dev/skills-to-tickets) 或 [wayfinder](https://aihero.dev/skills-wayfinder) 开始猜测你的 issues 放在哪里，或套用你的 tracker 并不存在的 labels，说明它们还没在这里完成配置。一个已经进行到项目一半的 repo 也是运行它的好地方；这个 skill 会读取已经存在的内容，之前的工作不会浪费。
+**每个使用 tracker-based flows 的 repo 运行一次**。如果 [triage](https://aihero.dev/skills-triage) 或 [wayfinder](https://aihero.dev/skills-wayfinder) 开始猜测你的 issues 放在哪里，或套用你的 tracker 并不存在的 labels，说明它们还没在这里完成配置。一个已经进行到项目一半的 repo 也是运行它的好地方；这个 skill 会读取已经存在的内容，之前的工作不会浪费。
 
 ## Prerequisites
 
@@ -86,9 +86,9 @@ tracker 选项：
 - `docs/agents/issue-tracker.md` 和 `docs/agents/domain.md` 存在，如果安装了 `triage` 还有 `triage-labels.md`。
 - 你的 harness 真正读取的那个指令文件中出现了一个 `## Agent skills` 小节，每一行以一个单行摘要指向这些文件中的每一个。
 - 它提议的 tracker 与你真正使用的 remote 匹配，label 字符串与你的 tracker 中真实存在的 labels 匹配。
-- 之后，`/to-tickets` 发布时不再询问 issues 放在哪里，`/triage` 套用 labels 而不是发明它们。
+- 之后，`/wayfinder` 发布 decision tickets 时不再询问 issues 放在哪里，`/triage` 套用 labels 而不是发明它们。
 - skill 文件本身没有任何变化。如果 setup 编辑了一个 `SKILL.md`，那一定出错了。
 
 ## Where it fits
 
-`setup-skills` 是 tracker-based flows 的 **run-once setup**，而不是 chain 中的一个步骤。它的读者是 [triage](https://aihero.dev/skills-triage)、[to-tickets](https://aihero.dev/skills-to-tickets) 和 [wayfinder](https://aihero.dev/skills-wayfinder)。`to-spec` 不再读取这里的 tracker 配置；它依赖 `/init-flow-docs` 初始化的 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。至于下一步该用哪个 skill，[ask-matt](https://aihero.dev/skills-ask-matt) 为整套工具路由。
+`setup-skills` 是 tracker-based flows 的 **run-once setup**，而不是 chain 中的一个步骤。它的读者是 [triage](https://aihero.dev/skills-triage) 和 [wayfinder](https://aihero.dev/skills-wayfinder)。`to-spec` 与 `to-tickets` 不读取这里的 tracker 配置；它们依赖 `/init-flow-docs` 初始化的 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。至于下一步该用哪个 skill，[ask-matt](https://aihero.dev/skills-ask-matt) 为整套工具路由。

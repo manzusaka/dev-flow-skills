@@ -15,7 +15,7 @@
 | 一个范围明确、一次就能敲定的 feature | [grill-me](https://aihero.dev/skills-grill-me)，或当有 codebase 时用 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
 | 一个 greenfield 项目，或一个跨越许多 session 的 build，路径仍不清晰 | `/wayfinder` |
 | 一条该决定的事已经做完的 thread | [to-spec](https://aihero.dev/skills-to-spec)——直接跳过 map |
-| 一张已清除的 wayfinder map | [to-spec](https://aihero.dev/skills-to-spec)，然后继续 OpenSpec planning 与 implementation |
+| 一张已清除的 wayfinder map | [to-spec](https://aihero.dev/skills-to-spec)，然后用 [to-tickets](https://aihero.dev/skills-to-tickets) 完成 OpenSpec planning |
 | 一个已经长到太大的现有 session | 说 "hand off to `/wayfinder`"——[handoff](https://aihero.dev/skills-handoff) 既架桥进入 map，也架桥离开 map |
 
 Greenfield 不是必要条件。Wayfinder 也常规地用于 legacy 和半成品的 codebase，而且在那里它可以说更锐利，因为很多 fog 是"这里已经成立的事实"，而不是"我们应该做什么"。
@@ -63,7 +63,7 @@ Research 是 *每个 session 一个 ticket* 的唯一例外。
 整张 map——整张 map 的 destination，而不只是最初的 session。这个问题读起来很含糊，因为 wayfinder 从定义上就是一个多 session 工具，所以 session 范围的答案永远没有意义。典型的 destination 包括一份要交接的 [spec](https://www.aihero.dev/ai-coding-dictionary/spec)、一个在规划开始前要锁定的 decision、一个 proof of concept，或像数据迁移那样就地完成的变更。
 
 **map 已经清除了。为什么我还需要 `/to-spec`——wayfinder 不是已经写了 spec 吗？**
-没有。Wayfinder 的 tickets 是 decision tickets，而到 map 关闭时它们也全部关闭了。剩下的是满满一张互相链接的 decisions，这还不是 OpenSpec change。[to-spec](https://aihero.dev/skills-to-spec) 把这些 decisions 折叠成 `proposal.md`，后续 OpenSpec planning 再补齐 delta specs、design 和 tasks。把 map 直接循环进 [implement](https://aihero.dev/skills-implement) 会跳过折叠并丢掉相互链接的细节。只有当 effort 结果确实很小时，才直接进入实现。
+没有。Wayfinder 的 tickets 是 decision tickets，而到 map 关闭时它们也全部关闭了。剩下的是满满一张互相链接的 decisions，这还不是 OpenSpec change。[to-spec](https://aihero.dev/skills-to-spec) 把这些 decisions 折叠成 `proposal.md`，再由 [to-tickets](https://aihero.dev/skills-to-tickets) 补齐 delta specs、design 和 tasks。把 map 直接循环进 [implement](https://aihero.dev/skills-implement) 会跳过折叠并丢掉相互链接的细节。只有当 effort 结果确实很小时，才直接进入实现。
 
 **我的 agent 在 wayfinder session 中途开始写生产代码了。**
 这是这个 skill 最常被报告的失败，背后确实有个洞。Wayfinder 的 "plan, don't do" 默认可以在 map 的 **Notes** 中被覆盖——但 Notes 是 agent 写的，于是约束和它的豁免住在同一个文件里，而该文件归受约束的一方所有。一位用户看着 agent 把 "this map carries execution" 写进它自己的 Notes，然后在后续 session 里把它读回来当作自己的许可证，在线上服务器上继续构建。对于 "我是指默认值" 这种情况，skill 内部没有硬性的阻止。在那之前只能：对你没有亲自 chart 的任何 map，都要读它的 Notes；把实现放在自己的 session 里；把任何看起来像 build 切片的 `wayfinder:task` 当作打错了类型。

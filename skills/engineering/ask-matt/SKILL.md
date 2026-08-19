@@ -20,10 +20,10 @@ disable-model-invocation: true
    - **`/prototype`** 用 throwaway code 回答问题；
    - **`/handoff`** 把学到的内容带回来，并在原始 idea thread 中引用它。
 3. **分支 - 这是 multi-session build 吗？**
-   - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md`，再沿 OpenSpec planning 补齐 delta specs、design 和 tasks；根据 tasks 分 session 实现，并以 **`/code-review`** 收尾。
+   - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md`；再运行 **`/to-tickets <change-name>`**，补齐 delta specs、design 和 tracer-bullet tasks；根据 tasks 分 session 实现，并以 **`/code-review`** 收尾。
    - **否** -> 在当前 context window 里直接运行 **`/implement`**。
 
-   无论哪种方式，**`/implement`** 都会在内部驱动 **`/tdd`** 构建每个 issue：一次一个 red-green slice；然后用 **`/code-review`** 收尾，对 diff 做 Standards + Spec 双轴 review，再提交。只想在没有完整 spec 的情况下 test-first 构建一个具体 behavior 时，单独用 **`/tdd`**；想按固定点 review branch 或 PR 时，单独用 **`/code-review`**。
+   无论哪种方式，**`/implement`** 都会在内部驱动 **`/tdd`** 构建每个 task slice：一次一个 red-green slice；然后用 **`/code-review`** 收尾，对 diff 做 Standards + Spec 双轴 review，再提交。只想在没有完整 spec 的情况下 test-first 构建一个具体 behavior 时，单独用 **`/tdd`**；想按固定点 review branch 或 PR 时，单独用 **`/code-review`**。
 
 ### Context hygiene
 
@@ -37,13 +37,13 @@ disable-model-invocation: true
 
 - **Bugs 和 requests 堆积** -> **`/triage`**。它通过 triage roles 推进 issues，并产出 agent-ready issues，之后由 **`/implement`** 领取。
 
-  Triage 只用于 **不是你创建的** issues：bug reports、incoming feature requests，以及任何原始进入的内容。`/to-tickets` 产出的 tickets 已经是 agent-ready，不要再 triage。
+  Triage 只用于 **不是你创建的** issues：bug reports、incoming feature requests，以及任何原始进入的内容。自己发起的 OpenSpec changes 走 `/to-spec` → `/to-tickets`，不进入 triage。
 
 - **Something's broken** -> **`/diagnosing-bugs`**。用于难处理的问题：第一眼看不出的 bug、间歇性 flake、夹在两个 known-good states 之间的 regression。它在拥有 **tight feedback loop** 前拒绝空想，也就是一个已经能在 _这个_ bug 上变红的命令；然后用 regression test 修复。如果复盘发现真正问题是没有好 seam 能锁住 bug，它会把后续交给 **`/improve-codebase-architecture`**。
 
 - **巨大而模糊的 effort——greenfield project 或巨大 feature build，一个 session 装不下** -> **`/wayfinder`**，这是这里认知负担最重的 flow。当从当前位置到 destination 的路还看不见时，它在 issue tracker 上绘制 **decision tickets** 的 **shared map**，逐个解决，产出 **decisions, not deliverables**，直到 fog 被推开、路径清晰。`/grill-with-docs` 用于一个 session 能装下的想法，wayfinder 用于装不下的想法；它更慢、更密集，所以只应留给确实如此的 effort，绝不要用于范围明确的 feature。
 
-  Map 清晰后，**它会 hand off，而不是 build**：先进入 **`/to-spec`**，把 map 中相互链接的 decisions 收束成 OpenSpec proposal，再继续 OpenSpec planning。让 map 直接循环进入 `/implement` 会跳过这次收束并丢掉相互链接的细节；只有当 effort 后来发现确实很小时，才直接进入 `/implement`。
+  Map 清晰后，**它会 hand off，而不是 build**：先进入 **`/to-spec`**，把 map 中相互链接的 decisions 收束成 OpenSpec proposal，再由 **`/to-tickets`** 完成 planning。让 map 直接循环进入 `/implement` 会跳过这次收束并丢掉相互链接的细节；只有当 effort 后来发现确实很小时，才直接进入 `/implement`。
 
 ## Codebase health
 
@@ -87,4 +87,4 @@ disable-model-invocation: true
 
 ## Precondition
 
-**`/init-flow-docs`** - 首次运行 `/to-spec` 前初始化 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。`/setup-skills` 只为 `/triage`、`/to-tickets` 等 tracker-based flows 配置 issue tracker 与 labels。
+**`/init-flow-docs`** - 首次运行 `/to-spec` 或 `/to-tickets` 前初始化 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。`/setup-skills` 只为 `/triage`、`/wayfinder` 等 tracker-based flows 配置 issue tracker 与 labels。

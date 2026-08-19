@@ -1,99 +1,104 @@
 ## What it does
 
-`to-tickets` 拿一个 plan、一份 [spec](https://www.aihero.dev/ai-coding-dictionary/spec) 或你所在的 conversation，并把它拆成你 issue tracker 上的一组 **[tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)**。每个 ticket 都声明它的 **blocking edges**——在它开始之前必须完成的其他 tickets。
+`to-tickets` 读取 `/to-spec` 创建的 OpenSpec change，把已有 `proposal.md` 推进为完整的 planning artifacts：delta specs、`design.md` 和 `tasks.md`。这次调用止于 planning 和获批的 durable docs，不实现项目代码。
 
-每个 ticket 都是一颗 **tracer bullet**：一条穿过 change 每一层——schema、API、UI、tests——的窄但完整的路径，可以在它落地的瞬间独立 demo。正是这个约束让它与明显的拆分工作的方式——一次切一层、最后再集成——行为不同。它还会把每个 ticket 定尺寸到适合单个全新的 [context window](https://www.aihero.dev/ai-coding-dictionary/context-window)，因为接手这个 ticket 的会是一个从没见过你 spec 的 [session](https://www.aihero.dev/ai-coding-dictionary/session)。
+```text
+proposal.md → delta specs → architecture grilling → design.md → tasks.md
+```
 
-## When to reach for it
+它不再读取或发布 issue tracker tickets。名字保留下来，但最终的执行计划遵守 OpenSpec schema，写入 `tasks.md`。
 
-你通过输入 `/to-tickets` 调用它——[agent](https://www.aihero.dev/ai-coding-dictionary/agent) 不会自行触发。
+## Invocation and change selection
 
-| 你在哪里 | 运行什么 |
-| --- | --- |
-| 你有一个 spec issue，且 build 横跨几个 sessions | `/to-tickets`，或 `/to-tickets #<spec_issue>` |
-| plan 只在 conversation 里，从未写成文字 | `/to-tickets` 直接读取 thread——不需要 spec |
-| 整个 change 适合一个 context window | [implement](https://aihero.dev/skills-implement)——跳过 tickets |
-| 什么都没决定 | 先运行 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
-| 选择 OpenSpec planning 而不是 tracker tickets | 使用 [to-spec](https://aihero.dev/skills-to-spec)，后续由 OpenSpec tasks 承载实现拆分 |
+显式调用：
 
-`to-tickets` 产出的 tickets 按构造就是 agent-ready 的。不要在它们上面运行 [triage](https://aihero.dev/skills-triage)——triage 是为从别人那里到达的工作准备的。
+```text
+/to-tickets <change-name>
+```
+
+Exact match 会直接选择 `openspec/changes/<change-name>/`。参数没有 exact match 时，skill 使用自带脚本列出所有未归档 changes，再结合名称和 proposal 内容给出候选，由用户确认。没有参数时也先列出 active changes，让用户选择。
+
+列表脚本直接扫描 `openspec/changes/`，排除 `archive/` 和隐藏目录，输出 OpenSpec change list 使用的 `changes + root` JSON shape。`completedTasks`、`totalTasks` 和 `status` 来自 `tasks.md` checkboxes。
 
 ## Prerequisites
 
-`to-tickets` 发布到一个 tracker，所以 [setup-skills](https://aihero.dev/skills-setup-skills) 必须先为这个 repo 配置好一个，连同 triage-label vocabulary。任一类型都可以：像 GitHub 或 Linear 这样的真实 tracker，或 `.scratch/` 下的 local markdown 文件，后者开箱即受支持。
+目标仓库必须先通过 `/init-flow-docs` 建立：
 
-## Tracer bullets, not layers
+- `CONTEXT.md` 或 `CONTEXT-MAP.md`
+- ADR 目录
+- OpenSpec config、schema 和 artifact templates
+- `openspec/specs/` 与 `openspec/changes/`
 
-**Horizontal** slice 交付 change 的一个层。在每一层都落地之前什么都不能工作，而每个 ticket 的 acceptance criteria 不得不伸进另一个 ticket 拥有的工作里。**Vertical** slice——tracer bullet——一次性交付一条穿过所有层的薄路径，所以它可以单独验证，并拥有它评分的一切。
+选中的 change 必须已经由 `/to-spec` 创建 `.openspec.yaml` 和 `proposal.md`。缺少前置产物时，`to-tickets` 停止并让用户显式调用对应 skill；它不会自行创建 change 或初始化 flow docs。
 
-这是人们最常打破的规则，后果也有充分记录。一个团队运行了一个按层切分的 26-ticket stack——corpus、producer、aggregator、selector——并且每个关闭的 ticket 大约有二十次 agent 运行，其中约四分之三是返工。他们自己的事后复盘把每个失败类别都追溯到 horizontal slicing，而不是实现。
+整个流程不依赖 OpenSpec CLI。Skill 直接读取 config、schema、templates 和 change files，从 schema 的 `requires`、`generates`、`instruction` 与 `apply.tracks` 解析 artifact graph、写入位置和格式。
 
-在发布任何东西之前有两件事发生。`to-tickets` 寻找 prefactoring——"make the change easy, then make the easy change"——并把那部分工作排在最前。然后它把拆分方案呈现为编号列表，并就此考问你：粒度对不对、blocking edges 是否真实、有没有什么该合并或拆分。在你批准之前没有任何东西到达 tracker，而那场质问正是你反驳的地方。
+## Delta specs
 
-## Blocking edges
+Proposal 的 Capabilities 是 specs 阶段的 contract。每个 New 或 Modified Capability 都生成一个使用精确 capability path 的 delta spec：
 
-Edges 是这个 artifact 的重点。它们根据 tracker 有两种读法：
+- New Capability 写 Purpose、requirements 和 scenarios。
+- Modified Capability 从 canonical spec 复制完整 requirement block 后修改。
+- Specs 只记录 observable behavior，不携带架构方案或执行步骤。
 
-| Tracker | edges 在哪里 | 你如何处理它们 |
-| --- | --- | --- |
-| Local markdown | `.scratch/<feature>/issues/<NN>-<slug>.md` 下每个 ticket 一个文件里的文本，blockers-first 编号 | 从上到下，手工 |
-| 真实 tracker（GitHub、Linear） | native blocking links，或 tracker 有 sub-issues 时用 sub-issues | 任何 blockers 已完成的 ticket 都位于 **frontier**，可以被领取 |
+纯重构、工具链或文档 change 只有在 `.openspec.yaml` 已明确设置 `skip_specs: true` 时才跳过 specs。所有草稿先交给用户确认，再写入 change。
 
-无论哪种方式，edges 都活在 ticket 里。介质只决定是否有东西能并行地作用于它们。`to-tickets` 产出 artifact；运行它——一次一个 session，或一个 fleet——是你的工作，而不是 skill 的。
+## Architecture grilling and design
 
-## The wide-refactor exception
+Specs 确认后，skill 围绕代码、测试 seams、domain docs、ADRs 和 change 运行一次完整 `/grilling` session。它不是固定一轮问答：design tree 会持续推进，直到所有会改变方案或 tasks 的问题都解决，用户确认共同理解已经达成。
 
-有一种形状打破 tracer-bullet 规则。**Wide refactor** 是一个单一的机械性变更——重命名一个 column、重新定义一个共享 symbol 的类型——其 **blast radius** 扇形展开到整个 codebase，所以一次编辑破坏数千个 call sites，没有任何 vertical slice 能以 green 落地。
+之后严格使用目标项目模板生成 `design.md`。每个 change 都生成 design；简单 change 可以很短，但不能为了填模板发明 decision。只有不会改变 specs、方案或 tasks 的问题才能留在 Open Questions。
 
-`to-tickets` 改以 **expand–contract** 来切分它：
+## `tasks.md` as tracer bullets
 
-- **Expand**——在旧形式旁添加新形式，这样什么都不破坏。
-- **Migrate**——按 blast radius 定批（按 package、按 directory）迁移 call sites，每批一个 ticket，每个都被 expand 所 block。CI 保持 green，因为旧形式仍然存在。
-- **Contract**——一旦没有调用者残留，删除旧形式，放在一个被每个 migrate 批 block 的 ticket 里。
+计划使用标准 OpenSpec checkbox 格式：
 
-凡是连 batches 都无法独自保持 green 的地方，它们共享一个 integration branch，全部 block 一个最终的 integrate-and-verify ticket。Green 只在那里被承诺。
+```markdown
+## 1. <vertical slice>
 
-## Common questions
+- [ ] 1.1 <可验证任务>
+- [ ] 1.2 <可验证任务>
+```
 
-**它为一个三行改动产出了十二个 tickets。**
-Over-decomposition 是这个 skill 上被报告最多的摩擦，而且在从业者之间一致：[model](https://www.aihero.dev/ai-coding-dictionary/model) 默认原子单元，丢了会让它们有意义的 grouping。质问步骤正是为此存在——要求它 merge，它会照做。更深层的回答是：tickets 有一个下限——如果整个 change 适合一个 context window，你根本不需要这个 skill。直接去 [implement](https://aihero.dev/skills-implement)。
+每个编号 group 是一个 tracer-bullet vertical slice，而不是 schema、API、UI、tests 这样的水平层。它贯穿交付该 behavior 所需的相关层，可独立验证，并适合一个 fresh context window。依赖通过 group 和 task 的排列顺序表达，不扩展模板加入 `Blocked by`。
 
-**tickets 出来是按层分的——一个里全是 schema，另一个里全是 API。**
-这是 vertical-slice 规则针对去写的那个失败，而 skill 有时仍然会产出它。在质问步骤用每个 ticket 一个问题来抓住它：它完成时我能 demo 什么？一个没有答案的 ticket 就是一个 horizontal slice。有些人为此在每个 ticket 里加一行 "demo path"，并报告说这会把 model 推向 vertical decomposition。
+Wide refactor 仍使用 expand → migrate batches → contract；必要时才增加最终 integrate-and-verify task。
 
-**在 GitHub 上 tickets 没有被创建为 spec issue 的 sub-issues。**
-已知且未修复。它已在十几次运行和几个模型中被报告，[最完整地见 issue #554](https://github.com/mattpocock/skills/issues/554)，而且在 Codex 上比 Claude 上更糟。`gh` 从 v2.94 起原生支持这个：`gh issue create --parent <n>`，以及事后的 `gh issue edit <parent> --add-sub-issue <n>`。在 tracker template 优先使用这些之前，运行后自己接好父链接是可靠的做法。
+## Durable docs
 
-**"Blocked by" 被写进了 issue body，而不是一个真正的 blocking link。**
-同类问题，[报告于 issue #513](https://github.com/mattpocock/skills/issues/513)，那里的 agent 甚至断言 GitHub 根本没有 native blocking relationship。它有的——`gh issue create --blocked-by 12,15`。因为 blockers 先被发布，它们的编号在创建时总是可用的。Body 文本本来是给没有 native edge 的 trackers 的 fallback，而不是默认。
+Grilling 中发现的长期知识先暂存在 conversation，等 specs、design 和 tasks 都确认后再处理：
 
-**本地 tickets 去哪了？v1.1 的 notes 说一个根层级的 `tickets.md`。**
-是的，那是一个 bug——一个共享文件在并行 agents 写入它时也会竞争。本地模式现在按依赖顺序，在 `.scratch/<feature-slug>/issues/<NN>-<slug>.md` 下每个 ticket 写一个文件，匹配本地 tracker template 已经描述的布局。`NN` 前缀是一个真实的 ticket ID，所以 `/implement 03` 可以工作，而不是重打一个长标题。
+- `CONTEXT.md` 只接收项目特有的 canonical domain terms。
+- ADR 只记录难以逆转、缺少背景会令人意外、并且确有真实 trade-off 的 decisions。
+- Change-specific decisions 留在 `design.md`。
 
-**它读我的 spec issue 时一直截断。**
-Tracker issue 过大时，优先把内容保存为本地文件并把路径传给 `/to-tickets`。`/to-spec` 现在写入 OpenSpec proposal，不再通过 tracker issue 传递内容；OpenSpec 流程应继续生成 tasks，而不是再调用本 skill。
+Skill 会展示 proposed diffs；用户确认后才写入。没有合格内容时，不创建空 ADR 或 glossary 条目。
 
-**acceptance criteria 什么都评不了——有些在任何工作完成之前就通过了。**
-Template 要求 criteria，却没说什么它们能否失败，所以这种事会发生。有三种形状反复出现：一个在 base commit 上就已经为真的 criterion、一个只能由另一个 ticket 拥有的工作满足的 criterion，以及一个重述请求而非从 artifact 推导的 criterion。Vertical slicing 阻止了其中大部分——一个交付了之前不存在 behavior 的 slice 按构造在 base commit 上就是 red 的——但这项检查值得手工做。对每个 criterion，说出能证明它为假的观察，并确认它在 implementer 起点的 commit 上失败。
+## Approval boundaries
 
-**tickets 已发布。我实际上怎么运行它们？**
-Skill 止步于 artifact，没有 auto-dispatch 模式。分派是手工的：看板、数出没有未完成 blockers 的 tickets、打开同样多的 agent sessions。每个全新 context 一个 ticket，在它们之间清理。要注意 [implement](https://aihero.dev/skills-implement) 完成时不会可靠地关闭或勾选 ticket，无论是在 GitHub 还是 local markdown 上，所以 ticket 的状态由你更新。
+写入分四个独立 checkpoint：
 
-## It's working if
+1. Delta specs 草稿
+2. `design.md` 草稿
+3. `tasks.md` 草稿
+4. `CONTEXT.md` / ADR proposed diffs
 
-- 每个 ticket 都有一个对 "它完成时我能 demo 什么？" 的回答——而且回答是 behavior，不是层。
-- 在发布任何东西之前，列表作为编号列表带着每个上的 "Blocked by" 行返回给你。
-- 顶部的 ticket 没有 blockers，可以立即开始。
-- ticket body 里没有任何东西是文件路径或行号，除非是 prototype 产出的代码片段。
-- 每个 ticket 读起来都像一个全新 session 能在你不在场的情况下完成的东西。
-- Prefactoring，凡找到的，都在顺序的前面，而不是混进 feature tickets。
+已有 artifact 不会被静默覆盖。每个 checkpoint 都允许用户修改或停止，后续 artifact 只建立在已经确认的前置 artifact 上。
+
+## Verification
+
+完成时直接对照 schema、templates 和 artifacts 做本地结构与内容验证。最终状态应满足：
+
+- Proposal capabilities 与 delta specs 一一对应，或 `skip_specs` 合法生效。
+- `design.md` 没有会影响实现的未决问题。
+- `tasks.md` 中每项都是 OpenSpec 可追踪的 checkbox、可验证且适合单次 session。
+- Durable docs 只包含用户批准的长期知识。
+- `git diff --check` 通过。
 
 ## Where it fits
 
-`to-tickets` 是 tracker-based delivery flow 中的 slicing 步骤：
-
-```txt
-conversation 或 tracker spec → to-tickets → implement → code-review
+```text
+grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-上游可以是当前 conversation、plan 或 tracker 中的 existing issue。下游是 [implement](https://aihero.dev/skills-implement)，它每个全新 session 构建一个 ticket，为 tests 驱动 [tdd](https://aihero.dev/skills-tdd)，并以 [code-review](https://aihero.dev/skills-code-review) 收尾。OpenSpec planning 使用自己的 `tasks.md`，不需要经过 `to-tickets`。当你不确定哪个 flow 合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+`to-spec` 固化 WHY 和 WHAT 的入口；`to-tickets` 补齐 specs、HOW 和 implementation plan；`implement` 按 `tasks.md` 中的 vertical slices 推进实现；`code-review` 用 OpenSpec artifacts 检查实现是否符合要求。

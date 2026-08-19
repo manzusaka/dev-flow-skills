@@ -28,7 +28,7 @@ Issue tracker 应该已经提供给你；如果缺少 `docs/agents/issue-tracker
 
 1. Commit messages 中的 issue references（`#123`、`Closes #45`、GitLab `!67` 等）— 按 `docs/agents/issue-tracker.md` 中的 workflow 获取。
 2. 用户作为 argument 传入的 path。
-3. `docs/`、`specs/` 或 `.scratch/` 下与 branch name 或 feature 匹配的 spec 文件。
+3. `openspec/changes/`、`docs/`、`specs/` 或 `.scratch/` 下与 branch name 或 feature 匹配的 spec 文件。
 4. 如果什么都找不到，询问用户 spec 在哪里。如果用户说没有 spec，**Spec** sub-agent 跳过并报告 “no spec available”。
 
 ### 3. Identify the standards sources
