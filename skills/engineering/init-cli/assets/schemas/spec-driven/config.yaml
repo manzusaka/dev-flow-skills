@@ -1,0 +1,5 @@
+schema: spec-driven
+
+context: |
+  Use CONTEXT.md as the source of truth for domain language and business rules.
+  Read relevant docs/adr/ records before changing architecture-constrained modules.

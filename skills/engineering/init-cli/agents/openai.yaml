@@ -1,0 +1,3 @@
+interface:
+  display_name: "安装 spect CLI"
+  short_description: "检查、安装或更新 spect（精简版 OpenSpec CLI）"

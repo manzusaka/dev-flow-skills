@@ -58,6 +58,7 @@ npx skills@latest add manzusaka/devtrain-skills
 - **[tdd](./skills/engineering/tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
 - **[init-flow-docs](./skills/engineering/init-flow-docs/SKILL.md)** - 初始化或整理项目的 `CONTEXT.md`、ADR、OpenSpec schema 与 artifact templates。
 - **[init-agent-docs](./skills/engineering/init-agent-docs/SKILL.md)** - 在 workspace 初始化初期创建或整合 `AGENTS.md` 与 `CLAUDE.md`：共享 instructions 归入 `AGENTS.md`，Claude Code 通过标准 import 引用它。
+- **[init-cli](./skills/engineering/init-cli/SKILL.md)** - 检查、安装或更新 spect（精简版 OpenSpec CLI）命令；单文件可执行程序与 OpenSpec 模板随 skill 分发，安装无需联网与 npm。
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** - 主动构建和打磨项目 domain model：挑战术语、用 edge-case scenarios 做压力测试，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** - 设计 deep modules 的共享纪律和词汇：小 interface、clean seam、通过 interface 测试。
 - **[code-review](./skills/engineering/code-review/SKILL.md)** - 对 fixed point 以来的 diff 做双轴 review：Standards 与 Spec 分开检查，并用并行 sub-agents 运行。

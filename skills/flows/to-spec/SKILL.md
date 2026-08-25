@@ -62,16 +62,21 @@ openspec/changes/<change-name>/
 └── proposal.md
 ```
 
-如果同名目录已经存在，向用户展示它并确认是继续现有 change 还是使用新名称；不要覆盖。
+先运行 `spect --version` 确认 CLI 可用；报 command not found 时调用 `/init-cli` 安装 `spect`，安装完成前不创建 change。
 
-在 `.openspec.yaml` 中写入：
+在目标 repository root 运行：
 
-```yaml
-schema: <openspec/config.yaml 中配置的 schema>
-created: <当前本地日期，YYYY-MM-DD>
+```bash
+spect new change <change-name>
 ```
 
-只有当 conversation 已明确这是不改变 spec-level behavior 的纯重构、工具链或文档变更时，才追加：
+不要附加 `--description`、`--schema` 等参数；schema 跟随 `openspec/config.yaml` 中的配置。
+
+命令会创建 change 目录并写入 `.openspec.yaml`（`schema` 与 `created` 字段）。
+
+如果命令报告同名 change 已存在，向用户展示它并确认是继续现有 change 还是使用新名称；不要覆盖。
+
+只有当 conversation 已明确这是不改变 spec-level behavior 的纯重构、工具链或文档变更时，才在 `.openspec.yaml` 中追加：
 
 ```yaml
 skip_specs: true
@@ -104,6 +109,6 @@ skip_specs: true
 - proposal 的 headings 与 `openspec/schemas/templates/proposal.md` 一致。
 - 没有创建本 skill 范围外的 OpenSpec artifacts。
 
-如果 `openspec-cn` CLI 可用，运行 `openspec-cn status --change <change-name>` 检查 OpenSpec 能识别该 change；CLI 不可用时只做文件结构检查，不把安装 CLI 作为前提。
+运行 `spect status --change <change-name>` 检查 OpenSpec 能识别该 change。
 
 向用户报告 change name、生成路径、schema、capabilities 和已确认 seams，并说明 proposal 已就绪；下一步由用户显式运行 `/to-tickets <change-name>` 补齐 specs、design 和 tasks。

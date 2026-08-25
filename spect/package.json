@@ -1,0 +1,33 @@
+{
+  "name": "spect",
+  "version": "0.1.0",
+  "description": "spectools：devtrain-skills 的精简版 OpenSpec CLI，规范驱动开发的变更管理命令。",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "spect": "./bin/spect.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "@inquirer/core": "^10.3.2",
+    "@inquirer/prompts": "^7.10.1",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.0",
+    "cross-spawn": "7.0.6",
+    "fast-glob": "^3.3.3",
+    "ora": "^9.4.1",
+    "yaml": "^2.8.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.8.0"
+  }
+}

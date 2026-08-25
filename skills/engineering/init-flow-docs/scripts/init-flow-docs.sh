@@ -45,11 +45,7 @@ fi
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 assets_dir="$script_dir/../assets"
 
-mkdir -p \
-  "$project_root/docs/adr" \
-  "$project_root/openspec/specs" \
-  "$project_root/openspec/changes/archive" \
-  "$project_root/openspec/schemas/templates"
+mkdir -p "$project_root/docs/adr"
 
 context_target="$project_root/CONTEXT.md"
 if [[ -n "$context_source" ]]; then
@@ -65,34 +61,5 @@ elif [[ ! -e "$context_target" ]]; then
 else
   echo "Preserved existing CONTEXT.md; pass --context-source to update it."
 fi
-
-config_target="$project_root/openspec/config.yaml"
-if [[ ! -e "$config_target" ]]; then
-  cp "$assets_dir/openspec/config.yaml" "$config_target"
-  echo "Created openspec/config.yaml."
-else
-  echo "Preserved existing openspec/config.yaml."
-fi
-
-schema_asset_dir="$assets_dir/openspec/schemas"
-schema_target_dir="$project_root/openspec/schemas"
-
-for relative_path in \
-  schema.yaml \
-  templates/proposal.md \
-  templates/spec.md \
-  templates/design.md \
-  templates/tasks.md
-do
-  source_path="$schema_asset_dir/$relative_path"
-  target_path="$schema_target_dir/$relative_path"
-
-  if [[ ! -e "$target_path" ]]; then
-    cp "$source_path" "$target_path"
-    echo "Created openspec/schemas/$relative_path."
-  else
-    echo "Preserved existing openspec/schemas/$relative_path."
-  fi
-done
 
 echo "Flow docs initialized at $project_root"

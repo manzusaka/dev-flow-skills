@@ -1,6 +1,8 @@
 .chatgpt_exec/
+.DS_Store
 .agents/
 .claude/
 .idea/
 openspec/
-spect/
+spect/node_modules/
+spect/dist/

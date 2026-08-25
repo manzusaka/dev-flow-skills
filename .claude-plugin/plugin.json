@@ -27,6 +27,7 @@
     "./skills/engineering/implement",
     "./skills/engineering/improve-codebase-architecture",
     "./skills/engineering/init-agent-docs",
+    "./skills/engineering/init-cli",
     "./skills/engineering/init-flow-docs",
     "./skills/engineering/prototype",
     "./skills/engineering/research",

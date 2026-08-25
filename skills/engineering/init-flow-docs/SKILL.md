@@ -38,9 +38,19 @@ description: 初始化项目的 workflow docs。适用于新建或整理领域�
 
 完成条件：已有 `CONTEXT.md` 的临时版本保留了全部已验证事实且符合模板；新文件场景不包含推测的术语或规则。
 
-### 3. Initialize through the script
+### 3. Initialize through the CLI and the script
 
-运行：
+先运行 `spect --version` 确认 CLI 可用；报 command not found 时调用 `/init-cli` 安装 `spect`，安装完成前不初始化。
+
+在目标 repository root 运行：
+
+```bash
+spect init <project-root>
+```
+
+`spect init` 补齐 `openspec/` 脚手架；已存在的文件原地保留，只补缺失项。
+
+再运行脚本补齐 `CONTEXT.md` 与 `docs/adr/`：
 
 ```bash
 bash <skill-directory>/scripts/init-flow-docs.sh <project-root>
@@ -52,7 +62,7 @@ bash <skill-directory>/scripts/init-flow-docs.sh <project-root>
 bash <skill-directory>/scripts/init-flow-docs.sh <project-root> --context-source <prepared-context-file>
 ```
 
-脚本只补齐以下结构；现有 ADR、OpenSpec artifacts、配置、schema 与 templates 原地保留：
+两步合起来只补齐以下结构；现有 ADR、OpenSpec artifacts、配置、schema 与 templates 原地保留：
 
 ```text
 <project-root>/
@@ -87,6 +97,6 @@ bash <skill-directory>/scripts/init-flow-docs.sh <project-root> --context-source
 - `openspec/schemas/schema.yaml` 与 `openspec/schemas/templates/` 中的四个 artifact templates 均存在；初始化前已存在的版本保持不变。
 - `git diff --check` 通过，diff 中没有范围外改动。
 
-直接解析 `openspec/schemas/schema.yaml`，确认它是有效 YAML，且其中每个 artifact 的 `template` 都能在 `openspec/schemas/templates/` 中找到。项目已有 OpenSpec specs 或 changes 且 `openspec-cn` CLI 可用时，再运行 `openspec-cn validate --all --strict --no-interactive`；空目录没有 artifact 可验证时跳过该命令。
+直接解析 `openspec/schemas/schema.yaml`，确认它是有效 YAML，且其中每个 artifact 的 `template` 都能在 `openspec/schemas/templates/` 中找到。项目已有 OpenSpec specs 或 changes 时，再运行 `spect validate --all --strict --no-interactive`；空目录没有 artifact 可验证时跳过该命令。
 
 完成条件：目录与文件检查全部通过；存在可验证 artifacts 时，OpenSpec 严格校验也通过。
