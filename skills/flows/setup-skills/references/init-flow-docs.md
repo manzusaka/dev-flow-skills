@@ -1,6 +1,6 @@
 # Initialize flow docs
 
-本 reference 只由 `/setup-skills` 使用。目标 repository root 已确定，兼容版本的 `spect` 已通过顶层 CLI 门禁。本阶段建立三类互补的事实来源：`CONTEXT.md` 保存领域词汇，`docs/adr/` 保存架构决策，`openspec/` 保存当前行为与尚未完成的变更。
+本 reference 只由 `/setup-skills` 使用。目标 repository root 已确定，兼容版本的 `spect` 已通过顶层 CLI 门禁。本阶段建立三类互补的事实来源：`CONTEXT.md`（multi-context 仓库中为 `CONTEXT-MAP.md` 指向的结构）保存领域词汇，`docs/adr/` 保存架构决策，`openspec/` 保存当前行为与尚未完成的变更。
 
 只初始化结构；不发明领域事实、示例 ADR、capability spec 或 change。
 
@@ -14,15 +14,11 @@
 
 完成条件：目标 root 与本阶段开始前的状态已确定。
 
-### 2. Stop incompatible initialization
+### 2. Detect context mode
 
-只检查 root `CONTEXT-MAP.md` 路径是否存在，不读取、解析或校验其内容。存在时报告：
+只检查 root `CONTEXT-MAP.md` 路径是否存在，不读取、解析或校验其内容。存在时仓库是多 context 结构，`CONTEXT-MAP.md` 及其指向的各 context 由 `domain-modeling` 维护；不存在时按 single context 处理。两种模式都继续执行后续步骤，区别只在第 4 步是否创建 root `CONTEXT.md`。
 
-> 已存在 `CONTEXT-MAP.md`，项目可能运行过其他初始化工具；停止执行。
-
-随后停止本阶段，不运行 `spect init` 或 helper。顶层 `/setup-skills` 保留此前已完成的 CLI 和 agent docs 阶段，并将本阶段报告为 failed。
-
-完成条件：root `CONTEXT-MAP.md` 不存在；否则本阶段已在自身任何写入前停止。
+完成条件：仓库的 context 模式已确定。
 
 ### 3. Initialize and validate OpenSpec
 
@@ -55,18 +51,18 @@ node <setup-skills-directory>/scripts/init-flow-docs.mjs <project-root>
 
 helper 会：
 
-- 再次检查 root `CONTEXT-MAP.md`，存在时以非零状态退出且不写入。
-- 缺少 root `CONTEXT.md` 时，从 [CONTEXT template](../assets/CONTEXT.md) 创建只含 glossary 结构的文件。
-- 原样保留已有 root `CONTEXT.md`。
-- 补齐 root `docs/adr/`。
+- 检查 root `CONTEXT-MAP.md` 以确定 context 模式，不读取其内容。
+- 补齐 root `docs/adr/`；多 context 布局中它保存全系统级决策。
+- Single context：缺少 root `CONTEXT.md` 时，从 [CONTEXT template](../assets/CONTEXT.md) 创建只含 glossary 结构的文件；已有则原样保留。
+- Multi context：不创建、不修改任何 `CONTEXT.md`，CONTEXT 结构由 `domain-modeling` 维护。
 
-完成条件：helper 成功退出，root `CONTEXT.md` 与 root `docs/adr/` 存在，既有文件内容未改变。
+完成条件：helper 成功退出，root `docs/adr/` 存在；single context 时 root `CONTEXT.md` 存在；既有文件内容未改变。
 
 ### 5. Verify and report
 
 确认：
 
-- repository 有 root `CONTEXT.md` 与 root `docs/adr/`。
+- repository 有 root `docs/adr/`；single context 时有 root `CONTEXT.md`，multi-context 时 `CONTEXT-MAP.md` 及其结构未被本阶段写入。
 - `spect init` 已成功完成 OpenSpec 创建和校验。
 - `config.yaml` 是唯一配置入口。
 - Git repository 中只检查本阶段拥有的路径，并将阶段开始前已有改动排除在本次结果之外；非 Git repository 执行相同的结构检查。

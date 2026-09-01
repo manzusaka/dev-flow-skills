@@ -44,7 +44,7 @@ disable-model-invocation: true
 
 读取并执行 [references/init-flow-docs.md](references/init-flow-docs.md)。该阶段复用第 3 步已经完成的 CLI 门禁。
 
-完成条件：OpenSpec 初始化与校验成功，root `CONTEXT.md`、root `docs/adr/` 和要求的 `openspec/` 结构存在，既有内容得到保留。
+完成条件：OpenSpec 初始化与校验成功，root `docs/adr/` 和要求的 `openspec/` 结构存在；无 `CONTEXT-MAP.md` 的仓库有 root `CONTEXT.md`，有 `CONTEXT-MAP.md` 的仓库其 CONTEXT 结构原样保留，既有内容得到保留。
 
 ### 6. Report
 

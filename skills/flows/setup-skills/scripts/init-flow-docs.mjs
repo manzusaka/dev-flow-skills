@@ -46,20 +46,22 @@ async function main() {
   const contextTarget = path.join(projectRoot, 'CONTEXT.md');
   const contextMapTarget = path.join(projectRoot, 'CONTEXT-MAP.md');
 
-  if (await exists(contextMapTarget)) {
-    throw new Error('已存在 CONTEXT-MAP.md，项目可能运行过其他初始化工具；停止执行。');
-  }
+  const multiContext = await exists(contextMapTarget);
 
   await mkdir(path.join(projectRoot, 'docs', 'adr'), { recursive: true });
 
-  try {
-    await copyFile(contextSource, contextTarget, constants.COPYFILE_EXCL);
-    console.log('Created CONTEXT.md from template.');
-  } catch (error) {
-    if (error?.code !== 'EEXIST') {
-      throw error;
+  if (multiContext) {
+    console.log('Detected CONTEXT-MAP.md; skipped CONTEXT.md creation for multi-context repository.');
+  } else {
+    try {
+      await copyFile(contextSource, contextTarget, constants.COPYFILE_EXCL);
+      console.log('Created CONTEXT.md from template.');
+    } catch (error) {
+      if (error?.code !== 'EEXIST') {
+        throw error;
+      }
+      console.log('Preserved existing CONTEXT.md.');
     }
-    console.log('Preserved existing CONTEXT.md.');
   }
 
   console.log(`Flow docs initialized at ${projectRoot}`);

@@ -35,36 +35,35 @@ test('a new project receives an empty glossary and root ADR directory', async ()
   assert.equal((await stat(path.join(projectRoot, 'docs', 'adr'))).isDirectory(), true);
 });
 
-test('a context map takes precedence over an existing root context', async () => {
+test('a context map keeps existing files and still creates the root ADR directory', async () => {
   const projectRoot = await makeProject();
   const existing = '# Existing\n';
+  const map = '# Context Map\n';
   await writeFile(path.join(projectRoot, 'CONTEXT.md'), existing);
-  await writeFile(path.join(projectRoot, 'CONTEXT-MAP.md'), '# Context Map\n');
+  await writeFile(path.join(projectRoot, 'CONTEXT-MAP.md'), map);
 
   const result = runHelper(projectRoot);
 
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /已存在 CONTEXT-MAP\.md/);
+  assert.equal(result.status, 0, result.stderr);
   assert.equal(await readFile(path.join(projectRoot, 'CONTEXT.md'), 'utf8'), existing);
-  await assert.rejects(stat(path.join(projectRoot, 'docs', 'adr')), /ENOENT/);
+  assert.equal(await readFile(path.join(projectRoot, 'CONTEXT-MAP.md'), 'utf8'), map);
+  assert.equal((await stat(path.join(projectRoot, 'docs', 'adr'))).isDirectory(), true);
 });
 
-test('a context map stops initialization before any writes', async () => {
+test('a context map skips CONTEXT.md creation but still initializes the ADR directory', async () => {
   const projectRoot = await makeProject();
+  const map = 'content is deliberately not parsed\n';
   await writeFile(
     path.join(projectRoot, 'CONTEXT-MAP.md'),
-    'content is deliberately not parsed\n'
+    map
   );
 
   const result = runHelper(projectRoot);
 
-  assert.notEqual(result.status, 0);
-  assert.match(
-    result.stderr,
-    /已存在 CONTEXT-MAP\.md，项目可能运行过其他初始化工具；停止执行。/
-  );
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(await readFile(path.join(projectRoot, 'CONTEXT-MAP.md'), 'utf8'), map);
   await assert.rejects(stat(path.join(projectRoot, 'CONTEXT.md')), /ENOENT/);
-  await assert.rejects(stat(path.join(projectRoot, 'docs', 'adr')), /ENOENT/);
+  assert.equal((await stat(path.join(projectRoot, 'docs', 'adr'))).isDirectory(), true);
 });
 
 test('an existing root glossary is preserved across repeated initialization', async () => {
