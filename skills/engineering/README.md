@@ -20,8 +20,6 @@
 - **[diagnosing-bugs](./diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：reproduce -> minimise -> hypothesise -> instrument -> fix -> regression-test。
 - **[research](./research/SKILL.md)** - 对照高可信 primary sources 调研问题，并把带引用的 findings 保存为 repo 中的 Markdown 文件，作为 background agent 运行。
 - **[tdd](./tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
-- **[init-flow-docs](./init-flow-docs/SKILL.md)** - 初始化或整理项目的 `CONTEXT.md`、ADR、OpenSpec schema 与 artifact templates。
-- **[init-agent-docs](./init-agent-docs/SKILL.md)** - 初始化或整合仓库级 `AGENTS.md` 与 `CLAUDE.md`，保留 shared、Claude-only 与 nested instructions 的正确作用域。
 - **[init-cli](./init-cli/SKILL.md)** - 检查、安装或更新 spect（精简版 OpenSpec CLI）命令；单文件可执行程序与 OpenSpec 模板随 skill 分发，安装无需联网与 npm。
 - **[domain-modeling](./domain-modeling/SKILL.md)** - 主动构建和打磨项目的 domain model：挑战术语、用场景做压力测试，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[codebase-design](./codebase-design/SKILL.md)** - 用于设计 deep modules 的共享纪律和词汇：小 interface、清晰 seam、通过 interface 测试。

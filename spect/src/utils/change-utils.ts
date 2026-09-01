@@ -178,11 +178,7 @@ export async function createChange(
   await FileSystemUtils.createDirectory(path.join(openspecDir, 'specs'));
   await FileSystemUtils.createDirectory(path.join(openspecDir, 'changes', 'archive'));
   const configPath = path.join(openspecDir, 'config.yaml');
-  const configYmlPath = path.join(openspecDir, 'config.yml');
-  if (
-    !(await FileSystemUtils.fileExists(configPath)) &&
-    !(await FileSystemUtils.fileExists(configYmlPath))
-  ) {
+  if (!(await FileSystemUtils.fileExists(configPath))) {
     await FileSystemUtils.writeFile(configPath, `schema: ${defaultSchema}\n`);
   }
 

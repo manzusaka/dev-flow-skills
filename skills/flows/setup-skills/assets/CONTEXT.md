@@ -1,6 +1,6 @@
 # Domain Context
 
-本文件是项目领域语言与业务规则的事实来源。
+本文件是项目领域语言的事实来源。
 
 ## Language
 
@@ -11,7 +11,3 @@
 用一到两句话定义它是什么。
 _Avoid_: 项目中确实出现、但不应继续使用的同义词
 -->
-
-## Business Rules
-
-<!-- 记录可观察的业务约束与 invariants；实现选择写入 ADR 或 OpenSpec design artifacts。 -->

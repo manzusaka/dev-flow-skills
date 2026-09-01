@@ -10,7 +10,6 @@ import {
 
 export const OPENSPEC_ROOT_DIR = 'openspec';
 export const OPENSPEC_CONFIG_YAML = 'openspec/config.yaml';
-export const OPENSPEC_CONFIG_YML = 'openspec/config.yml';
 export const OPENSPEC_SPECS_DIR = 'openspec/specs';
 export const OPENSPEC_CHANGES_DIR = 'openspec/changes';
 export const OPENSPEC_ARCHIVE_DIR = 'openspec/changes/archive';
@@ -166,14 +165,11 @@ export async function inspectOpenSpecRoot(storeRoot: string): Promise<OpenSpecRo
   }
 
   const configYamlKind = await pathKind(path.join(storeRoot, OPENSPEC_CONFIG_YAML));
-  const configYmlKind = await pathKind(path.join(storeRoot, OPENSPEC_CONFIG_YML));
   if (configYamlKind === 'file') {
     inspection.config = { present: true, path: OPENSPEC_CONFIG_YAML };
-  } else if (configYmlKind === 'file') {
-    inspection.config = { present: true, path: OPENSPEC_CONFIG_YML };
   } else {
     inspection.config = { present: false };
-    if (configYamlKind !== 'missing' || configYmlKind !== 'missing') {
+    if (configYamlKind !== 'missing') {
       inspection.diagnostics.push(missingDirectoryDiagnostic(
         'openspec_config_not_file',
         'OpenSpec 配置文件路径存在但不是文件。',
@@ -182,7 +178,7 @@ export async function inspectOpenSpecRoot(storeRoot: string): Promise<OpenSpecRo
     } else {
       inspection.diagnostics.push(missingDirectoryDiagnostic(
         'openspec_config_missing',
-        '缺少 openspec/config.yaml 或 openspec/config.yml。',
+        '缺少 openspec/config.yaml。',
         'openspec.config'
       ));
     }
@@ -251,12 +247,10 @@ async function ensureDefaultConfig(
   ledger: CreatedPathLedgerEntry[]
 ): Promise<void> {
   const configYamlPath = path.join(storeRoot, OPENSPEC_CONFIG_YAML);
-  const configYmlPath = path.join(storeRoot, OPENSPEC_CONFIG_YML);
   const yamlKind = await pathKind(configYamlPath);
-  const ymlKind = await pathKind(configYmlPath);
 
-  if (yamlKind === 'file' || ymlKind === 'file') return;
-  if (yamlKind !== 'missing' || ymlKind !== 'missing') {
+  if (yamlKind === 'file') return;
+  if (yamlKind !== 'missing') {
     throw new Error('OpenSpec 配置文件路径存在但不是文件。');
   }
 

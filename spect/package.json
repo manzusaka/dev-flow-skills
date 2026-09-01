@@ -1,6 +1,6 @@
 {
   "name": "spect",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "spectools：devtrain-skills 的精简版 OpenSpec CLI，规范驱动开发的变更管理命令。",
   "license": "MIT",
   "type": "module",
@@ -11,6 +11,8 @@
     "node": ">=22"
   },
   "scripts": {
+    "pretest": "npm run build",
+    "test": "node --test tests/*.test.mjs ../skills/flows/setup-skills/tests/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "build": "node scripts/build.mjs"
   },

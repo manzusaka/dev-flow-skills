@@ -26,7 +26,7 @@ import {
   type NewChangeOptions,
 } from '../commands/workflow/index.js';
 
-const version = process.env.SPECT_VERSION ?? '0.1.0';
+const version = process.env.SPECT_VERSION ?? '0.1.1';
 
 function failWithError(
   error: unknown,
@@ -75,8 +75,7 @@ program.hook('preAction', (thisCommand) => {
 program
   .command('init [path]')
   .description('在项目中初始化 openspec/ 脚手架（非交互）')
-  .option('--force', '覆盖已存在的文件')
-  .action(async (targetPath = '.', options?: { force?: boolean }) => {
+  .action(async (targetPath = '.') => {
     try {
       const resolvedPath = path.resolve(targetPath);
 
@@ -97,7 +96,6 @@ program
 
       const { InitCommand } = await import('../core/init.js');
       const initCommand = new InitCommand({
-        force: options?.force,
         interactive: false,
       });
       await initCommand.execute(targetPath);

@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 把一个已经存在的 OpenSpec proposal 推进为可执行的 planning artifacts：delta specs、`design.md` 和 `tasks.md`。调用形式是 `/to-tickets [change-name]`。
 
-本 skill 不创建 change，也不发布 issue。本次调用只授权 planning artifacts 和经用户批准的 durable docs；完成后停止，不实现项目代码。缺少 flow docs 或 proposal 时停止，并让用户显式运行 `/init-flow-docs` 或 `/to-spec`。
+本 skill 不创建 change，也不发布 issue。本次调用只授权 planning artifacts 和经用户批准的 durable docs；完成后停止，不实现项目代码。缺少 flow docs 或 proposal 时停止，并让用户显式运行 `/setup-skills` 或 `/to-spec`。
 
 ## Process
 

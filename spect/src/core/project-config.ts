@@ -246,6 +246,39 @@ function parseDeclarationList(raw: unknown): DeclarationEntry[] | undefined {
 export const MAX_CONTEXT_SIZE = 50 * 1024; // 50KB hard limit, shared with the references index
 
 /**
+ * Fail-closed parser used by commands that must prove a project config is
+ * usable before they mutate the project. Ordinary command reads remain
+ * resilient through readProjectConfig().
+ */
+export function parseProjectConfigStrict(content: string): ProjectConfig {
+  let raw: unknown;
+  try {
+    raw = parseYaml(content);
+  } catch (error) {
+    throw new Error(
+      `OpenSpec config is not valid YAML: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
+
+  const result = ProjectConfigSchema.safeParse(raw);
+  if (!result.success) {
+    const details = result.error.issues
+      .map((issue) => `${issue.path.join('.') || 'config'}: ${issue.message}`)
+      .join(', ');
+    throw new Error(`OpenSpec config is invalid: ${details}`);
+  }
+
+  if (
+    result.data.context !== undefined &&
+    Buffer.byteLength(result.data.context, 'utf8') > MAX_CONTEXT_SIZE
+  ) {
+    throw new Error(`OpenSpec config context exceeds ${MAX_CONTEXT_SIZE} bytes`);
+  }
+
+  return result.data;
+}
+
+/**
  * Read and parse openspec/config.yaml from project root.
  * Uses resilient parsing - validates each field independently using Zod safeParse.
  * Returns null if file doesn't exist.
@@ -559,14 +592,10 @@ export function readStorePointer(projectRoot: string): StorePointerRead {
   }
 }
 
-/** Shared .yaml/.yml probe used by readProjectConfig and readStorePointer. */
+/** Shared config probe used by readProjectConfig and readStorePointer. */
 export function resolveConfigFilePath(projectRoot: string): string | null {
   const yamlPath = path.join(projectRoot, 'openspec', 'config.yaml');
-  if (existsSync(yamlPath)) {
-    return yamlPath;
-  }
-  const ymlPath = path.join(projectRoot, 'openspec', 'config.yml');
-  return existsSync(ymlPath) ? ymlPath : null;
+  return existsSync(yamlPath) ? yamlPath : null;
 }
 
 /** Human rendering of a malformed pointer reason, shared by every surface. */

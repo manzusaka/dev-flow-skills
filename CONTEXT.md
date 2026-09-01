@@ -1,6 +1,6 @@
 # Matt Pocock Skills
 
-由 Claude Code 加载的一组 agent skills（slash commands 和 behaviors）。Skills 按 bucket 组织；tracker flows 消费 `/setup-skills` 配置，OpenSpec flows 消费 `/init-flow-docs` 建立的 artifacts。
+由 Claude Code 加载的一组 agent skills（slash commands 和 behaviors）。Skills 按 bucket 组织；OpenSpec flows 消费 `/setup-skills` 建立的 artifacts。
 
 ## Language
 

@@ -87,4 +87,4 @@ disable-model-invocation: true
 
 ## Precondition
 
-**`/init-flow-docs`** - 首次运行 `/to-spec` 或 `/to-tickets` 前初始化 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。`/setup-skills` 只为 `/triage`、`/wayfinder` 等 tracker-based flows 配置 issue tracker 与 labels。
+**`/setup-skills`** - 首次使用 flows 前初始化 spect CLI、agent instructions（`AGENTS.md`/`CLAUDE.md`）与 `CONTEXT.md`、ADRs、OpenSpec 脚手架。

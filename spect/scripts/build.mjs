@@ -19,7 +19,7 @@ const outFile = path.join(skillBinDir, 'spect');
 
 const pkg = JSON.parse(readFileSync(path.join(spectDir, 'package.json'), 'utf8'));
 
-// 1. Embed schema assets (single source of truth: init-flow-docs assets)
+// 1. Embed schema assets (single source of truth: init-cli skill assets)
 execFileSync(process.execPath, [path.join(here, 'embed-schemas.mjs')], {
   cwd: spectDir,
   stdio: 'inherit',

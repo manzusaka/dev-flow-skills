@@ -15,9 +15,9 @@ npx skills@latest add manzusaka/devtrain-skills
 2. 选择你想安装的 skills，以及要安装到哪些 coding agents。**确保选择 `/setup-skills`**。
 
 3. 在你的 agent 中运行 `/setup-skills`。它会：
-   - 询问你要使用哪个 issue tracker（GitHub、Linear 或 local files）
-   - 询问你 triage issues 时使用哪些 labels（`/triage` 会使用这些 labels）
-   - 询问要把创建的 docs 保存到哪里
+   - 安装或更新 spect（精简版 OpenSpec CLI）
+   - 初始化或整合 root `AGENTS.md` 与 `CLAUDE.md`
+   - 初始化 `CONTEXT.md`、`docs/adr/` 与 `openspec/` 脚手架
 
 4. 完成后即可开始使用。
 
@@ -56,8 +56,6 @@ npx skills@latest add manzusaka/devtrain-skills
 - **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：构建一个会对这个 bug 变红的 feedback loop → minimise → hypothesise → instrument → fix → regression-test。
 - **[research](./skills/engineering/research/SKILL.md)** - 对照 high-trust primary sources 调研问题，并把带引用的 findings 保存为 Markdown 文件。
 - **[tdd](./skills/engineering/tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
-- **[init-flow-docs](./skills/engineering/init-flow-docs/SKILL.md)** - 初始化或整理项目的 `CONTEXT.md`、ADR、OpenSpec schema 与 artifact templates。
-- **[init-agent-docs](./skills/engineering/init-agent-docs/SKILL.md)** - 在 workspace 初始化初期创建或整合 `AGENTS.md` 与 `CLAUDE.md`：共享 instructions 归入 `AGENTS.md`，Claude Code 通过标准 import 引用它。
 - **[init-cli](./skills/engineering/init-cli/SKILL.md)** - 检查、安装或更新 spect（精简版 OpenSpec CLI）命令；单文件可执行程序与 OpenSpec 模板随 skill 分发，安装无需联网与 npm。
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** - 主动构建和打磨项目 domain model：挑战术语、用 edge-case scenarios 做压力测试，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** - 设计 deep modules 的共享纪律和词汇：小 interface、clean seam、通过 interface 测试。
@@ -71,7 +69,7 @@ npx skills@latest add manzusaka/devtrain-skills
 
 **User-invoked**
 
-- **[setup-skills](./skills/flows/setup-skills/SKILL.md)** - 为 tracker-based flows 配置 issue tracker、triage labels 和 domain docs 布局。
+- **[setup-skills](./skills/flows/setup-skills/SKILL.md)** - 初始化一个 repository 的工程前置：spect CLI、agent instructions 与 CONTEXT、ADR、OpenSpec 脚手架。
 - **[triage](./skills/flows/triage/SKILL.md)** - 通过 triage roles state machine 推进 issues。
 - **[wayfinder](./skills/flows/wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 issue tracker 上的 decision tickets 共享 map，逐一解决直到通往 destination 的路清晰。
 - **[to-spec](./skills/flows/to-spec/SKILL.md)** - 把当前对话整理成 OpenSpec change proposal，创建兼容的变更元数据与 `proposal.md`。

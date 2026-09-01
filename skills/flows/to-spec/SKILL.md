@@ -22,7 +22,7 @@ disable-model-invocation: true
 - `openspec/specs/`
 - `openspec/changes/`
 
-任一项缺失时停止，列出缺失项，并提示用户显式运行 `/init-flow-docs`。不要在本 skill 中代替用户初始化或修补这些文件。
+任一项缺失时停止，列出缺失项，并提示用户显式运行 `/setup-skills`。不要在本 skill 中代替用户初始化或修补这些文件。
 
 完成条件：以上内容均存在，且 `openspec/config.yaml` 中配置的 schema 已确定。
 

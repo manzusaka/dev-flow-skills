@@ -1,6 +1,6 @@
 # spect CLI 命令手册
 
-`spect`（spectools）是 devtrain-skills 的精简版 OpenSpec CLI：规范驱动开发的变更管理命令。单文件可执行程序随 `init-cli` skill 分发，安装无需联网与 npm，仅需 Node.js >= 22。本手册基于 spect 0.1.0 实测输出编写。
+`spect`（spectools）是 devtrain-skills 的精简版 OpenSpec CLI：规范驱动开发的变更管理命令。单文件可执行程序随 `init-cli` skill 分发，安装无需联网与 npm，仅需 Node.js >= 22。本手册基于 spect 0.1.2 实测输出编写。
 
 ## 安装
 
@@ -47,11 +47,7 @@ spect archive add-search -y         # 6. 归档并合并 specs
 
 ### `spect init [path]`
 
-在目标目录初始化 `openspec/` 脚手架（完全非交互）。模板内容与 init-cli skill 的 `assets/schemas/` 完全一致。
-
-| 选项 | 说明 |
-| --- | --- |
-| `--force` | 覆盖已存在的文件（默认保留已有文件） |
+在目标目录初始化并校验 `openspec/`（完全非交互）。模板内容与 init-cli skill 的 `assets/schemas/` 完全一致。命令只补缺失文件，不提供覆盖模式；已有 config、schema、templates 与 artifacts 必须先通过严格校验。
 
 产出：
 
@@ -72,7 +68,7 @@ OpenSpec 脚手架已就绪：/path/to/project/openspec
 下一步：用 spect new change <name> 创建你的第一个变更。
 ```
 
-重复运行默认保留已有文件；`--force` 覆盖。
+重复运行会保留已有文件。`config.yaml` 是唯一配置入口；custom schema 按实际生效配置校验，不会额外注入 default schema。
 
 ### `spect new change <name>`
 
