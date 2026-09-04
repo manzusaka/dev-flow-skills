@@ -1,6 +1,6 @@
 {
   "name": "spect",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "spectools：devtrain-skills 的精简版 OpenSpec CLI，规范驱动开发的变更管理命令。",
   "license": "MIT",
   "type": "module",

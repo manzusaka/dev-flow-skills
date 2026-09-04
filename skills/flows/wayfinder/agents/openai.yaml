@@ -1,5 +1,5 @@
 interface:
   display_name: "寻路"
-  short_description: "把大型工作绘制成 decision tickets"
+  short_description: "把大型工作绘制成 docs/wayfinding/ 下的 decision records 共享 map"
 policy:
   allow_implicit_invocation: false

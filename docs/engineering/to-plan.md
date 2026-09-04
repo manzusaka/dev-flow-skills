@@ -1,37 +1,37 @@
 ## What it does
 
-`to-tickets` 读取 `/to-spec` 创建的 OpenSpec change，把已有 `proposal.md` 推进为完整的 planning artifacts：delta specs、`design.md` 和 `tasks.md`。这次调用止于 planning 和获批的 durable docs，不实现项目代码。
+`to-plan` 读取 `/to-spec` 创建的 OpenSpec change，把已有 `proposal.md` 推进为完整的 planning artifacts：delta specs、`design.md` 和 `tasks.md`。这次调用止于 planning 和获批的 durable docs，不实现项目代码。
 
 ```text
 proposal.md → delta specs → architecture grilling → design.md → tasks.md
 ```
 
-它不再读取或发布 issue tracker tickets。名字保留下来，但最终的执行计划遵守 OpenSpec schema，写入 `tasks.md`。
+它不创建 change，也不发布 issue；最终的执行计划遵守 OpenSpec schema，写入 `tasks.md`。
 
 ## Invocation and change selection
 
 显式调用：
 
 ```text
-/to-tickets <change-name>
+/to-plan <change-name>
 ```
 
-Exact match 会直接选择 `openspec/changes/<change-name>/`。参数没有 exact match 时，skill 使用自带脚本列出所有未归档 changes，再结合名称和 proposal 内容给出候选，由用户确认。没有参数时也先列出 active changes，让用户选择。
+Exact match 会直接选择 `openspec/changes/<change-name>/`。参数没有 exact match 时，skill 用 `spect list --json` 列出所有未归档 changes，再结合名称和 proposal 内容给出候选，由用户确认。没有参数时也先列出 active changes，让用户选择。
 
-列表脚本直接扫描 `openspec/changes/`，排除 `archive/` 和隐藏目录，输出 OpenSpec change list 使用的 `changes + root` JSON shape。`completedTasks`、`totalTasks` 和 `status` 来自 `tasks.md` checkboxes。
+`spect list` 扫描 `openspec/changes/`，排除 `archive/` 和隐藏目录，输出 `changes + root` JSON shape。`completedTasks`、`totalTasks` 和 `status` 来自 `tasks.md` checkboxes。
 
 ## Prerequisites
 
-目标仓库必须先通过 `/init-flow-docs` 建立：
+目标仓库必须先通过 `/setup-skills` 建立：
 
 - `CONTEXT.md` 或 `CONTEXT-MAP.md`
 - ADR 目录
 - OpenSpec config、schema 和 artifact templates
 - `openspec/specs/` 与 `openspec/changes/`
 
-选中的 change 必须已经由 `/to-spec` 创建 `.openspec.yaml` 和 `proposal.md`。缺少前置产物时，`to-tickets` 停止并让用户显式调用对应 skill；它不会自行创建 change 或初始化 flow docs。
+选中的 change 必须已经由 `/to-spec` 创建 `.openspec.yaml` 和 `proposal.md`。缺少前置产物时，`to-plan` 停止并让用户显式调用对应 skill；它不会自行创建 change 或初始化 flow docs。
 
-整个流程不依赖 OpenSpec CLI。Skill 直接读取 config、schema、templates 和 change files，从 schema 的 `requires`、`generates`、`instruction` 与 `apply.tracks` 解析 artifact graph、写入位置和格式。
+整个流程依赖 `spect` CLI：change discovery 用 `spect list`，artifact graph 用 `spect status`，各阶段指令用 `spect instructions`，最终验证用 `spect validate`。命令缺失时经用户确认由 `/init-cli` 安装。
 
 ## Delta specs
 
@@ -87,7 +87,7 @@ Skill 会展示 proposed diffs；用户确认后才写入。没有合格内容�
 
 ## Verification
 
-完成时直接对照 schema、templates 和 artifacts 做本地结构与内容验证。最终状态应满足：
+完成时运行 `spect validate <change-name> --strict --no-interactive`：依赖闭包、输出存在、`tasks.md` checkbox 追踪与章节结构由 `spect` 检查。语义检查补充：
 
 - Proposal capabilities 与 delta specs 一一对应，或 `skip_specs` 合法生效。
 - `design.md` 没有会影响实现的未决问题。
@@ -98,7 +98,7 @@ Skill 会展示 proposed diffs；用户确认后才写入。没有合格内容�
 ## Where it fits
 
 ```text
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
-`to-spec` 固化 WHY 和 WHAT 的入口；`to-tickets` 补齐 specs、HOW 和 implementation plan；`implement` 按 `tasks.md` 中的 vertical slices 推进实现；`code-review` 用 OpenSpec artifacts 检查实现是否符合要求。
+`to-spec` 固化 WHY 和 WHAT 的入口；`to-plan` 补齐 specs、HOW 和 implementation plan；`implement` 按 `tasks.md` 中的 vertical slices 推进实现；`code-review` 用 OpenSpec artifacts 检查实现是否符合要求。

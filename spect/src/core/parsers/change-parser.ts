@@ -22,17 +22,17 @@ export class ChangeParser extends MarkdownParser {
   async parseChangeWithDeltas(name: string): Promise<Change> {
     const sections = this.parseSections();
     const why = this.findSection(sections, 'Why')?.content || this.findSection(sections, '为什么')?.content || '';
-    const whatChanges = this.findSection(sections, 'What Changes')?.content || this.findSection(sections, '变更内容')?.content || '';
+    const whatChanges = this.findSection(sections, 'User story')?.content || this.findSection(sections, 'What Changes')?.content || this.findSection(sections, '变更内容')?.content || '';
     
     if (!why) {
       throw new Error('Change 必须包含 Why 章节');
     }
 
     if (!whatChanges) {
-      throw new Error('Change 必须包含 What Changes 章节');
+      throw new Error('Change 必须包含 User story 章节');
     }
 
-    // Parse deltas from the What Changes section (simple format)
+    // Parse deltas from the User story section (simple format)
     const simpleDeltas = this.parseDeltas(whatChanges);
     
     // Check if there are spec files with delta format

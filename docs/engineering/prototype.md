@@ -10,7 +10,7 @@ Throwaway 是对代码*怎么写*的一种约束，而不是销毁它的承诺�
 
 在你撞上一个靠谈话无法敲定的问题的那一刻就使用它——一个你无法在脑中握住所有边界 case 的 state machine，或者一个不看到三个版本并排就想象不出来的屏幕。[Grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) sessions 恰恰会在这些问题上膨胀：agent 换着说法重述、你猜、范围不断增长去填满不确定性。停止 grilling，构建 throwaway 版本，看着它，然后用一行回答。如果相反，某个已经构建好的东西行为异常、你想知道原因，用 [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs)——prototyping 探索的是该构建什么，而不是为什么已构建的东西坏了。
 
-你也会在非自愿的情况下到达这里。[wayfinder](https://aihero.dev/skills-wayfinder) 会在地图上登记 `prototype` 决策 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)，而处理其中一个，就是这个 skill。
+你也会在非自愿的情况下到达这里。[wayfinder](https://aihero.dev/skills-wayfinder) 会在地图上登记 `prototype` 类型的 decision records，而处理其中一个，就是这个 skill。
 
 ## Two branches
 
@@ -38,7 +38,7 @@ Throwaway 是对代码*怎么写*的一种约束，而不是销毁它的承诺�
 logic 分支现在改为产出单一的可分享 HTML 文件。Terminal app 只有克隆了 repo 并安装了 runtime 的人才能驱动，而这恰恰排除了 prototype 需要其意见的那些人——设计师、PM、知道 state model 本该意味着什么的 domain expert。一份双击即可打开、经得起被邮件转发的自包含文件，任何人都能驱动。底下的 pure logic module 没有变，它仍然是提进真实代码的那一部分。
 
 **一个 agent 在我本该 implement 的时候让我 `/prototype`。**
-已知问题，而且这是一个命名问题。`prototype` 是一个通用、讨喜的词，一旦 tickets 存在，它在一个不熟悉 flow 的 agent 读起来就是"显而易见的下一步"，所以即便设计已经在对话中完全敲定，它也会被指名推荐。如果你已经知道要构建什么，下一步是 `/implement`，每个 ticket 一次。只有当某个具体的设计问题真正悬而未决、而且谈话无法解决它时，才取用 prototype。
+已知问题，而且这是一个命名问题。`prototype` 是一个通用、讨喜的词，一旦 OpenSpec changes 存在，它在一个不熟悉 flow 的 agent 读起来就是"显而易见的下一步"，所以即便设计已经在对话中完全敲定，它也会被指名推荐。如果你已经知道要构建什么，下一步是 `/implement`，一次一个 change。只有当某个具体的设计问题真正悬而未决、而且谈话无法解决它时，才取用 prototype。
 
 **我应该在生产功能之前先 prototype 整个应用吗——比如说，向潜在客户演示它？**
 那是披着这个 skill 名字的另一种 artifact。这里的 prototype 被限定在一个问题上，而"整个应用是什么？"不是一个问题。一个全应用 prototype 没有自然的停止点，所以它会靠惯性变成生产应用：清理从不发生，而按 prototype 规则写下的代码——没有测试、没有错误处理——最终会出现在用户面前。如果你需要一个销售演示，就刻意把它当作 demo 来构建，并明确其中没有一样是生产代码。如果你需要敲定一个设计问题，就把它裁到那个问题上。
@@ -62,6 +62,6 @@ prototype 住在它自己的目录里，并生成大量你不想留在这个提�
 
 `prototype` 是一个**可随时取用的 standalone**——你进入它来敲定一个设计问题，然后退出——同时它也是另一个 skill 赖以运行的机制。
 
-它最大的消费者是 [wayfinder](https://aihero.dev/skills-wayfinder)。一张 wayfinder 地图由 **decision tickets** 构成，而 `prototype` 是 ticket 可以成为的四种类型之一：当阻塞性问题是谁说多少讨论都无法解决的"这应该长什么样"或"它应该怎么表现"时使用的那个。Wayfinder 通过制造某个具体的东西来供人反应，从而提升一场迷雾般讨论的保真度，而这个 skill 正是那个具体的东西被构建的方式。一个 prototype ticket 由答案来结案，而 prototype 作为一份 asset 从地图中被链接出来。
+它最大的消费者是 [wayfinder](https://aihero.dev/skills-wayfinder)。一张 wayfinder 地图由 **decision records** 构成，而 `prototype` 是 record 可以成为的四种类型之一：当阻塞性问题是谁说多少讨论都无法解决的"这应该长什么样"或"它应该怎么表现"时使用的那个。Wayfinder 通过制造某个具体的东西来供人反应，从而提升一场迷雾般讨论的保真度，而这个 skill 正是那个具体的东西被构建的方式。一个 prototype record 由答案来结案，而 prototype 作为一份 asset 从地图中被链接出来。
 
 其他邻居在它上游和下游。[grill-me](https://aihero.dev/skills-grill-me) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 回答可 grill 的问题；不可 grill 的那些则来到这里，而那一行回答回到访谈中。在下游，一个经过验证的 state model 或 UI 方向会成为 [to-spec](https://aihero.dev/skills-to-spec) 的已定输入，后者可以把 prototype 产出的决策密集片段内联进去，而不是用口语化文字描述它。至于其他任何东西，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由整个集合。

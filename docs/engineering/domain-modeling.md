@@ -47,7 +47,7 @@ Glossary 和 ADR 被以不同标准对待，而把两者混为一谈正是这个
 
 让 skill 生效的那一步：当你陈述某样东西如何运作时，它检查代码并浮现出矛盾。*「你的代码取消整个 Orders，但你刚说部分取消是可能的——哪个是对的？」*语言和代码被要求达成一致，在两者被改变之前，大声地。
 
-那个限度值得知道。它交叉引用**代码**和已提交的 `CONTEXT.md`/ADRs，别无其他。它不搜索你的 issue tracker，所以一场几个月前在一个已关闭 issue 里被辩清、并被刻意解决的命名冲突，会被当作新事浮现出来。有一个[开放的请求](https://github.com/mattpocock/skills/issues/717)要修复它；在那之前，workaround 是把指令放进你自己的 `docs/agents/domain.md`，skills 已经会读取它。
+那个限度值得知道。它交叉引用**代码**和已提交的 `CONTEXT.md`/ADRs，别无其他。一场几个月前在别处——一个已关闭的 issue、一场旧讨论——被辩清、并被刻意解决的命名冲突，会被当作新事浮现出来。有一个[开放的请求](https://github.com/mattpocock/skills/issues/717)要修复它；在那之前，workaround 是把指令放进你自己的 `docs/agents/domain.md`，skills 已经会读取它。
 
 ## Common questions
 
@@ -58,7 +58,7 @@ Glossary 和 ADR 被以不同标准对待，而把两者混为一谈正是这个
 这是整个 skill 集里被争论最多的命名问题，没有定论。反对当前名字的理由很充分：如果它是「a glossary and nothing else」，那么 `GLOSSARY.md` 就说明了这一点，而且——正如一位读者所言——「with ai agents everything is [context](https://www.aihero.dev/ai-coding-dictionary/context)」。支持它的理由是那份地图：`CONTEXT-MAP.md` 指向几份 `CONTEXT.md` 文件，读起来很自然，而 `GLOSSARY-MAP.md` 却不自然，而且 `context` 是 model 的一个有界区域的常驻 DDD 词。至少有一个人为纯粹重命名文件而维护一个本地 fork。你也可以这样做，但这套里的每个其他 skill 都在找 `CONTEXT.md`，所以改名意味着打补丁到它们全部。
 
 **`/ubiquitous-language` 去哪了？**
-它被移除了，而且不是被废弃。它的工作移进了 `domain-modeling`，后者持续地维护整个 model，而不是从一场对话里倾倒一份 glossary。词汇强制变得更承重，而不是更轻——它现在在 grilling、triage 和 mapping 底下运行，而不是作为你记得去做的一趟单独 pass。
+它被移除了，而且不是被废弃。它的工作移进了 `domain-modeling`，后者持续地维护整个 model，而不是从一场对话里倾倒一份 glossary。词汇强制变得更承重，而不是更轻——它现在在 grilling 和 mapping 底下运行，而不是作为你记得去做的一趟单独 pass。
 
 **我如何为一个没有 glossary 的 codebase 拿到一份？**
 明确地要它，而不是等它积累。`/grill-with-docs help me scaffold my existing repo with a CONTEXT.md` 是有文档记录的 route；预期一场漫长的审问——一个用户报告在文件成形之前有 50+ 个问题。在 brownfield repo 上，偶然的使用构建 glossary 的速度太慢了。
@@ -83,4 +83,4 @@ Glossary 和 ADR 被以不同标准对待，而把两者混为一谈正是这个
 
 ## Where it fits
 
-`domain-modeling` 是一个 **model-invoked reference**，*位于*其他 skills 底下运行的频率，比它单独运行的频率更高。[grill-with-docs](https://aihero.dev/skills-grill-with-docs) 通过一场 grilling session 驱动它，[wayfinder](https://aihero.dev/skills-wayfinder) 在绘制地图时加载它，[triage](https://aihero.dev/skills-triage) 用它让 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) 保持项目自己的措辞，而 [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 在决策结晶时调用它。它最接近的同胞是 [codebase-design](https://aihero.dev/skills-codebase-design)：两者是其他一切底下的词汇层，这一个针对 *domain*，那一个针对 module 的*形状*。它也可以直接够到，当你想得到这套纪律、却不必承诺通常会把它的那个 skill 的步骤时。当你拿不准哪个 skill 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+`domain-modeling` 是一个 **model-invoked reference**，*位于*其他 skills 底下运行的频率，比它单独运行的频率更高。[grill-with-docs](https://aihero.dev/skills-grill-with-docs) 通过一场 grilling session 驱动它，[wayfinder](https://aihero.dev/skills-wayfinder) 在绘制地图时加载它，[improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 在决策结晶时调用它。它最接近的同胞是 [codebase-design](https://aihero.dev/skills-codebase-design)：两者是其他一切底下的词汇层，这一个针对 *domain*，那一个针对 module 的*形状*。它也可以直接够到，当你想得到这套纪律、却不必承诺通常会把它的那个 skill 的步骤时。当你拿不准哪个 skill 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

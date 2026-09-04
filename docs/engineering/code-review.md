@@ -25,12 +25,13 @@ Standards 轴线不需要任何东西。它读取仓库记录的任何东西（`
 
 Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 
-1. Commit messages 里的 issue references（`#123`、`Closes #45`、一个 GitLab `!67`），通过 `docs/agents/issue-tracker.md` 获取。
-2. 你作为 argument 传入的一条路径。
-3. `docs/`、`specs/` 或 `.scratch/` 下与 branch 或 feature 名字匹配的一份 spec 文件。
-4. 问你。
+1. 调用方显式传入的 spec 路径（例如 [implement](https://aihero.dev/skills-implement) 传入的 delta specs 与 proposal）。
+2. fixed point 与 `HEAD` 之间的 commit messages 引用的 OpenSpec change——在 `openspec/changes/` 下匹配。
+3. 目录名与当前 branch 名字精确匹配的 OpenSpec change。
+4. `docs/` 或 `specs/` 下与 branch 或 feature 名字匹配的一份 spec 文件。
+5. 问你。
 
-第 1 步依赖 `docs/agents/issue-tracker.md`，它由 [setup-skills](https://aihero.dev/skills-setup-skills) 写入。没有它，如果你递给它一条路径，这条轴线仍然能工作。如果完全没有 spec，Spec 的 sub-agent 会被跳过，报告会说 "no spec available"，而不是编造需求。
+命中 OpenSpec change 时，以该 change 的 `proposal.md` 与 `specs/` 下的 delta specs 共同作为 spec 来源；多个 change 命中时合并所有命中 change 的来源；命中的 change 没有 `specs/`（`skip_specs: true`）时只用它的 `proposal.md`。如果完全没有 spec，Spec 的 sub-agent 会被跳过，报告会说 "no spec available"，而不是编造需求。
 
 ## The two axes
 
@@ -59,9 +60,9 @@ Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 
 最好用一场新的。正如一位读者所言：「Same context reviewing itself isn't review, it's confirmation bias with a slash command.」写作 session 里的 reviewing agent 持有塑造了代码的每一个假设，而这恰恰是一位独立 reviewer 不会拥有的 context。这也是为什么人们请求 [implement](https://aihero.dev/skills-implement) 不要带内置 review 步骤——它在刚写出 diff 的那场 session 里运行 review。从一场干净的 session 你自己调用 `/code-review` 才是诚实版本。
 
-**每个 ticket 之后，还是最后来一次？**
+**每个 change 之后，还是最后批量来一次？**
 
-两者都行，skill 不会替你决定。逐 ticket 让每个 diff 足够小，使 Spec 轴线有一个清晰的 spec 可以核对，这是 `implement` 使用的模式。批量到 branch 末尾则能抓住 ticket 之间逐 ticket 通过各自漏掉的交互。如果你不确定，逐 ticket review，并针对 branch 点跑一次最终 pass。
+两者都行，skill 不会替你决定。逐 change 让每个 diff 是一条完整的 vertical slice，使 Spec 轴线有一个清晰的 spec 可以核对，这是 `implement` 使用的模式。批量到 branch 末尾则能抓住 change 之间逐 change 通过各自漏掉的交互。如果你不确定，逐 change review，并针对 branch 点跑一次最终 pass。
 
 **我能信任这些 findings 吗？**
 
@@ -85,10 +86,10 @@ Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 
 ## Where it fits
 
-`code-review` 是 build chain 尾部的 review 步骤——`grill-with-docs → to-spec → to-tickets → implement → code-review`——也能在你指向它的任何 branch 或 PR 上独立运行。
+`code-review` 是 build chain 尾部的 review 步骤——`grill-with-docs → to-spec → to-plan → implement → code-review`——也能在你指向它的任何 branch 或 PR 上独立运行。
 
 - [implement](https://aihero.dev/skills-implement) 是最接近的邻居：它驱动构建，并在提交前把此 skill 作为自己的收尾 review 调用。
-- [to-spec](https://aihero.dev/skills-to-spec) 与 [to-tickets](https://aihero.dev/skills-to-tickets) 产出 Spec 轴线所要核对的 proposal、delta specs、design 和 tasks；含糊的 planning artifacts 会让那条轴线也含糊。
+- [to-spec](https://aihero.dev/skills-to-spec) 与 `to-plan` 产出 Spec 轴线所要核对的 proposal、delta specs、design 和 tasks；含糊的 planning artifacts 会让那条轴线也含糊。
 - [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 是整个 codebase 的对口物——这个 skill 只看一个 diff。
 
 当你不确定这个处境想要哪个 skill 时，[ask-matt](https://aihero.dev/skills-ask-matt) 会跨整套路由。

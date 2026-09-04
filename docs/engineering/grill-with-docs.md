@@ -49,7 +49,7 @@ glossary 才是重点。Domain language 才是这个 skill 真正在构建的东
 ## Common questions
 
 **我应该用这个还是 `/wayfinder`？**
-由范围决定。凡是你能在一次 session 内敲定的，就用这个；当 effort 大到一次装不下时用 [wayfinder](https://aihero.dev/skills-wayfinder)，它会先把工作绘制成一张决策 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) 地图。Wayfinder 更慢也更密集，在一个范围清晰的 feature 上取用它是常见的错误。它并不取代这个 skill——它为了地图中适合一场 grilling 的部分而落入一场 grilling session。
+由范围决定。凡是你能在一次 session 内敲定的，就用这个；当 effort 大到一次装不下时用 [wayfinder](https://aihero.dev/skills-wayfinder)，它会先把工作绘制成一张 `docs/wayfinding/` 下的决策 records 地图。Wayfinder 更慢也更密集，在一个范围清晰的 feature 上取用它是常见的错误。它并不取代这个 skill——它为了地图中适合一场 grilling 的部分而落入一场 grilling session。
 
 **它跑过了，但没有出现 `CONTEXT.md`，也没有出现 ADR。**
 两个已知原因。平淡的那个：没有东西够格。ADR 需要同时通过三道门，而一场关于没有任何新词汇的变更的 session，确实没有东西可写。真正的 bug：当这个 skill 运行在另一个编排层内部时——一个 spec-driven-development wrapper、一个 multi-agent framework、一条把它当作别人 pipeline 中某一步来调用的规则——文件写入那一半被报告为静默地不发生，而访谈照常进行。这已被上报且未修复。如果你身处那种配置，在相信 session 的输出之前先检查 working directory。
@@ -82,7 +82,7 @@ glossary 才是重点。Domain language 才是这个 skill 真正在构建的东
 `grill-with-docs` 是 main build chain 的开头：
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
 它排在一切被写成 OpenSpec change 之前——它产出共同理解和敲定的词汇，[to-spec](https://aihero.dev/skills-to-spec) 随后无需重新访谈就将其合成为 proposal。它亲近的邻居是 [grill-me](https://aihero.dev/skills-grill-me) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling)；两者都立在 [grilling](https://aihero.dev/skills-grilling) 原语之上。在它上游，[wayfinder](https://aihero.dev/skills-wayfinder) 绘制大到一次 session 装不下的 efforts。当你不确定哪个 skill 或 flow 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

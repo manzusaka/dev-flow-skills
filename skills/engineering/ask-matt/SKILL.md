@@ -20,30 +20,26 @@ disable-model-invocation: true
    - **`/prototype`** 用 throwaway code 回答问题；
    - **`/handoff`** 把学到的内容带回来，并在原始 idea thread 中引用它。
 3. **分支 - 这是 multi-session build 吗？**
-   - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md`；再运行 **`/to-tickets <change-name>`**，补齐 delta specs、design 和 tracer-bullet tasks；根据 tasks 分 session 实现，并以 **`/code-review`** 收尾。
+   - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md`；再运行 **`/to-plan <change-name>`**，补齐 delta specs、design 和 tracer-bullet tasks；用 **`/implement <change-name>`** 按 tasks 实现、中断可续做，以统一提交和 **`/code-review`** 收尾。
    - **否** -> 在当前 context window 里直接运行 **`/implement`**。
 
-   无论哪种方式，**`/implement`** 都会在内部驱动 **`/tdd`** 构建每个 task slice：一次一个 red-green slice；然后用 **`/code-review`** 收尾，对 diff 做 Standards + Spec 双轴 review，再提交。只想在没有完整 spec 的情况下 test-first 构建一个具体 behavior 时，单独用 **`/tdd`**；想按固定点 review branch 或 PR 时，单独用 **`/code-review`**。
+   无论哪种方式，**`/implement`** 都会在内部驱动 **`/tdd`** 构建每个 task slice：一次一个 red-green slice，边做边勾选；全部任务完成后统一提交一次，再由 **`/code-review`** 对提交的 diff 做 Standards + Spec 双轴 review。只想在没有完整 spec 的情况下 test-first 构建一个具体 behavior 时，单独用 **`/tdd`**；想按固定点 review branch 或 PR 时，单独用 **`/code-review`**。
 
 ### Context hygiene
 
 步骤 1 到 `/to-spec` 要留在 **同一个未中断的 context window** 中；不要 compact 或 clear，这样 proposal 才能建立在同一组思考之上。Proposal 落盘后，后续 OpenSpec artifacts 可以从文件恢复 context。
 
-限制来自 **[smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**：在该窗口（最新模型大约 150k tokens）内，模型还能保持敏锐推理。如果 session 在 `/to-tickets` 前接近这个区间，不要硬撑降级状态；在最近的 phase boundary 用 `/compact`，然后继续（见 Phase boundaries）。
+限制来自 **[smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**：在该窗口（最新模型大约 150k tokens）内，模型还能保持敏锐推理。如果 session 在 `/to-plan` 前接近这个区间，不要硬撑降级状态；在最近的 phase boundary 用 `/compact`，然后继续（见 Phase boundaries）。
 
 ## On-ramps
 
 起点会生成工作，然后并入 main flow。
 
-- **Bugs 和 requests 堆积** -> **`/triage`**。它通过 triage roles 推进 issues，并产出 agent-ready issues，之后由 **`/implement`** 领取。
-
-  Triage 只用于 **不是你创建的** issues：bug reports、incoming feature requests，以及任何原始进入的内容。自己发起的 OpenSpec changes 走 `/to-spec` → `/to-tickets`，不进入 triage。
-
 - **Something's broken** -> **`/diagnosing-bugs`**。用于难处理的问题：第一眼看不出的 bug、间歇性 flake、夹在两个 known-good states 之间的 regression。它在拥有 **tight feedback loop** 前拒绝空想，也就是一个已经能在 _这个_ bug 上变红的命令；然后用 regression test 修复。如果复盘发现真正问题是没有好 seam 能锁住 bug，它会把后续交给 **`/improve-codebase-architecture`**。
 
-- **巨大而模糊的 effort——greenfield project 或巨大 feature build，一个 session 装不下** -> **`/wayfinder`**，这是这里认知负担最重的 flow。当从当前位置到 destination 的路还看不见时，它在 issue tracker 上绘制 **decision tickets** 的 **shared map**，逐个解决，产出 **decisions, not deliverables**，直到 fog 被推开、路径清晰。`/grill-with-docs` 用于一个 session 能装下的想法，wayfinder 用于装不下的想法；它更慢、更密集，所以只应留给确实如此的 effort，绝不要用于范围明确的 feature。
+- **巨大而模糊的 effort——greenfield project 或巨大 feature build，一个 session 装不下** -> **`/wayfinder`**，这是这里认知负担最重的 flow。当从当前位置到 destination 的路还看不见时，它在 `docs/wayfinding/` 下绘制 **decision records** 的 **shared map**，逐个解决，产出 **decisions, not deliverables**，直到 fog 被推开、路径清晰。`/grill-with-docs` 用于一个 session 能装下的想法，wayfinder 用于装不下的想法；它更慢、更密集，所以只应留给确实如此的 effort，绝不要用于范围明确的 feature。
 
-  Map 清晰后，**它会 hand off，而不是 build**：先进入 **`/to-spec`**，把 map 中相互链接的 decisions 收束成 OpenSpec proposal，再由 **`/to-tickets`** 完成 planning。让 map 直接循环进入 `/implement` 会跳过这次收束并丢掉相互链接的细节；只有当 effort 后来发现确实很小时，才直接进入 `/implement`。
+  Map 清晰后，**它会 hand off，而不是 build**：先进入 **`/to-spec`**，把 map 中相互链接的 decisions 收束成 OpenSpec proposal，再由 **`/to-plan`** 完成 planning。让 map 直接循环进入 `/implement` 会跳过这次收束并丢掉相互链接的细节；只有当 effort 后来发现确实很小时，才直接进入 `/implement`。
 
 ## Codebase health
 
@@ -75,7 +71,7 @@ disable-model-invocation: true
 完全在 main flow 之外。
 
 - **`/grill-me`** - 与 `/grill-with-docs` 一样的持续访谈，但 **stateless**：不在本地保存任何内容，也不构建 `CONTEXT.md`。当你 **不在 working directory** 中工作时使用它——打磨一个计划、一个设计、一段文字，任何没有 repo 承载的东西。如果你在 working directory 中，改用 `/grill-with-docs`：它运行同样的访谈并留下文档痕迹，因此严格来说是更好的选择。
-- **`/grilling`** - 访谈 primitive 本身：rounds、frontier，facts 是 agent 的工作，decisions 是你的。`/grill-me` 和 `/grill-with-docs` 是两个命名的入口，`/triage`、`/wayfinder` 和 `/improve-codebase-architecture` 都在内部运行它。只有在你想要不带任何 wrapper 的访谈时才直接使用它。
+- **`/grilling`** - 访谈 primitive 本身：rounds、frontier，facts 是 agent 的工作，decisions 是你的。`/grill-me` 和 `/grill-with-docs` 是两个命名的入口，`/wayfinder` 和 `/improve-codebase-architecture` 都在内部运行它。只有在你想要不带任何 wrapper 的访谈时才直接使用它。
 - **`/resolving-merge-conflicts`** - hunk by hunk 处理进行中的 merge 或 rebase conflict，依据能追溯到每一侧 primary source 的 **intent** 来解决，而不是挑选行，然后完成操作。它从不运行 `--abort`。完全 standalone，不属于任何 flow：当你已身处 conflict 中时使用它。
 - **`/prototype`** - 一个小型 throwaway program，用来回答一个设计问题：这个 state model 感觉对吗，或者这个 UI 应该是什么样。Throwaway 是对代码编写方式的约束，而不是销毁它的承诺：答案会折进真实代码，prototype 本身则作为 **primary source** 保留在 main 之外的 `prototype/<name>` branch 上，并由 implementation issue 指向。它是 main flow 第 2 步的绕行，但任何难以纸面解决的 design question 都可以直接用它。
 - **`/research`** - 把阅读工作委托给 **background agent**：它对照 **primary sources** 调研问题，然后在 repo 中留下带引用的 Markdown 文件。你可以在它阅读时继续工作。产物应带入 `/grill-with-docs` 的 main flow；research 提供思考材料，但不取代思考。

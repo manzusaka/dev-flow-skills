@@ -26,7 +26,7 @@ import {
   type NewChangeOptions,
 } from '../commands/workflow/index.js';
 
-const version = process.env.SPECT_VERSION ?? '0.1.1';
+const version = process.env.SPECT_VERSION ?? '0.1.4';
 
 function failWithError(
   error: unknown,

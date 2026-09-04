@@ -64,7 +64,7 @@ Mocks 只用于系统边界——外部 APIs、时间、随机性，有时是 fi
 
 **`/tdd` 会取代 `/implement`，或课程里的 `/do-work` 吗？**
 
-不会。`/tdd` 记录方法论；`/implement` 是一个很简单的 work→feedback→commit loop，是 `/do-work` 的直接替代。课程里单一的 `/do-work` 步骤现在被拆分到 `/implement`、`/tdd` 和 `/code-review`。如果你在问该对一个 ticket 运行哪一个，答案几乎总是 `/implement`。
+不会。`/tdd` 记录方法论；`/implement` 是一个很简单的 work→feedback→commit loop，是 `/do-work` 的直接替代。课程里单一的 `/do-work` 步骤现在被拆分到 `/implement`、`/tdd` 和 `/code-review`。如果你在问该对一个 OpenSpec change 或一份有 spec 的工作运行哪一个，答案几乎总是 `/implement`。
 
 **deep-modules 和 interface-design 的指导去哪了？**
 
@@ -88,7 +88,7 @@ Mocks 只用于系统边界——外部 APIs、时间、随机性，有时是 fi
 `tdd` 是 main chain 的 build 步骤内部的引擎，而不是它自己的一个步骤：
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
 [to-spec](https://aihero.dev/skills-to-spec) 预先商定 test seams，[implement](https://aihero.dev/skills-implement) 按 ticket 驱动 `tdd`，[code-review](https://aihero.dev/skills-code-review) 事后检查只用了已商定的 seams——并拥有 `tdd` 不再做的 refactoring。它的另一个邻居是 [codebase-design](https://aihero.dev/skills-codebase-design)，`tdd` 所说的 seam 和 deep-module 词汇的共享来源。你也可以单独使用它，只要有具体 behavior 要构建、又不在一个完整 spec 的推进中。当你不确定哪个 skill 适合你的处境时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

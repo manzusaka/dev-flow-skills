@@ -1,0 +1,3 @@
+interface:
+  display_name: "使用 Git Worktrees"
+  short_description: "搭建隔离的 worktree 工作区"

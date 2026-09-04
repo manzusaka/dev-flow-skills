@@ -56,9 +56,9 @@ skill 把文件放在 repo 已经存放笔记的地方，除此之外没有更�
 
 skill 里没有停止准则，而这表现为两个看似相反、实为同一个缺口的抱怨：走得太深的 agents，以及广泛覆盖主题却漏掉那个真正要紧的具体细节的 agents。一位实践者这么说："deep-research skills 有时候有点太深了。而让 agent 去 research 通常会导致漏掉关键细节。"收窄范围是你的事。一个狭窄、可回答的问题——一个 API、一个行为、一个版本说法——带回来的结果远比"research X"好。
 
-**`/wayfinder` 创建了 research tickets——我要自己解决它们吗？**
+**`/wayfinder` 创建了 research records——我要自己解决它们吗？**
 
-不用，它现在会替你把它们发射出去。在 v1.1 以来未发布的变更中，一次绘图 session 会为每个 research ticket 衍生一个 `/research` subagent 并并行把它们烧完，把发现捕获在一条 throwaway `research/<name>` branch 上，并带上来自 ticket 的 [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer)。Research tickets 是 wayfinder 的 one-ticket-per-session 规则的唯一例外，因为它们是 [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) 的——没有东西在等你。那些 branch 有两个已知的绊脚石：有人看到 subagent 从一条从不打算合并的 branch 上开了一个 draft PR（[issue #576](https://github.com/mattpocock/skills/issues/576)），以及之后删除 branch 会破坏 tickets 持有的 context pointers。
+不用，它现在会替你把它们发射出去。一次绘图 session 会为每个 research record 衍生一个 `/research` subagent 并并行把它们烧完，把发现捕获在一条 throwaway `research/<name>` branch 上，并带上来自 record 的 [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer)。Research records 是 wayfinder 的 one-record-per-session 规则的唯一例外，因为它们是 [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) 的——没有东西在等你。那些 branch 有两个已知的绊脚石：有人看到 subagent 从一条从不打算合并的 branch 上开了一个 draft PR（[issue #576](https://github.com/mattpocock/skills/issues/576)），以及之后删除 branch 会破坏 records 持有的 context pointers。
 
 ## It's working if
 
@@ -70,4 +70,4 @@ skill 里没有停止准则，而这表现为两个看似相反、实为同一�
 
 ## Where it fits
 
-一个可随时取用的 standalone，为思考类 skills 供料，而不是坐在 build chain 里。它的文件是某种要*带进* flow 的东西：当事实已经摆在桌面上时，[grilling](https://aihero.dev/skills-grilling) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 会问出更锐利的问题，而 [to-spec](https://aihero.dev/skills-to-spec) 可以对着它做综合。[wayfinder](https://aihero.dev/skills-wayfinder) 是唯一直接调用它的 skill，用 `/research` subagent 解决其地图上的每个 research ticket。完整地图见 [ask-matt](https://aihero.dev/skills-ask-matt)。
+一个可随时取用的 standalone，为思考类 skills 供料，而不是坐在 build chain 里。它的文件是某种要*带进* flow 的东西：当事实已经摆在桌面上时，[grilling](https://aihero.dev/skills-grilling) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 会问出更锐利的问题，而 [to-spec](https://aihero.dev/skills-to-spec) 可以对着它做综合。[wayfinder](https://aihero.dev/skills-wayfinder) 是唯一直接调用它的 skill，用 `/research` subagent 解决其地图上的每个 research record。完整地图见 [ask-matt](https://aihero.dev/skills-ask-matt)。

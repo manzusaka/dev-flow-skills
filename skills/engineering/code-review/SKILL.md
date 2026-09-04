@@ -10,8 +10,6 @@ description: 从固定点（commit、branch、tag 或 merge-base）开始，按 
 
 两个轴线都作为**并行 sub-agents**运行，避免互相污染 context；然后这个 skill 聚合它们的 findings。
 
-Issue tracker 应该已经提供给你；如果缺少 `docs/agents/issue-tracker.md`，运行 `/setup-skills`。
-
 ## Process
 
 ### 1. Pin the fixed point
@@ -26,10 +24,13 @@ Issue tracker 应该已经提供给你；如果缺少 `docs/agents/issue-tracker
 
 按以下顺序寻找来源 spec：
 
-1. Commit messages 中的 issue references（`#123`、`Closes #45`、GitLab `!67` 等）— 按 `docs/agents/issue-tracker.md` 中的 workflow 获取。
-2. 用户作为 argument 传入的 path。
-3. `openspec/changes/`、`docs/`、`specs/` 或 `.scratch/` 下与 branch name 或 feature 匹配的 spec 文件。
-4. 如果什么都找不到，询问用户 spec 在哪里。如果用户说没有 spec，**Spec** sub-agent 跳过并报告 “no spec available”。
+1. 调用方显式传入的 spec 路径（例如 `/implement` 显式传入的 delta specs 与 proposal）。
+2. Commit messages 引用的 OpenSpec change：列出 `openspec/changes/` 下的 active change 目录（排除 `archive/` 与隐藏目录），与 Step 1 记录的 commit list 匹配。
+3. 当前 branch name（如有）能精确匹配的 OpenSpec change 目录。
+4. `docs/` 或 `specs/` 下与 branch name 或 feature 匹配的 spec 文件。
+5. 如果什么都找不到，询问用户 spec 在哪里。如果用户说没有 spec，**Spec** sub-agent 跳过并报告 “no spec available”。
+
+Step 2/3 命中时，以该 change 的 `proposal.md` 与 `specs/` 下的 delta specs 共同作为 spec 来源；多个 change 命中时合并所有命中 change 的来源；命中的 change 没有 `specs/`（`skip_specs: true`）时只用它的 `proposal.md`。
 
 ### 3. Identify the standards sources
 
@@ -66,7 +67,7 @@ Repo 中任何记录代码应该如何写的内容，例如 `CODING_STANDARDS.md
 **Spec sub-agent prompt** — 包含：
 
 - Diff command 和 commit list。
-- Spec 的 path 或已获取内容。
+- spec 来源文件列表（如 proposal 与 delta specs）或已获取内容。
 - Brief："Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
 
 如果缺少 spec，跳过 Spec sub-agent，并在最终报告中说明。

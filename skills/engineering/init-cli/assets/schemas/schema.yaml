@@ -11,7 +11,7 @@ artifacts:
 
       章节：
       - **Why**：用 1-2 句话说明问题或机会。这解决了什么问题？为什么是现在？
-      - **User story**：按 `US-NNN` 编号记录已经确定的业务场景。每条包含变更类型、场景/约束、图片/原型、图片说明与可验证的验收标准；没有图片或原型时明确写“无”。
+      - **User story**：按 `US-NNN` 编号记录已经确定的业务场景。每条包含变更类型、场景/约束、图片/原型、图片说明与故事级验收标准（正常功能与边界的简单描述，不写形式化测试用例——它们由 spec 的 Scenario 拆解）；没有图片或原型时明确写“无”。
       - **Capabilities**：指出哪些 specs 将被创建或修改：
         - **New Capabilities**：列出引入的新能力。每一项对应一个新的 `specs/<capability-path>/spec.md`。你新引入的路径片段使用 kebab-case（例如 `user-auth` 或 `identity/user-auth`），并遵循项目现有的 spec 组织方式。
         - **Modified Capabilities**：列出需求（REQUIREMENTS）发生变化的既有能力。仅当 spec 层面的行为发生变化时才列出（只改实现细节不算）。每一项都需要一个增量规范（delta spec）文件。使用 `openspec/specs/` 下已存在的精确路径。若没有需求变化则留空。
@@ -47,7 +47,6 @@ artifacts:
       - 输入、输出与错误条件
       - 外部约束（安全性、隐私、可靠性、兼容性）
       - 可被测试或显式验证的场景
-      - **Testing**：逐条对应 proposal 中的 User story，记录可验证的测试点与已经确认的 test seams，只描述 external behavior。
 
       spec 中应避免：
       - 内部类名/函数名
@@ -77,7 +76,9 @@ artifacts:
       格式要求：
       - 每条需求：`### Requirement: <名称>`，其后接描述
       - 规范性需求使用 SHALL/MUST（避免 should/may）
-      - 每个场景：`#### Scenario: <名称>`，采用 WHEN/THEN 格式
+      - 每个场景：`#### Scenario: <名称>`，采用 WHEN/DO/THEN 格式：`- **WHEN**` 为前置条件与测试数据，`- **DO**` 为操作步骤（多步用 → 串联成一行），`- **THEN**` 为预期结果，`- **AND**` 可选补充断言
+      - 一条 Scenario 场景名称：可独立验证的用例；分支请拆分为多条 Scenario，并在场景名中写明分支条件
+      - Scenario 是 proposal User story 中验收标准的形式化：验收标准在故事层面描述正常功能，Scenario 将其拆解为可逐条验证的测试用例
       - **关键**：场景必须（MUST）正好使用 4 个井号（`####`）。使用 3 个井号或列表项会静默失败。
       - 每条需求必须（MUST）至少包含一个场景。
 
@@ -142,7 +143,7 @@ artifacts:
       章节：
       - **Context**：仅写解释该方案所必需的现状与约束。动机部分引用 proposal 而不要复述（例如"参见 proposal.md - Why"）。
       - **Goals / Non-Goals**：本设计要达成什么、明确排除什么。不要复述 proposal 的范围 —— 只补充设计层面的边界。
-      - **Decisions**：关键技术选型及其理由（为什么选 X 而不是 Y？）。为每个决策附上考虑过的备选方案。
+      - **Decisions**：关键技术选型及其理由（为什么选 X 而不是 Y？）。为每个决策附上考虑过的备选方案。已确认的 test seams（测试接入系统的入口与钩子）也记录在这里。
       - **Risks / Trade-offs**：已知的局限、可能出问题的地方。格式：[风险] → 缓解措施
       - **Migration Plan**：部署步骤、回滚策略（如适用）
       - **Open Questions**：可以安全地留待以后回答、且不会改变 specs、

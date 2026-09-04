@@ -15,7 +15,6 @@
 | 一个你能描述为症状的具体缺陷 | 这个 skill |
 | 一个已知 before-and-after 的慢 endpoint 或时间相关 regression | 这个 skill——它有一个 performance 分支（先量一个 baseline，再 bisect） |
 | 「这个 codebase 的瓶颈在哪里？」——没有具体症状 | 不是这个 skill。它诊断一个已知失败，它不做 audit |
-| 别人发来的未确认、未写好的原始 bug report | 先 [triage](https://aihero.dev/skills-triage) |
 | 用来回答设计问题的用完即弃代码，而不是追查缺陷 | [prototype](https://aihero.dev/skills-prototype) |
 | Test-first 构建一个有计划的 behavior | [tdd](https://aihero.dev/skills-tdd) |
 | 没有好的 seam 能锁住这个 bug | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture)——这个 skill 自己会向它移交 |
@@ -64,9 +63,6 @@ Phase 5 有一个值得知道的逃生舱。Regression test 在修复*之前*被
 **它会在写修复之前停下问我吗？**
 不会。只有 Phase 3 有一个人工 checkpoint——排好序的 hypothesis 列表在任何一条被测试前展示给你，而如果你不在场，它会按自己的排序继续。Instrumentation 和 fix 之间没有闸门，所以 agent 可以在你同意它的 root cause 之前就开始写代码。[Issue #124](https://github.com/mattpocock/skills/issues/124) 要求这样一道闸门，仍然开着。如果你想要它，在调用 skill 时说出来。
 
-**我已经在这份 bug report 上跑了 `/triage`。这还是同一份工作吗？**
-部分是，而两个 skill 都不承认这一点。正如一位读者所言：「Triage's step 3 is essentially a shallow, bounded instance of diagnosing-bugs Phase 1–2, but neither file mentions the other.」Triage 做一个有边界的「这真是一个 bug 吗，surface 是什么」pass；这个 skill 做彻底版本。先跑 triage 不是浪费——它的 verification 常常给你 Phase 1 的大部分原材料——但在这里要预期彻底重做它，并且预期没有交叉引用告诉你这一点。
-
 **它粘贴的 repro 输出会泄漏 secrets 吗？**
 可能会。Skill 要求 agent 粘贴 invocation 及其输出，并索取像 HAR files、log dumps 和 core dumps 这样的 artifacts。这些没有一个被指令消毒。[Issue #674](https://github.com/mattpocock/skills/issues/674) 恰恰提出了这一点——credentials、tokens、cookies 和个人数据搭着车进到一场 chat、一个 issue 或一个 PR——并提议一个 redaction guardrail。它开着、未实现。目前把 redaction 当作你的工作，尤其是当输出要去任何公开的地方之前。
 
@@ -90,4 +86,4 @@ Snyk 标记它，而那个 flag 是误报。它是这套里唯一随附一个可
 
 `diagnosing-bugs` 是一个随时可调用的 standalone。你在某样东西坏掉的那一刻落入它，并在修复及其 regression test 就位时退出；它不持有状态，也不需要先前的设置。[ask-matt](https://aihero.dev/skills-ask-matt) 把「有东西坏了」路由到这里。
 
-两个邻居要紧。[improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 在真正的 finding 是代码没有能锁住 bug 的 seam 时接下 [handoff](https://www.aihero.dev/ai-coding-dictionary/handoff)——推荐是在修复就位之后、有更多信息时做出的。[triage](https://aihero.dev/skills-triage) 对来自别人的原始报告 bug 坐在它上游，并对同样的前两个 phases 做一个更浅的版本。
+一个邻居要紧。[improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 在真正的 finding 是代码没有能锁住 bug 的 seam 时接下 [handoff](https://www.aihero.dev/ai-coding-dictionary/handoff)——推荐是在修复就位之后、有更多信息时做出的。

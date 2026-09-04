@@ -24,7 +24,7 @@ export const VALIDATION_MESSAGES = {
   CHANGE_NAME_EMPTY: 'Change 名称不能为空',
   CHANGE_WHY_TOO_SHORT: `Why 章节必须至少 ${MIN_WHY_SECTION_LENGTH} 个字符`,
   CHANGE_WHY_TOO_LONG: `Why 章节不应超过 ${MAX_WHY_SECTION_LENGTH} 个字符`,
-  CHANGE_WHAT_EMPTY: 'What Changes 章节不能为空',
+  CHANGE_WHAT_EMPTY: 'User story 章节不能为空',
   CHANGE_NO_DELTAS: 'Change 必须至少有一个 delta',
   CHANGE_SKIP_SPECS_CONFLICT:
     '.openspec.yaml 中设置了 skip_specs，但 specs/ 下存在 spec 文件。请移除 skip_specs，或删除这些增量 spec 文件',
@@ -45,9 +45,9 @@ export const VALIDATION_MESSAGES = {
   GUIDE_NO_DELTAS:
     '未找到 deltas。请确保变更在 specs/ 目录中有能力文件夹（例如 specs/http-server/spec.md），其中包含使用 delta 标题（## ADDED/MODIFIED/REMOVED/RENAMED Requirements）的 .md 文件，并且每个需求至少包含一个 "#### Scenario:" 块。如果此变更故意不修改任何 spec（纯重构、工具、文档），请在变更的 .openspec.yaml 中设置 "skip_specs: true"。提示：运行 "spect change show <change-id> --json --deltas-only" 查看解析出的 deltas。',
   GUIDE_MISSING_SPEC_SECTIONS:
-    '缺少必要章节。期望标题："## Purpose" 和 "## Requirements"。示例：\n## Purpose\n[简短用途]\n\n## Requirements\n### Requirement: 清晰的需求陈述\nUsers SHALL ...\n\n#### Scenario: 描述性名称\n- **WHEN** ...\n- **THEN** ...',
+    '缺少必要章节。期望标题："## Purpose" 和 "## Requirements"。示例：\n## Purpose\n[简短用途]\n\n## Requirements\n### Requirement: 清晰的需求陈述\nUsers SHALL ...\n\n#### Scenario: 描述性名称\n- **WHEN** ...\n- **DO** ...\n- **THEN** ...',
   GUIDE_MISSING_CHANGE_SECTIONS:
-    '缺少必要章节。期望标题："## Why" 和 "## What Changes"。确保 delta 已使用 delta 标题记录在 specs/ 中。',
+    '缺少必要章节。期望标题："## Why" 和 "## User story"。确保 delta 已使用 delta 标题记录在 specs/ 中。',
   GUIDE_SCENARIO_FORMAT:
-    '场景必须使用 4 级标题。将列表转换为：\n#### Scenario: 简短名称\n- **WHEN** ...\n- **THEN** ...\n- **AND** ...',
+    '场景必须使用 4 级标题。将列表转换为：\n#### Scenario: 简短名称\n- **WHEN** ...\n- **DO** ...\n- **THEN** ...\n- **AND** ...',
 } as const;

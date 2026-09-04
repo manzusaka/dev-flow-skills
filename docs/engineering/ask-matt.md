@@ -11,7 +11,6 @@
 | 你的处境 | router 返回什么 |
 | --- | --- |
 | 你有一个 idea，却不知从何开始 | Main flow 的头部，以及这个 build 是否小到可以跳过 spec |
-| Bugs 和 requests 从别人那里到来 | [triage](https://aihero.dev/skills-triage) 的 on-ramp，以及为什么你自己生成的 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) 不属于它 |
 | 两个 skills 看起来可以互换 | 两者之间的分界线，而它通常是一个具体的 test，而非口味问题。[grill-me](https://aihero.dev/skills-grill-me) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 取决于你是否身处工作目录中；[grill-with-docs](https://aihero.dev/skills-grill-with-docs) 和 [wayfinder](https://aihero.dev/skills-wayfinder) 则取决于这份 effort 是否装得进一次 session |
 | 一场漫长的 session，以及一个关于 [context](https://www.aihero.dev/ai-coding-dictionary/context) 的决策 | 在某个 phase 边界上，对五个选项的排好序的树 |
 | 你已经选定了一个 skill | 没什么有用的。直接调用那个 skill。 |
@@ -20,7 +19,7 @@
 
 Router 只点名 skills，它不安装它们。它指向的一切都必须已安装，推荐才具有可操作性，而且它只认识本仓库中那些已推广的 skills。
 
-依赖 tracker 的 routes——triage、wayfinder，以及以 tracker issue 为输入的 `implement`——假设 [setup-skills](https://aihero.dev/skills-setup-skills) 已经配置好 issue tracker。`to-spec` 与 `to-tickets` 依赖 `/init-flow-docs` 初始化的 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。router 会乐于在这些前置条件完成前就推荐它们。
+`to-spec` 与 `to-plan` 依赖 `/init-flow-docs` 初始化的 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。router 会乐于在这些前置条件完成前就推荐它们。
 
 ## Flows, not skills
 
@@ -49,7 +48,7 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 **难道没有一张按正确顺序排列的 skills 列表吗？**
 
-人们一直在 README 里要这么一张列表。这个 skill 就是那张列表——它存在的意义就在于此。一张静态表格会写出 `wayfinder → to-spec → to-tickets → implement → code-review`，而对大多数处境来说它都是错的，因为有趣的部分是那些分支——有没有 codebase，build 是否跨越多场 session，这个疑问能否靠交谈来敲定。诚实的代价是 router 靠手维护，会滞后于仓库。`/grilling` 和 `/resolving-merge-conflicts` 都在 router 点名它们之前很久就已发布。
+人们一直在 README 里要这么一张列表。这个 skill 就是那张列表——它存在的意义就在于此。一张静态表格会写出 `wayfinder → to-spec → to-plan → implement → code-review`，而对大多数处境来说它都是错的，因为有趣的部分是那些分支——有没有 codebase，build 是否跨越多场 session，这个疑问能否靠交谈来敲定。诚实的代价是 router 靠手维护，会滞后于仓库。`/grilling` 和 `/resolving-merge-conflicts` 都在 router 点名它们之前很久就已发布。
 
 **它告诉我一半的 skills 没安装。**
 
@@ -85,6 +84,6 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 ## Where it fits
 
-`ask-matt` 是一个 **standalone router**，悬于整套 skills 之上。它从不处于某条 chain 中的一步；它指向每一条 chain，而其他 docs 页面都回链到它这个节点，这样它们谁都不用重画这张图。从这里你最常落到 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——main flow 的头部，或 [triage](https://aihero.dev/skills-triage)——那份「到达的工作」而非「你开始的工作」的 on-ramp。
+`ask-matt` 是一个 **standalone router**，悬于整套 skills 之上。它从不处于某条 chain 中的一步；它指向每一条 chain，而其他 docs 页面都回链到它这个节点，这样它们谁都不用重画这张图。从这里你最常落到 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——main flow 的头部。
 
 它是它所描述 skills 之上的一个 [secondary source](https://www.aihero.dev/ai-coding-dictionary/secondary-source)。当 router 和某个 `SKILL.md` 冲突时，`SKILL.md` 是对的。

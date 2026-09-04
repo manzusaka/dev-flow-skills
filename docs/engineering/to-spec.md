@@ -1,6 +1,6 @@
 ## What it does
 
-`to-spec` 把已经确定的 conversation 固化为一个 OpenSpec change proposal。它直接创建兼容的 `.openspec.yaml` 与 `proposal.md`，不使用 issue tracker，也不生成后续的 design、tasks 或 delta specs。
+`to-spec` 把已经确定的 conversation 固化为一个 OpenSpec change proposal。它直接创建兼容的 `.openspec.yaml` 与 `proposal.md`，不生成后续的 design、tasks 或 delta specs。
 
 ```text
 openspec/changes/<change-name>/
@@ -56,7 +56,6 @@ created: <YYYY-MM-DD>
 - `Why`：为什么需要这次变更、为什么是现在。
 - `User story`：稳定的 `US-NNN`、类型、场景与约束、原型信息、验收标准。
 - `Capabilities`：new capability 使用符合项目布局的 kebab-case 路径；modified capability 使用 `openspec/specs/` 中的精确现有路径。
-- `Testing`：逐条 user story 的可验证测试点，以及用户确认的 test seams。
 - `Impact`：受影响的代码区域、API、依赖或系统。
 
 模板中的注释和占位符会被实际内容替换。没有图片或原型时明确写“无”；没有 spec-level behavior change 时 Capabilities 两个列表都写“无”，并由 `.openspec.yaml` 的 `skip_specs: true` 表达这是有意的零 delta change。
@@ -76,7 +75,7 @@ openspec/changes/<change-name>/
         └── spec.md
 ```
 
-这些后续 artifacts 由 `/to-tickets <change-name>` 创建，不属于 `/to-spec` 本次调用的授权范围。
+这些后续 artifacts 由 `/to-plan <change-name>` 创建，不属于 `/to-spec` 本次调用的授权范围。
 
 ## It's working if
 
@@ -93,7 +92,7 @@ openspec/changes/<change-name>/
 `to-spec` 是已确定 conversation 进入 OpenSpec planning 的入口：
 
 ```text
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
-它的上游负责确定需求；它负责创建 proposal；`to-tickets` 根据 proposal 补齐 delta specs、design 和 tasks。
+它的上游负责确定需求；它负责创建 proposal；`to-plan` 根据 proposal 补齐 delta specs、design 和 tasks。

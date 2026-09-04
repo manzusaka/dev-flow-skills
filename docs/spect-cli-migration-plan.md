@@ -96,7 +96,7 @@ dev-skills/
 
 ## 阶段二预告（另起任务）
 
-`setup-skills` 触发环境检查与安装；`to-spec`/`to-tickets` 借鉴 openspec 规范调整；参考目录 `openspec/` 完成后删除。
+`setup-skills` 触发环境检查与安装；`to-spec`/`to-plan` 借鉴 openspec 规范调整；参考目录 `openspec/` 完成后删除。
 
 ## 完成记录（2026-08-19，阶段一）
 
@@ -127,7 +127,16 @@ dev-skills/
 - 模板单一事实来源迁至 `skills/engineering/init-cli/assets/schemas/`，布局：`schema.yaml` 在顶层，`spec-driven/config.yaml` 与 `spec-driven/templates/{proposal,spec,design,tasks}.md` 按 schema 分目录。内容沿用原 `spect/assets/openspec/`（新版 User story/Testing 结构），逐文件移动零改动。
 - `embed-schemas.mjs` 改读 skill 新路径，`build.mjs` 注释同步；`spect/assets/openspec/` 删除。
 - 删除陈旧的 `spect/schemas/spec-driven/`（内容仍为 openspec-cn 措辞与旧 proposal 结构；单文件 bundle 运行期从不读取，dev 模式由项目本地 schemas 解析兜底）。
-- `spect init` 产出行为不变：仍向目标项目写入 `config.yaml`、`schemas/schema.yaml` 与 4 个模板，`to-spec`/`to-tickets`/`init-flow-docs` 对项目本地模板的依赖不受影响。
+- `spect init` 产出行为不变：仍向目标项目写入 `config.yaml`、`schemas/schema.yaml` 与 4 个模板，`to-spec`/`to-plan`/`init-flow-docs` 对项目本地模板的依赖不受影响。
 - init-cli 增加更新流程：已装版本与 `node <skill 目录>/bin/spect --version` 一致则报版本结束；不一致经用户确认后覆盖安装。frontmatter description、`agents/openai.yaml`、顶层与 bucket README 条目同步措辞。
 - 卫生：删除 skill 目录内 `.DS_Store`；`.gitignore` 增加 `.DS_Store`。
 - `validate` 期望 `## What Changes` 与模板 `## User story` 的不一致仍为阶段二事项，本次未动。
+
+## 完成记录（2026-09-02，to-plan 接入 spect CLI + 校验器对齐）
+
+- `to-plan` 全量委托 spect（阶段二预告项「to-spec/to-plan 借鉴 openspec 规范调整」至此全部落地，to-spec 已先行接入）：Step 1 change discovery 改用 `spect list --json`；Step 2 artifact 契约改用 `spect status --change <id> --json` + `spect templates --json`；Step 3/5/6 各阶段契约改用 `spect instructions <artifact> --change <id>`；Step 8 结构验证改用 `spect validate <change-name> --strict --no-interactive`，prose 只保留语义检查（capability 覆盖、占位符与 open question、durable docs 一致性、`git diff --check`）。
+- 删除 `skills/flows/to-plan/scripts/list_changes.py` 与 `tests/test_list_changes.py`（共 230 行）：脚本的 `changes + root` JSON shape 本就是按 `spect list` 设计的，CLI 接入后完全冗余。
+- to-plan 增加与 to-spec 一致的 CLI 门禁：先 `spect --version`，缺失时经用户确认调用 `/init-cli`；SKILL.md 与 `docs/engineering/to-plan.md` 中「不依赖 OpenSpec CLI」的旧设计声明全部移除，durable doc 同步修正过时的 `/init-flow-docs` 与列表脚本描述。
+- 修复阶段一「已知遗留」：校验器 proposal 章节期望与模板不一致。模板单一事实来源使用 `## User story`（to-spec 已按此结构提交），故对齐方向为校验器跟随模板：`change-parser.ts` 与 `markdown-parser.ts` 的章节查找改为 `User story` 优先（保留 `What Changes`/`变更内容` 兼容回退），错误信息与 `GUIDE_MISSING_CHANGE_SECTIONS` 文案同步。实测：含 `## User story` 的 proposal 通过 `show` 解析与 `validate --strict`；章节缺失时报「Change 必须包含 User story 章节」。
+- 版本与分发：`spect/package.json` 0.1.2 → 0.1.3，`cli/index.ts` fallback 字面量同步（此前与 package.json 不一致）；`npm --prefix spect run build` 重打单文件 bundle（405 模块）至 `skills/engineering/init-cli/bin/spect`。已安装用户经 `/init-cli` 的版本比对获得更新。
+- 校验：`npm --prefix spect run typecheck` 零错误；`claude plugin validate . --strict` 通过。

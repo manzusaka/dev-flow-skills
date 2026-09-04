@@ -740,7 +740,7 @@ export class Validator {
     if (msg.includes('Spec 必须包含 Purpose 章节') || msg.includes('Spec 必须包含 Requirements 章节')) {
       return `${msg}. ${VALIDATION_MESSAGES.GUIDE_MISSING_SPEC_SECTIONS}`;
     }
-    if (msg.includes('Change 必须包含 Why 章节') || msg.includes('Change 必须包含 What Changes 章节')) {
+    if (msg.includes('Change 必须包含 Why 章节') || msg.includes('Change 必须包含 User story 章节')) {
       return `${msg}. ${VALIDATION_MESSAGES.GUIDE_MISSING_CHANGE_SECTIONS}`;
     }
     return msg;
