@@ -12,7 +12,7 @@
 
 | 你面前有什么 | 运行什么 |
 | --- | --- |
-| 一个范围明确、一次就能敲定的 feature | [grill-me](https://aihero.dev/skills-grill-me)，或当有 codebase 时用 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
+| 一个范围明确、一次就能敲定的 feature | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，没有 codebase 时直接 [grilling](https://aihero.dev/skills-grilling) |
 | 一个 greenfield 项目，或一个跨越许多 session 的 build，路径仍不清晰 | `/wayfinder` |
 | 一条该决定的事已经做完的 thread | [to-spec](https://aihero.dev/skills-to-spec)——直接跳过 map |
 | 一张已清除的 wayfinder map | [to-spec](https://aihero.dev/skills-to-spec)，然后用 `to-plan` 完成 OpenSpec planning |

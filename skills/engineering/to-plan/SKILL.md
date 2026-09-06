@@ -152,3 +152,7 @@ spect validate <change-name> --strict --no-interactive
 最后运行 `git diff --check`，报告 change name、生成或更新的 artifact paths、durable docs 和验证结果。
 
 完成条件：所有检查通过；失败时保留已批准的 artifacts，准确报告失败项和安全的继续位置。
+
+## Handoff Next Step
+
+下一步由用户显式运行 `/implement <change-name>` 执行实现。

@@ -91,10 +91,10 @@ Example:
 
 ```yaml
 ---
-name: teach
-description: 在这个工作区中教用户一个新技能或概念。
+name: handoff
+description: 把当前对话压缩成交接文档，让另一个代理接手。
+argument-hint: "下一个会话将用于什么？"
 disable-model-invocation: true
-argument-hint: "你想学习什么？"
 ---
 ```
 

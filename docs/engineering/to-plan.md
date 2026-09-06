@@ -101,4 +101,4 @@ Skill 会展示 proposed diffs；用户确认后才写入。没有合格内容�
 grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
-`to-spec` 固化 WHY 和 WHAT 的入口；`to-plan` 补齐 specs、HOW 和 implementation plan；`implement` 按 `tasks.md` 中的 vertical slices 推进实现；`code-review` 用 OpenSpec artifacts 检查实现是否符合要求。
+`to-spec` 固化 WHY 和 WHAT 的入口；`to-plan` 补齐 specs、HOW 和 implementation plan；`implement` 按 `tasks.md` 中的 vertical slices 推进实现；`code-review` 用 OpenSpec artifacts 检查实现是否符合要求。收尾时 `to-plan` 以 `Handoff Next Step` 章节提示下一步：由用户显式运行 `/implement <change-name>`。

@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 实现用户在 OpenSpec change 或 spec 中指定的工作。调用形式是 `/implement [change-name]`；来源是裸 spec 或对话内计划时，直接说明即可。上游敲定的内容就是输入：没有访谈，不提出不同方案，不重新打开计划。
 
-边界：只写入实现代码与 `tasks.md` 勾选；不创建分支、不做 checkpoint 提交、不归档 change；一次调用对应一个 change，并行需调用方提供隔离的 worktrees。`spect` 缺失或报错时停止并报告，不代为安装。
+边界：只写入实现代码、`tasks.md` 勾选与 `trace.md`；不创建分支、不做 checkpoint 提交、不归档 change；一次调用对应一个 change，并行需调用方提供隔离的 worktrees。`spect` 缺失或报错时停止并报告，不代为安装。
 
 ## Process（OpenSpec 输入）
 
@@ -50,9 +50,20 @@ disable-model-invocation: true
 
 ### 7. Review and finish
 
-对 fixed point 调用 `/code-review`，显式传入 delta specs 与 proposal 作为 Spec 轴来源。「全部勾选且已提交」的重入态没有本次记录的 fixed point：取 commit message 最老引用 `<change-name>` 的提交的 parent，解析不出来时询问用户。
+对 fixed point 调用 `/code-review`，显式传入 delta specs 与 proposal 作为 Spec 轴来源。「全部勾选且已提交」的重入态没有本次记录的 fixed point：先读 `trace.md` 中记录的 review fixed point；缺失时取 commit message 最老引用 `<change-name>` 的提交的 parent，解析不出来时询问用户。
 
-有 findings 就修复、通过测试后再次提交；review 只跑一轮。完成后报告 change 完成。
+有 findings 就修复、通过测试后再次提交；review 只跑一轮。
+
+在 `openspec/changes/<change-name>/trace.md` 写入（文件不存在则创建，已有 implement section 则更新）本次执行记录：
+
+```text
+## implement
+- review fixed point: <Step 6 记录的 HEAD>
+- commit: <最终提交 SHA>
+- code-review: <pass | findings 已修复摘要>
+```
+
+完成后报告 change 完成。
 
 ## Process（spec / 对话输入）
 
@@ -60,6 +71,10 @@ disable-model-invocation: true
 2. 在可确认的 seams 上驱动 `/tdd`；seams 缺失时由 `/tdd` 当场发问。
 3. 完整测试套件通过后提交到当前 branch。
 4. 对 fixed point 调用 `/code-review`，显式传入 spec 作为 Spec 轴来源；有 findings 就修复、测试后再次提交，review 只跑一轮。
+
+## Handoff Next Step
+
+OpenSpec change 完成后，下一步由用户显式运行 `/archive <change-name>` 归档变更。来源是裸 spec 或对话内计划时无此步骤。
 
 ## 注意
 

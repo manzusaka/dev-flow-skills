@@ -2,7 +2,7 @@
 
 <!--
 生成与维护要求：
-- 仓库源代码中，本模板镜像于 `template/` 与 `skills/flows/setup-skills/assets/`；修改时保持两份一致。
+- 仓库源代码中，本模板维护于 `skills/engineering/setup-skills/assets/`，修改时以此为准。
 - 只写已经从仓库或用户确认的信息，不推测项目事实。
 - 按项目实际情况保留 sections；删除空 section、comments 与 placeholders。
 - 以 manifests、scripts、config 和目录结构作为可直接查询事实的 source of truth；这里只记录会改变 agent 决策的约定、边界、原因和非显而易见的入口。

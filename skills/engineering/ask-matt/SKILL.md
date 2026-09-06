@@ -14,7 +14,7 @@ disable-model-invocation: true
 
 这是大多数工作的路线：你有一个想法，并希望把它构建出来。
 
-1. **`/grill-with-docs`** - 通过访谈打磨想法。在 **working directory** 中工作时从这里开始：它是 stateful 的，会把学到的内容保存在 `CONTEXT.md` 和 ADRs 中。（没有 working directory？用 `/grill-me`，见 Standalone。两者都运行同一个 `/grilling` primitive；`grill-with-docs` 是会留下文档痕迹的版本，只要有 repo 可记录，它就是两者中更好的那个。）
+1. **`/grill-with-docs`** - 通过访谈打磨想法。在 **working directory** 中工作时从这里开始：它是 stateful 的，会把学到的内容保存在 `CONTEXT.md` 和 ADRs 中。（没有 working directory？直接调用 `/grilling`，见 Standalone。`grill-with-docs` 是会留下文档痕迹的版本，只要有 repo 可记录，它就是更好的那个。）
 2. **分支 - 能否在对话中解决所有问题？** 如果某个问题需要可运行的答案（state、business logic，或必须亲眼看到的 UI），就通过 prototype 绕行，并用 **`/handoff`** 在两个方向桥接（prototype 住在自己的目录里，这正是 `/handoff` 的用途，见 Phase boundaries）：
    - **`/handoff`** 导出，然后基于该文件打开 fresh session；
    - **`/prototype`** 用 throwaway code 回答问题；
@@ -70,15 +70,11 @@ disable-model-invocation: true
 
 完全在 main flow 之外。
 
-- **`/grill-me`** - 与 `/grill-with-docs` 一样的持续访谈，但 **stateless**：不在本地保存任何内容，也不构建 `CONTEXT.md`。当你 **不在 working directory** 中工作时使用它——打磨一个计划、一个设计、一段文字，任何没有 repo 承载的东西。如果你在 working directory 中，改用 `/grill-with-docs`：它运行同样的访谈并留下文档痕迹，因此严格来说是更好的选择。
-- **`/grilling`** - 访谈 primitive 本身：rounds、frontier，facts 是 agent 的工作，decisions 是你的。`/grill-me` 和 `/grill-with-docs` 是两个命名的入口，`/wayfinder` 和 `/improve-codebase-architecture` 都在内部运行它。只有在你想要不带任何 wrapper 的访谈时才直接使用它。
+- **`/grilling`** - 访谈 primitive 本身：rounds、frontier，facts 是 agent 的工作，decisions 是你的。`/grill-with-docs` 是它的 stateful 命名入口，`/wayfinder` 和 `/improve-codebase-architecture` 都在内部运行它。不在 working directory 中工作时直接使用它——打磨一个计划、一个设计、一段文字，任何没有 repo 承载的东西；它是 stateless 的，不在本地保存任何内容，也不构建 `CONTEXT.md`。在 working directory 中则改用 `/grill-with-docs`：它运行同样的访谈并留下文档痕迹，因此严格来说是更好的选择。
 - **`/resolving-merge-conflicts`** - hunk by hunk 处理进行中的 merge 或 rebase conflict，依据能追溯到每一侧 primary source 的 **intent** 来解决，而不是挑选行，然后完成操作。它从不运行 `--abort`。完全 standalone，不属于任何 flow：当你已身处 conflict 中时使用它。
 - **`/prototype`** - 一个小型 throwaway program，用来回答一个设计问题：这个 state model 感觉对吗，或者这个 UI 应该是什么样。Throwaway 是对代码编写方式的约束，而不是销毁它的承诺：答案会折进真实代码，prototype 本身则作为 **primary source** 保留在 main 之外的 `prototype/<name>` branch 上，并由 implementation issue 指向。它是 main flow 第 2 步的绕行，但任何难以纸面解决的 design question 都可以直接用它。
 - **`/research`** - 把阅读工作委托给 **background agent**：它对照 **primary sources** 调研问题，然后在 repo 中留下带引用的 Markdown 文件。你可以在它阅读时继续工作。产物应带入 `/grill-with-docs` 的 main flow；research 提供思考材料，但不取代思考。
-- **`/to-questionnaire`** - 当阻塞你的东西不在你的头脑或 codebase 里，而在 **别人的** 头脑里时，这个 skill 会写一份问卷让他们填写。它是 `/grill-me` 的反向：它不访问你关于 subject，而是访问你关于 **send**——发给谁、你需要拿回什么——并把问题对准 gap。拿回来的东西是 `/grill-with-docs` 或 `/to-spec` 的素材。
 - **`/wizard`** - 用于只有 **human** 能完成的步骤：provisioning infrastructure、设置 credentials 或 CI secrets、在陌生的第三方 dashboard 中点击操作、运行一次性 migration 或 cutover。它生成一个交互式 bash script，打开每个 URL、捕获每个值，并写入 `.env` 和 GitHub secrets——这样该过程就不再需要你每次向 agent 重新解释。它是 model-invoked 的，所以 agent 一遇到只有你能通过的墙就会伸手够它。如果 agent 自己能做，它就应该自己做；这个 skill 用于 human 真正在 loop 中的场景。
-- **`/wait-what`** - 对没有落地的消息的纠正。在对话中途、任何其他 skill 内部使用它，agent 会用你缺失的 context、以 plain English、用 `CONTEXT.md` vocabulary 重新表述它刚说的话。它事后生效；`/grill-with-docs` 是前置的解法，因为早早就共同约定的共享语言才是阻止 jargon 出现的根本。
-- **`/teach`** - 使用当前目录作为 stateful workspace，跨多个 sessions 学习一个概念。
 - **`/writing-for-agents`** - 编写 agents 消费的文档的 reference：skills、AGENTS.md、被指向的 docs。
 
 ## Precondition

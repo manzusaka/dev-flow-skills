@@ -103,4 +103,8 @@ skip_specs: true
 
 运行 `spect status --change <change-name>` 检查 OpenSpec 能识别该 change。
 
-向用户报告 change name、生成路径、schema 和 capabilities，并说明 proposal 已就绪；下一步由用户显式运行 `/to-plan <change-name>` 补齐 specs、design 和 tasks。
+向用户报告 change name、生成路径、schema 和 capabilities，并说明 proposal 已就绪。
+
+## Handoff Next Step
+
+下一步由用户显式运行 `/to-plan <change-name>` 补齐 specs、design 和 tasks。

@@ -12,7 +12,6 @@
 
 | 你有什么 | 拿什么 |
 | --- | --- |
-| 你不在工作目录里 | [grill-me](https://aihero.dev/skills-grill-me)——同一个 [session](https://www.aihero.dev/ai-coding-dictionary/session)，只是这个名字 agent 永远不会自己触发 |
 | 你在工作目录里 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——同一个 session，并且它会边进行边写出 `CONTEXT.md` 和 ADRs |
 | 一个太大、一个 session 装不下的 effort | [wayfinder](https://aihero.dev/skills-wayfinder)——它绘制一张 map，并在 decision records 内部运行 grilling |
 | 一个交谈无法解决、关于某物该如何呈现或感觉的问题 | [prototype](https://aihero.dev/skills-prototype)——构建一次性版本，然后回来 |
@@ -37,7 +36,6 @@
 | 问题 | 在哪里被回答 |
 | --- | --- |
 | tree、frontier、rounds、问题格式、facts vs decisions | 这里 |
-| 一个 session 应该持续多久、对一个你无法靠交谈回答的问题该怎么办、如何避免一路点头 | [grill-me](https://aihero.dev/skills-grill-me) |
 | 什么会被写进 `CONTEXT.md`、什么会成为 ADR | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
 
 ## Common questions
@@ -52,7 +50,7 @@ When grilling, ask one question at a time.
 round-based 的默认设置确实存在争议。读得慢的实践者、用第二语言工作的人、或者把顺序格式当作专注脚手架的人，都报告一次一个的节奏对他们更好，而这个退出选项是受到支持的，而不是勉强容忍的。
 
 **`/batch-grill-me` 去哪里了？**
-进到了这个 skill 里。round-based 的提问曾短暂地作为一个独立的 skill 发布，然后并入了 `grilling` 本身，所以所有建立在那个 primitive 之上的东西——`grill-me`、`grill-with-docs`、`wayfinder`——都立刻得到了它。没有需要安装的 `batch-grill-me`，也没有单独的顺序 skill；上面的那行 `CLAUDE.md` 就是回到一次一个的途径。
+进到了这个 skill 里。round-based 的提问曾短暂地作为一个独立的 skill 发布，然后并入了 `grilling` 本身，所以所有建立在那个 primitive 之上的东西——`grill-with-docs`、`wayfinder`——都立刻得到了它。没有需要安装的 `batch-grill-me`，也没有单独的顺序 skill；上面的那行 `CLAUDE.md` 就是回到一次一个的途径。
 
 **一次问整个 round 必然会丢掉我早先的回答会引发的问题。不是吗？**
 这是对 round 设计最常见的反对意见，而 frontier 就是答案：一个 round 只包含互不依赖的问题，所以一个 round 里的任何回答都不可能使该 round 里的另一个问题失效。回答仍然会重塑下游的一切——下一个 round 是被重新计算出来的，而不是预先写好的。你失去的东西比「一次问所有问题」所暗示的要小，又比什么都没有要大：见上面 frontier 的局限。
@@ -66,8 +64,8 @@ round-based 的默认设置确实存在争议。读得慢的实践者、用第�
 **我能否限制问题的数量？**
 不能，而且上限是被刻意排除在 scope 之外的。有些计划需要三个问题，有些需要五十个；一个固定的天花板要么截断了困难的情况，要么在简单的情况下显得随意。用平白的语言引导是预期的控制方式——告诉它收尾，或者停下来接受当前的计划。如果一场 session 运行得非常久，原因通常是 scope 太大；把工作拆开，分别 grill 那些块。
 
-**我只安装了 `grill-me`，却什么也没发生。**
-`grill-me` 是一行式的 skill，它的全部内容就是「运行一场 `/grilling` session」，所以它也需要这个 skill 被安装。`grill-with-docs` 也一样，它额外还需要 [domain-modeling](https://aihero.dev/skills-domain-modeling)。安装整套可以避免这个问题；选择性安装则意味着也要安装 primitives。
+**我只安装了 `grill-with-docs`，却什么也没发生。**
+`grill-with-docs` 点名运行 `/grilling`，所以它也需要这个 skill 被安装；它还额外需要 [domain-modeling](https://aihero.dev/skills-domain-modeling)。安装整套可以避免这个问题；选择性安装则意味着也要安装 primitives。
 
 **`grill-with-docs` 运行了，但它从未加载 `grilling`。**
 一个真实且未修复的粗糙边缘，在各种 [harnesses](https://www.aihero.dev/ai-coding-dictionary/harness) 和模型上都有报告：一个点名另一个 skill 的 skill 并不能可靠地让那个 skill 被加载，而 `grill-with-docs` 点名了两个。迹象是一场一次问完所有问题、不附带任何推荐的 session——那是模型在即兴发挥一场访谈，而不是在运行这一个。直接问 agent 它是否加载了 `grilling` 和 `domain-modeling`，通常能恢复。
@@ -84,4 +82,4 @@ round-based 的默认设置确实存在争议。读得慢的实践者、用第�
 
 ## Where it fits
 
-`grilling` 是一个 **primitive**，而不是一个你排进日程的步骤：它是访谈技术的 single source of truth，放在一处，好让每个需要访谈的 skill 都去调用它，而不是各自发明一套。[grill-me](https://aihero.dev/skills-grill-me) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 是它的两个 user-invoked 前门，而 `grill-with-docs` 是主 build chain 开始的地方，在 [to-spec](https://aihero.dev/skills-to-spec) 之前。[wayfinder](https://aihero.dev/skills-wayfinder) 运行它来解析 decision records，[improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 用它来走一遍 tree，一旦你选定了一个要深化的候选。当你不确定哪个入口合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你引路。
+`grilling` 是一个 **primitive**，而不是一个你排进日程的步骤：它是访谈技术的 single source of truth，放在一处，好让每个需要访谈的 skill 都去调用它，而不是各自发明一套。[grill-with-docs](https://aihero.dev/skills-grill-with-docs) 是它的 user-invoked 前门，也是主 build chain 开始的地方，在 [to-spec](https://aihero.dev/skills-to-spec) 之前。[wayfinder](https://aihero.dev/skills-wayfinder) 运行它来解析 decision records，[improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 用它来走一遍 tree，一旦你选定了一个要深化的候选。当你不确定哪个入口合适时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你引路。

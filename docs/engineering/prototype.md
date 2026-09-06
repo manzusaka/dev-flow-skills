@@ -64,4 +64,4 @@ prototype 住在它自己的目录里，并生成大量你不想留在这个提�
 
 它最大的消费者是 [wayfinder](https://aihero.dev/skills-wayfinder)。一张 wayfinder 地图由 **decision records** 构成，而 `prototype` 是 record 可以成为的四种类型之一：当阻塞性问题是谁说多少讨论都无法解决的"这应该长什么样"或"它应该怎么表现"时使用的那个。Wayfinder 通过制造某个具体的东西来供人反应，从而提升一场迷雾般讨论的保真度，而这个 skill 正是那个具体的东西被构建的方式。一个 prototype record 由答案来结案，而 prototype 作为一份 asset 从地图中被链接出来。
 
-其他邻居在它上游和下游。[grill-me](https://aihero.dev/skills-grill-me) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 回答可 grill 的问题；不可 grill 的那些则来到这里，而那一行回答回到访谈中。在下游，一个经过验证的 state model 或 UI 方向会成为 [to-spec](https://aihero.dev/skills-to-spec) 的已定输入，后者可以把 prototype 产出的决策密集片段内联进去，而不是用口语化文字描述它。至于其他任何东西，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由整个集合。
+其他邻居在它上游和下游。[grill-with-docs](https://aihero.dev/skills-grill-with-docs) 回答可 grill 的问题；不可 grill 的那些则来到这里，而那一行回答回到访谈中。在下游，一个经过验证的 state model 或 UI 方向会成为 [to-spec](https://aihero.dev/skills-to-spec) 的已定输入，后者可以把 prototype 产出的决策密集片段内联进去，而不是用口语化文字描述它。至于其他任何东西，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由整个集合。

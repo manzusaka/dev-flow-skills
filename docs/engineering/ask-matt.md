@@ -11,7 +11,7 @@
 | 你的处境 | router 返回什么 |
 | --- | --- |
 | 你有一个 idea，却不知从何开始 | Main flow 的头部，以及这个 build 是否小到可以跳过 spec |
-| 两个 skills 看起来可以互换 | 两者之间的分界线，而它通常是一个具体的 test，而非口味问题。[grill-me](https://aihero.dev/skills-grill-me) 和 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 取决于你是否身处工作目录中；[grill-with-docs](https://aihero.dev/skills-grill-with-docs) 和 [wayfinder](https://aihero.dev/skills-wayfinder) 则取决于这份 effort 是否装得进一次 session |
+| 两个 skills 看起来可以互换 | 两者之间的分界线，而它通常是一个具体的 test，而非口味问题。[grill-with-docs](https://aihero.dev/skills-grill-with-docs) 和 [wayfinder](https://aihero.dev/skills-wayfinder) 取决于这份 effort 是否装得进一次 session |
 | 一场漫长的 session，以及一个关于 [context](https://www.aihero.dev/ai-coding-dictionary/context) 的决策 | 在某个 phase 边界上，对五个选项的排好序的树 |
 | 你已经选定了一个 skill | 没什么有用的。直接调用那个 skill。 |
 

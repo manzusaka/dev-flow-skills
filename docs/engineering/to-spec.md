@@ -95,4 +95,4 @@ openspec/changes/<change-name>/
 grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
-它的上游负责确定需求；它负责创建 proposal；`to-plan` 根据 proposal 补齐 delta specs、design 和 tasks。
+它的上游负责确定需求；它负责创建 proposal；`to-plan` 根据 proposal 补齐 delta specs、design 和 tasks。收尾时它以 `Handoff Next Step` 章节提示下一步：由用户显式运行 `/to-plan <change-name>`。

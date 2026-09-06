@@ -37,7 +37,7 @@ npx skills@latest add manzusaka/devtrain-skills
 
 ### Reference
 
-这些 skills 按一个维度区分：谁能调用它们。**User-invoked** skills 只有在你输入名称时才能触达（例如 `/grill-me`）；它们的工作是编排。**Model-invoked** skills 可以由你调用，也可以在任务匹配时由 agent 自动触达；它们承载可复用纪律。User-invoked skill 可以调用 model-invoked skills，但不能调用另一个 user-invoked skill。
+这些 skills 按一个维度区分：谁能调用它们。**User-invoked** skills 只有在你输入名称时才能触达（例如 `/handoff`）；它们的工作是编排。**Model-invoked** skills 可以由你调用，也可以在任务匹配时由 agent 自动触达；它们承载可复用纪律。User-invoked skill 可以调用 model-invoked skills，但不能调用另一个 user-invoked skill。
 
 #### Engineering
 
@@ -47,6 +47,13 @@ npx skills@latest add manzusaka/devtrain-skills
 
 - **[ask-matt](./skills/engineering/ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** - 扫描 codebase 中的 deepening opportunities，生成可视化 HTML report，然后围绕你选中的候选项继续 grilling。
+- **[setup-skills](./skills/engineering/setup-skills/SKILL.md)** - 初始化一个 repository 的工程前置：spect CLI、agent instructions 与 CONTEXT、ADR、OpenSpec 脚手架。
+- **[wayfinder](./skills/engineering/wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 `docs/wayfinding/` 下的 decision records 共享 map，逐一解决直到通往 destination 的路清晰。
+- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `CONTEXT.md` 与 ADRs。
+- **[to-spec](./skills/engineering/to-spec/SKILL.md)** - 把当前对话整理成 OpenSpec change proposal，创建兼容的变更元数据与 `proposal.md`。
+- **[to-plan](./skills/engineering/to-plan/SKILL.md)** - 读取 OpenSpec proposal，经过架构 grilling 补齐 delta specs、design 与 tracer-bullet tasks。
+- **[implement](./skills/engineering/implement/SKILL.md)** - 实现 OpenSpec change 或 spec 中指定的工作：按 `tasks.md` checkbox 状态续做，收尾统一提交并以 `/code-review` 审查。
+- **[archive](./skills/engineering/archive/SKILL.md)** - 归档已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 合并规格，并把本次 change 的提交压成单个 commit。
 
 **Model-invoked**
 
@@ -62,37 +69,15 @@ npx skills@latest add manzusaka/devtrain-skills
 - **[wizard](./skills/engineering/wizard/SKILL.md)** - 生成一个交互式 bash wizard，带人走过只有人才能完成的步骤：provisioning infrastructure、设置 credentials 或 CI secrets、操作陌生的第三方 dashboard，或执行一次性 migration/cutover。
 - **[using-git-worktrees](./skills/engineering/using-git-worktrees/SKILL.md)** - 确保 feature 工作在隔离的 workspace 中进行：优先原生 worktree 工具，没有时 fallback 到 git worktree，并完成 setup 与 baseline 验证。
 
-#### Flows
-
-围绕 OpenSpec planning 的规划和交付流程。
-
-**User-invoked**
-
-- **[setup-skills](./skills/flows/setup-skills/SKILL.md)** - 初始化一个 repository 的工程前置：spect CLI、agent instructions 与 CONTEXT、ADR、OpenSpec 脚手架。
-- **[wayfinder](./skills/flows/wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 `docs/wayfinding/` 下的 decision records 共享 map，逐一解决直到通往 destination 的路清晰。
-- **[grill-with-docs](./skills/flows/grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `CONTEXT.md` 与 ADRs。
-- **[to-spec](./skills/flows/to-spec/SKILL.md)** - 把当前对话整理成 OpenSpec change proposal，创建兼容的变更元数据与 `proposal.md`。
-- **[to-plan](./skills/flows/to-plan/SKILL.md)** - 读取 OpenSpec proposal，经过架构 grilling 补齐 delta specs、design 与 tracer-bullet tasks。
-- **[implement](./skills/flows/implement/SKILL.md)** - 实现 OpenSpec change 或 spec 中指定的工作：按 `tasks.md` checkbox 状态续做，收尾统一提交并以 `/code-review` 审查。
-- **[archive](./skills/flows/archive/SKILL.md)** - 归档已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 合并规格，并把本次 change 的提交压成单个 commit。
-
-**Model-invoked**
-
-- 当前没有 model-invoked skills。
-
 #### Productivity
 
 通用工作流工具，不限于代码。
 
 **User-invoked**
 
-- **[grill-me](./skills/productivity/grill-me/SKILL.md)** - 围绕计划或设计持续追问，直到 design tree 的每个分支都被解决。
 - **[handoff](./skills/productivity/handoff/SKILL.md)** - 把当前对话压缩成 handoff document，让另一个 agent 可以继续。
-- **[teach](./skills/productivity/teach/SKILL.md)** - 使用当前目录作为 stateful teaching workspace，在多个 sessions 中教用户一个新 skill 或概念。
-- **[to-questionnaire](./skills/productivity/to-questionnaire/SKILL.md)** - 把一个你自己答不了的 decision 变成一份 Markdown questionnaire，交给唯一能回答它的人——异步填写，或在一次会议里一起完成。它追问的是“发送”本身（发给谁、你想拿回什么），而不是主题。
-- **[wait-what](./skills/productivity/wait-what/SKILL.md)** - 某条消息没讲明白的瞬间就发它。agent 会补上你缺的 context，用平实的语言重新表述，并使用你 `CONTEXT.md` 里的词汇。
 
 **Model-invoked**
 
-- **[grilling](./skills/productivity/grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 design tree 的每个分支都被解决。它是 `grill-me`、`grill-with-docs`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用访谈 primitive。
+- **[grilling](./skills/productivity/grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 design tree 的每个分支都被解决。它是 `grill-with-docs`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用访谈 primitive。
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** - 为 agents 编写文档：skills、AGENTS.md/CLAUDE.md，以及任何 agent 通过 pointer 到达的文档。

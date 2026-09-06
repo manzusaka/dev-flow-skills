@@ -12,7 +12,7 @@
   },
   "scripts": {
     "pretest": "npm run build",
-    "test": "node --test tests/*.test.mjs ../skills/flows/setup-skills/tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs ../skills/engineering/setup-skills/tests/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "build": "node scripts/build.mjs"
   },

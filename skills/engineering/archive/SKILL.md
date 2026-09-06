@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 归档用户在 OpenSpec change 中完成的工作。调用形式是 `/archive [change-name]`。上游是 `/implement`：实现、提交与审查都已完成，归档只做收尾——不重开计划，不修改实现代码，不重跑测试。
 
-边界：只写入归档产物（规格合并、summary.md、CONTEXT.md/ADR 更新）与一次压缩提交；不合并回 base、不创建 PR（PR 由用户手动创建）、不丢弃工作、不清理 worktree。`spect` 缺失或报错时停止并报告，不代为安装。
+边界：只写入归档产物（规格合并、summary.md、trace.md、CONTEXT.md/ADR 更新）与一次压缩提交；不合并回 base、不创建 PR（PR 由用户手动创建）、不丢弃工作、不清理 worktree。`spect` 缺失或报错时停止并报告，不代为安装。
 
 ## Process
 
@@ -66,23 +66,34 @@ spect archive <change-name> -y
 
 ### 6. Squash into one commit
 
-从 `HEAD` 往回找 commit message 引用 `<change-name>` 的最老提交：
+确定压缩起点：先读 `trace.md` 的 implement section 中记录的 review fixed point；缺失时从 `HEAD` 往回找 commit message 引用 `<change-name>` 的最老提交，取其 parent。
 
-- 找到 → squash 范围为 [该提交的 parent .. HEAD] 加上未提交的归档产物。若范围内存在 message 不引用 `<change-name>` 的提交，列出它们并警告，用户确认后继续。然后：
+- 确定起点 → squash 范围为 [fixed point .. HEAD] 加上未提交的归档产物。若范围内存在 message 不引用 `<change-name>` 的提交，列出它们并警告，用户确认后继续。在 `trace.md` 追加 archive section（change 目录已被 `spect archive` 移动，写入移动后的路径）：
+
+```text
+## archive
+- archive path: openspec/changes/archive/<日期>-<change-name>/
+```
+
+然后：
 
 ```bash
-git reset --soft <parent>
+git reset --soft <fixed point>
 git add openspec/ <本次 /domain-modeling 写入的文件>
 git commit  # 复用被压缩的最老 change commit 的 message
 ```
 
-- 未找到 → 把未提交的归档产物提交为新提交，message 为 `chore: archive <change-name>`。
+- 未找到起点 → 把未提交的归档产物（含 `trace.md` 的 archive section）提交为新提交，message 为 `chore: archive <change-name>`。
 
 只提交本次 change 相关的文件（`openspec/` 目录与本次 `/domain-modeling` 写入的文件）；工作区中无关的未提交文件保持不动。
 
 ### 7. Report
 
-向用户报告：单个提交的 SHA、归档路径、更新的 specs 列表、沉淀的知识摘要；提示 PR 由用户手动创建。
+向用户报告：单个提交的 SHA、归档路径、更新的 specs 列表、沉淀的知识摘要。
+
+## 结束提示
+
+本次变更已归档，PR 由用户手动创建；可以开始下一个 change（`/grill-with-docs` 或 `/to-spec`）。
 
 ## 注意
 

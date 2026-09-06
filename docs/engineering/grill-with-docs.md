@@ -1,6 +1,6 @@
 ## What it does
 
-`grill-with-docs` 围绕一个计划或设计访谈你，直到你与 [agent](https://www.aihero.dev/ai-coding-dictionary/agent) 对它达成共同的理解为止，并在进行的同时把词汇和那些艰难的决策写进你的 repo。它就是 [grill-me](https://aihero.dev/skills-grill-me) 所运行的那场同款访谈——一轮问题，然后等待，再下一轮——只不过指向的是一个 codebase。
+`grill-with-docs` 围绕一个计划或设计访谈你，直到你与 [agent](https://www.aihero.dev/ai-coding-dictionary/agent) 对它达成共同的理解为止，并在进行的同时把词汇和那些艰难的决策写进你的 repo。它就是 [grilling](https://aihero.dev/skills-grilling) primitive 所运行的那场同款访谈——一轮问题，然后等待，再下一轮——只不过指向的是一个 codebase。
 
 它是 **[stateful](https://www.aihero.dev/ai-coding-dictionary/stateful)** 的。其他每一个 grilling skill 都会把 [session](https://www.aihero.dev/ai-coding-dictionary/session) 留在你的脑子里；这一个则在磁盘上留下文件。一个术语被敲定，它就在敲定的那一刻落入 `CONTEXT.md`，而不是攒到末尾批量写。一个决策通过三道门，它就作为一条 ADR 落盘。这正是全部的区别，也是人们使用这个 skill 时遇到的大部分麻烦的源头：这些 artifact 是真实 repo 里的真实文件，所以它们可能在你预期时缺席，也可能在不止一个人写它们时发生漂移。
 
@@ -12,11 +12,10 @@
 
 | 你拥有什么 | 该用哪个 |
 | --- | --- |
-| 你根本不在任何 working directory 里 | [grill-me](https://aihero.dev/skills-grill-me) |
+| 你根本不在任何 working directory 里 | [grilling](https://aihero.dev/skills-grilling) |
 | 一个 repo，以及一个你可以在一次 session 内敲定的变更 | `grill-with-docs` |
 | 一项大到一次 session 装不下的 effort——一个 greenfield 构建、一个大型 feature | [wayfinder](https://aihero.dev/skills-wayfinder) |
 | 一个完全没有 domain docs 的 repo，也没有任何特定 feature 在脑中 | `grill-with-docs`，瞄准 repo 本身而不是某次变更 |
-| 一个被卡在别人脑内知识上的决策 | [to-questionnaire](https://aihero.dev/skills-to-questionnaire) |
 
 与 wayfinder 的分界归结为 session 数量：`/grill-with-docs` 用于 single-session 规划，`/wayfinder` 用于 multi-session 规划。
 
@@ -85,4 +84,4 @@ glossary 才是重点。Domain language 才是这个 skill 真正在构建的东
 grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
-它排在一切被写成 OpenSpec change 之前——它产出共同理解和敲定的词汇，[to-spec](https://aihero.dev/skills-to-spec) 随后无需重新访谈就将其合成为 proposal。它亲近的邻居是 [grill-me](https://aihero.dev/skills-grill-me) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling)；两者都立在 [grilling](https://aihero.dev/skills-grilling) 原语之上。在它上游，[wayfinder](https://aihero.dev/skills-wayfinder) 绘制大到一次 session 装不下的 efforts。当你不确定哪个 skill 或 flow 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+它排在一切被写成 OpenSpec change 之前——它产出共同理解和敲定的词汇，[to-spec](https://aihero.dev/skills-to-spec) 随后无需重新访谈就将其合成为 proposal。它亲近的邻居是 [domain-modeling](https://aihero.dev/skills-domain-modeling)；两者都立在 [grilling](https://aihero.dev/skills-grilling) 原语之上。在它上游，[wayfinder](https://aihero.dev/skills-wayfinder) 绘制大到一次 session 装不下的 efforts。当你不确定哪个 skill 或 flow 契合时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

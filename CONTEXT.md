@@ -15,8 +15,12 @@ _Avoid_: ticket, blocking issue
 **Decision record**:
 `wayfinder` 的工作单元：`docs/wayfinding/<map-name>/` 下一个独立的 markdown 文件，承载的问题需要通过 decision 解决，而不是要执行的 build slice。**Decision** qualifier 把它与 implementation ticket 区分开来；`wayfinder` 会先引入完整术语，之后再简称 record。
 
+**Trace**:
+**OpenSpec change** 的执行轨迹：change 目录下的 `trace.md`。由 `implement` 创建并写入、`archive` 追加，记录下游步骤需要且无法重推导的运行时事实（review fixed point、最终提交、审查结果、归档路径）。
+_Avoid_: execution log
+
 ## Relationships
 
 - 一个 wayfinder **map** 包含多个 **Decision records**
 - 一个 **OpenSpec change** 包含多个按依赖顺序排列的 **Task group**
-
+- 一个 **OpenSpec change** 包含至多一份 **trace**（`trace.md`）
