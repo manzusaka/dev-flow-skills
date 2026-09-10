@@ -179,8 +179,8 @@ export interface ChangeStatus {
   isPlanningComplete: boolean;
   /** Compatibility alias for isPlanningComplete */
   isComplete: boolean;
-  /** Artifact IDs required before apply phase (from schema's apply.requires) */
-  applyRequires: string[];
+  /** Artifact IDs required before implement phase (from schema's implement.requires) */
+  implementRequires: string[];
   /** Status of each artifact */
   artifacts: ArtifactStatus[];
 }
@@ -458,9 +458,9 @@ export function formatChangeStatus(
   context: ChangeContext,
   options: { storeId?: string } = {}
 ): ChangeStatus {
-  // Load schema to get apply phase configuration
+  // Load schema to get implement phase configuration
   const schema = resolveSchema(context.schemaName, context.projectRoot);
-  const applyRequires = schema.apply?.requires ?? schema.artifacts.map(a => a.id);
+  const implementRequires = schema.implement?.requires ?? schema.artifacts.map(a => a.id);
 
   const artifacts = context.graph.getAllArtifacts();
   const ready = new Set(context.graph.getNextArtifacts(context.completed));
@@ -525,7 +525,7 @@ export function formatChangeStatus(
     artifactPaths,
     isPlanningComplete: isComplete,
     isComplete,
-    applyRequires,
+    implementRequires,
     nextSteps: buildNextSteps({
       changeName: context.changeName,
       artifactStatuses,

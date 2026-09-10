@@ -1,5 +1,7 @@
 export const OPENSPEC_DIR_NAME = 'openspec';
 
+// Upstream OpenSpec managed skill IDs. These external names do not follow
+// spect's local implement-stage terminology.
 export const OPENSPEC_SKILL_NAMES = [
   'openspec-explore',
   'openspec-new-change',

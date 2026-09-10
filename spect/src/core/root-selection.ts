@@ -10,7 +10,10 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 import { findRepoPlanningRootSync, type PlanningHome } from './planning-home.js';
-import { classifyOpenSpecDir } from './project-config.js';
+import {
+  assertNoLegacyProjectConfig,
+  classifyOpenSpecDir,
+} from './project-config.js';
 import { FileSystemUtils } from '../utils/file-system.js';
 
 export type OpenSpecRootSource = 'nearest' | 'implicit';
@@ -116,6 +119,7 @@ export async function resolveOpenSpecRoot(
   const startPath = options.startPath ?? process.cwd();
   const nearestRoot = findQualifyingRootSync(startPath);
   if (nearestRoot) {
+    assertNoLegacyProjectConfig(nearestRoot);
     return makeRoot(nearestRoot, 'nearest');
   }
 

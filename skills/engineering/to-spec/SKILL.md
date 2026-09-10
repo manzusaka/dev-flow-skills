@@ -83,6 +83,8 @@ skip_specs: true
 
 严格使用目标项目的 `openspec/schemas/templates/proposal.md`，按其 heading 顺序和字段结构，将注释与占位符替换成已经确定的内容：
 
+保留模板中的英文 Markdown headings；heading 下的正文、字段内容、故事标题和 capability 描述使用中文。路径、标识符、命令和代码保持其原始形式。
+
 - `Why` 记录变更动机和当前时机。
 - `User story` 为每个已知业务场景分配稳定的 `US-NNN`，保留类型、场景/约束、图片/原型、图片说明和验收标准字段；没有图片或原型时明确写“无”。
 - `Capabilities` 区分 new 与 modified。Modified 使用现有 capability 的精确路径；纯技术 change 的两个列表都写“无”，并与 `skip_specs: true` 保持一致。

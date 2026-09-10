@@ -38,11 +38,11 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
 
   // 操作指南段落（带注释）
   lines.push('# 按操作的指南（可选）');
-  lines.push('# 为 apply 和 archive 操作添加咨询性指南。');
+  lines.push('# 为 implement 和 archive 操作添加咨询性指南。');
   lines.push('# 此段落独立于上述的产出物规则。');
   lines.push('# 示例：');
   lines.push('#   operations:');
-  lines.push('#     apply:');
+  lines.push('#     implement:');
   lines.push('#       guidance:');
   lines.push('#         - 测试摘要保持简洁');
   lines.push('#     archive:');

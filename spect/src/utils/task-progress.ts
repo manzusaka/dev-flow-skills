@@ -9,7 +9,7 @@ import { resolveSchemaForChange } from './change-metadata.js';
  *
  * Leading whitespace is allowed so nested sub-tasks count like their parents.
  * Anchoring at column 0 made `  - [ ] 1.1.1 ...` invisible to progress, to the
- * apply task list, and to archive's incomplete-task check, so a change with
+ * implement task list, and to archive's incomplete-task check, so a change with
  * unfinished sub-tasks reported "✓ Complete" and archived without a warning.
  *
  * Permissive on purpose, and safe to keep that way: any character class
@@ -67,12 +67,12 @@ export function countTasksFromContent(content: string): TaskProgress {
 
 /**
  * Identifies the change's tracked-tasks artifact: the artifact whose `generates`
- * equals the schema's `apply.tracks` value, falling back to the artifact with id
- * `tasks` when no `apply` block declares what it tracks. (`apply.tracks` is a
+ * equals the schema's `implement.tracks` value, falling back to the artifact with id
+ * `tasks` when no `implement` block declares what it tracks. (`implement.tracks` is a
  * filename that *selects* the artifact; the glob is that artifact's `generates`.)
  */
 function findTrackedTasksArtifact(schema: SchemaYaml): Artifact | undefined {
-  const tracks = schema.apply?.tracks;
+  const tracks = schema.implement?.tracks;
   if (tracks != null) {
     return schema.artifacts.find((a) => a.generates === tracks);
   }
@@ -114,7 +114,7 @@ function resolveTrackedTasksGlob(
   }
 }
 
-/** Resolves the task files selected by the schema's apply tracking rule. */
+/** Resolves the task files selected by the schema's implement tracking rule. */
 export function resolveTaskFilesForChange(
   changeDir: string,
   projectRoot: string,
@@ -210,5 +210,4 @@ export function formatTaskStatus(progress: TaskProgress): string {
   if (progress.completed === progress.total) return '✓ 完成';
   return `${progress.completed}/${progress.total} 任务`;
 }
-
 

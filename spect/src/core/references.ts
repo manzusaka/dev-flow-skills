@@ -66,7 +66,7 @@ export function renderReferencedStoresBlock(entries: ReferenceIndexEntry[]): str
   return lines.join('\n');
 }
 
-/** Pure renderer for the apply-instructions markdown section. */
+/** Pure renderer for the implement-instructions markdown section. */
 export function renderReferencedStoresSection(entries: ReferenceIndexEntry[]): string {
   const lines: string[] = [
     '### 被引用的 Stores',

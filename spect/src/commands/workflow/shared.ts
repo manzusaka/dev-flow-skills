@@ -30,7 +30,7 @@ export interface TaskItem {
   done: boolean;
 }
 
-export interface ApplyInstructions {
+export interface ImplementInstructions {
   changeName: string;
   changeDir: string;
   schemaName: string;
@@ -48,7 +48,7 @@ export interface ApplyInstructions {
   references?: ReferenceIndexEntry[];
   /** Current project background from the selected root. */
   context?: string;
-  /** Current advisory guidance for apply. */
+  /** Current advisory guidance for implement. */
   operationGuidance?: string[];
 }
 

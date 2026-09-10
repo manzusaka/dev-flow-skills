@@ -168,7 +168,7 @@ export class Validator {
 
     try {
       // Discover delta specs through the same helper the change parser, show,
-      // apply, and archive use, so validate never accepts a layout the merge
+      // and archive use, so validate never accepts a layout the merge
       // path silently skips (#1385). It finds spec.md at any depth, covering
       // both specs/<capability>/spec.md and the nested multi-area
       // specs/<area>/<capability>/spec.md layout (#1182b).

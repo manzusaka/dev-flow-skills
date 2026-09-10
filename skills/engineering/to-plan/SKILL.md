@@ -45,7 +45,7 @@ spect status --change <change-name> --json
 spect templates --json
 ```
 
-`spect status` 输出 artifact graph 的当前状态：每个 artifact 的 `outputPath`、`resolvedOutputPath`、`existingOutputPaths`、`isPlanningComplete` 与 `applyRequires`；config 与 schema 的一致性、依赖顺序和输出位置由 `spect` 解析，不手工读取。`spect templates` 输出 proposal、specs、design、tasks 的已解析模板路径。
+`spect status` 输出 artifact graph 的当前状态：每个 artifact 的 `outputPath`、`resolvedOutputPath`、`existingOutputPaths`、`isPlanningComplete` 与 `implementRequires`；config 与 schema 的一致性、依赖顺序和输出位置由 `spect` 解析，不手工读取。`spect templates` 输出 proposal、specs、design、tasks 的已解析模板路径。
 
 在此基础上读取并验证：
 
@@ -54,7 +54,7 @@ spect templates --json
 - change 中的 `.openspec.yaml` 与 `proposal.md`
 - proposal 声明的现有 capability specs、相关代码和测试
 
-本流程要求当前 schema 生成 `specs/**/*.md`、`design.md` 和 `tasks.md`，并以 `tasks.md` 作为 apply tracking artifact；目标项目的 `openspec/` 文件是 single source of truth。
+本流程要求当前 schema 生成 `specs/**/*.md`、`design.md` 和 `tasks.md`，并以 `tasks.md` 作为 implement tracking artifact；目标项目的 `openspec/` 文件是 single source of truth。
 
 如果 `spect status` 报告错误、必要文件缺失或 proposal 留有会改变行为的未决项，停止并准确报告缺口。已有 delta specs、`design.md` 或 `tasks.md` 时（`existingOutputPaths` 非空），展示现状并让用户确认是继续完善还是替换；未经确认不覆盖。
 
@@ -70,6 +70,7 @@ spect templates --json
 - New Capability 使用目标 spec template，写出 Purpose、requirements 和可验证 scenarios。
 - Modified Capability 先读取 `openspec/specs/<capability-path>/spec.md`，复制完整 requirement block 后再修改；保留未改变的内容。
 - Specs 只描述 observable behavior。架构选型与执行步骤分别留给 design 和 tasks。
+- 保留目标模板中的英文 Markdown headings（包括 `Requirement:` 与 `Scenario:`）以及 `FROM:` / `TO:` 结构标记；Purpose、需求名称、规范性正文、场景名称与步骤内容使用中文，并使用“必须/禁止”和“当/操作/那么/并且”表达规范与场景步骤。路径、标识符、命令和代码保持其原始形式。
 
 生成前按 `spect instructions` 输出的依赖清单从磁盘重新读取相关文件。先展示所有 delta spec 草稿及其来源映射，让用户确认后再写入。需求信息不足或与现有 spec、ADR、active change 冲突时，先解决冲突，不用猜测补齐。写入后运行 `spect status --change <change-name> --json` 确认输出已登记，并查看解锁的下一步。
 
@@ -141,7 +142,7 @@ spect templates --json
 spect validate <change-name> --strict --no-interactive
 ```
 
-结构验证交给 `spect`：按 `requires` 检查依赖闭包，按 `generates` 检查输出存在，按 `apply.tracks` 检查 `tasks.md`，并校验 proposal 与 delta specs 的章节结构。
+结构验证交给 `spect`：按 `requires` 检查依赖闭包，按 `generates` 检查输出存在，按 `implement.tracks` 检查 `tasks.md`，并校验 proposal 与 delta specs 的章节结构。
 
 在结构验证之外补充语义检查：
 

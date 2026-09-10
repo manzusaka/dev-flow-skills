@@ -3,7 +3,7 @@ import path from 'path';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 
-export const OPERATION_IDS = ['apply', 'archive'] as const;
+export const OPERATION_IDS = ['implement', 'archive'] as const;
 export type OperationId = (typeof OPERATION_IDS)[number];
 
 export interface OperationConfig {
@@ -55,7 +55,7 @@ export const ProjectConfigSchema = z.object({
   // Optional: per-operation advisory guidance, kept separate from artifact rules.
   operations: z
     .object({
-      apply: OperationConfigSchema.optional(),
+      implement: OperationConfigSchema.optional(),
       archive: OperationConfigSchema.optional(),
     })
     .optional()
@@ -99,6 +99,48 @@ export type ProjectConfig = z.infer<typeof ProjectConfigSchema> & {
 export interface OperationInputs {
   context?: string;
   operationGuidance?: string[];
+}
+
+export class ProjectConfigMigrationError extends Error {
+  constructor() {
+    super(
+      "配置项 'operations.apply' 已重命名为 'operations.implement'；请更新 openspec/config.yaml 后重试。"
+    );
+    this.name = 'ProjectConfigMigrationError';
+  }
+}
+
+function assertNoLegacyApplyOperation(raw: unknown): void {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    return;
+  }
+  const operations = (raw as Record<string, unknown>).operations;
+  if (
+    operations &&
+    typeof operations === 'object' &&
+    !Array.isArray(operations) &&
+    Object.hasOwn(operations, 'apply')
+  ) {
+    throw new ProjectConfigMigrationError();
+  }
+}
+
+/** Rejects the retired operation key before any command can silently ignore it. */
+export function assertNoLegacyProjectConfig(projectRoot: string): void {
+  const configPath = resolveConfigFilePath(projectRoot);
+  if (configPath === null) {
+    return;
+  }
+
+  try {
+    assertNoLegacyApplyOperation(parseYaml(readFileSync(configPath, 'utf-8')));
+  } catch (error) {
+    if (error instanceof ProjectConfigMigrationError) {
+      throw error;
+    }
+    // General YAML and field validation remains owned by the command-specific
+    // strict or resilient config parser.
+  }
 }
 
 export function loadOperationInputs(
@@ -260,6 +302,8 @@ export function parseProjectConfigStrict(content: string): ProjectConfig {
     );
   }
 
+  assertNoLegacyApplyOperation(raw);
+
   const result = ProjectConfigSchema.safeParse(raw);
   if (!result.success) {
     const details = result.error.issues
@@ -283,6 +327,7 @@ export function parseProjectConfigStrict(content: string): ProjectConfig {
  * Uses resilient parsing - validates each field independently using Zod safeParse.
  * Returns null if file doesn't exist.
  * Returns partial config if some fields are invalid (with warnings).
+ * Throws when a retired operation key requires an explicit migration.
  *
  * Performance note (Jan 2025):
  * Benchmarks showed direct file reads are fast enough without caching:
@@ -306,6 +351,8 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
   try {
     const content = readFileSync(configPath, 'utf-8');
     const raw = parseYaml(content);
+
+    assertNoLegacyApplyOperation(raw);
 
     if (!raw || typeof raw !== 'object') {
       console.warn(`openspec/config.yaml 不是有效的 YAML 对象`);
@@ -430,6 +477,9 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
     // Return partial config even if some fields failed
     return Object.keys(config).length > 0 ? (config as ProjectConfig) : null;
   } catch (error) {
+    if (error instanceof ProjectConfigMigrationError) {
+      throw error;
+    }
     console.warn(
       `警告：无法解析 ${configPathForWarnings(projectRoot)}（${error instanceof Error ? error.message.split('\n')[0] : String(error)}）；已忽略。`
     );

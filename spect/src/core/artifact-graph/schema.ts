@@ -23,6 +23,17 @@ export function loadSchema(filePath: string): SchemaYaml {
 export function parseSchema(yamlContent: string): SchemaYaml {
   const parsed = parseYaml(yamlContent);
 
+  if (
+    parsed &&
+    typeof parsed === 'object' &&
+    !Array.isArray(parsed) &&
+    Object.hasOwn(parsed, 'apply')
+  ) {
+    throw new SchemaValidationError(
+      "schema 阶段 'apply:' 已重命名为 'implement:'；请更新 schema 后重试。"
+    );
+  }
+
   // Validate with Zod
   const result = SchemaYamlSchema.safeParse(parsed);
   if (!result.success) {

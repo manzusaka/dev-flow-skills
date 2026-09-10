@@ -73,7 +73,7 @@ export function buildNextSteps(input: ChangeNextStepsInput): string[] {
     );
   } else if (input.allArtifactsComplete) {
     steps.push(
-      `所有规划制品均已完成。运行 spect instructions apply --change "${input.changeName}"${storeFlag} --json 以检查实现进度。`
+      `所有规划制品均已完成。运行 spect instructions implement --change "${input.changeName}"${storeFlag} --json 以检查实现进度。`
     );
   }
 

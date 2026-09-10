@@ -1,5 +1,5 @@
 name: spec-driven
-version: 1
+version: 2
 description: 默认 OpenSpec 工作流 - proposal → specs → design → tasks
 artifacts:
   - id: proposal
@@ -8,6 +8,7 @@ artifacts:
     template: proposal.md
     instruction: |
       创建 proposal 文档，说明为什么（WHY）需要这次变更。
+      保留模板中的英文 Markdown 标题；标题下的正文、字段内容、故事标题和 capability 描述使用中文。路径、标识符、命令和代码保持其原始形式。
 
       章节：
       - **Why**：用 1-2 句话说明问题或机会。这解决了什么问题？为什么是现在？
@@ -41,6 +42,7 @@ artifacts:
       创建规范文件，定义系统应该做什么（WHAT）。
 
       spec 是行为契约，不是实现计划。
+      保留模板中的英文 Markdown 标题（包括 `Requirement:` 与 `Scenario:`）以及 `FROM:` / `TO:` 结构标记；Purpose、需求名称、规范性正文、场景名称与步骤内容使用中文。路径、标识符、命令和代码保持其原始形式。
 
       好的 spec 内容包含：
       - 用户或下游系统所依赖的可观测行为
@@ -69,18 +71,18 @@ artifacts:
 
       Delta 操作（使用 ## 标题）：
       - **ADDED Requirements**：新增能力
-      - **MODIFIED Requirements**：变更的行为 —— 必须（MUST）包含完整的更新后内容
-      - **REMOVED Requirements**：废弃的特性 —— 必须（MUST）包含 **Reason** 与 **Migration**
+      - **MODIFIED Requirements**：变更的行为 —— 必须包含完整的更新后内容
+      - **REMOVED Requirements**：废弃的特性 —— 必须包含 **原因** 与 **迁移方案**
       - **RENAMED Requirements**：仅名称变更 —— 使用 FROM:/TO: 格式
 
       格式要求：
       - 每条需求：`### Requirement: <名称>`，其后接描述
-      - 规范性需求使用 SHALL/MUST（避免 should/may）
-      - 每个场景：`#### Scenario: <名称>`，采用 WHEN/DO/THEN 格式：`- **WHEN**` 为前置条件与测试数据，`- **DO**` 为操作步骤（多步用 → 串联成一行），`- **THEN**` 为预期结果，`- **AND**` 可选补充断言
+      - 规范性需求使用“必须”或“禁止”，避免使用含糊的“应该”或“可以”
+      - 每个场景：`#### Scenario: <名称>`，采用中文步骤格式：`- **当**` 为前置条件与测试数据，`- **操作**` 为操作步骤（多步用 → 串联成一行），`- **那么**` 为预期结果，`- **并且**` 可选补充断言
       - 一条 Scenario 场景名称：可独立验证的用例；分支请拆分为多条 Scenario，并在场景名中写明分支条件
       - Scenario 是 proposal User story 中验收标准的形式化：验收标准在故事层面描述正常功能，Scenario 将其拆解为可逐条验证的测试用例
-      - **关键**：场景必须（MUST）正好使用 4 个井号（`####`）。使用 3 个井号或列表项会静默失败。
-      - 每条需求必须（MUST）至少包含一个场景。
+      - **关键**：场景必须正好使用 4 个井号（`####`）。使用 3 个井号或列表项会静默失败。
+      - 每条需求必须至少包含一个场景。
 
       仅限新能力：增量规范以 `## Purpose` 章节开头 ——
       用一到两句话（50 个字符以上，否则 `spect validate --strict`
@@ -109,18 +111,19 @@ artifacts:
 
       ## ADDED Requirements
 
-      ### Requirement: User can export data
-      The system SHALL allow users to export their data in CSV format.
+      ### Requirement: 用户可以导出数据
+      系统必须允许用户以 CSV 格式导出自己的数据。
 
-      #### Scenario: Successful export
-      - **WHEN** user clicks "Export" button
-      - **THEN** system downloads a CSV file with all user data
+      #### Scenario: 成功导出
+      - **当** 用户点击“导出”按钮
+      - **操作** 系统生成导出文件
+      - **那么** 系统下载包含该用户全部数据的 CSV 文件
 
       ## REMOVED Requirements
 
-      ### Requirement: Legacy export
-      **Reason**: Replaced by new export system
-      **Migration**: Use new export endpoint at /api/v2/export
+      ### Requirement: 旧版导出
+      **原因**：已由新版导出系统取代
+      **迁移方案**：使用新的导出端点 `/api/v2/export`
       ```
 
       specs 应当是可测试的 —— 每个场景都是一个潜在的测试用例。
@@ -173,7 +176,7 @@ artifacts:
       会改变要构建的内容，先与用户一起解决 —— 不要
       把未言明的假设固化进任务列表。
 
-      **重要：严格遵循下面的模板。** apply 阶段通过解析
+      **重要：严格遵循下面的模板。** implement 阶段通过解析
       复选框格式来追踪进度。不使用 `- [ ]` 的任务不会被追踪。
 
       指引：
@@ -201,7 +204,7 @@ artifacts:
       - specs
       - design
 
-apply:
+implement:
   requires: [tasks]
   tracks: tasks.md
   instruction: |

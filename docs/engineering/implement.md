@@ -42,7 +42,7 @@ OpenSpec 输入假设 `spect` 可用——`/setup-skills`、`/to-spec` 与 `/to-
 实现节拍：
 
 1. 解析 change（`spect list --json`，exact match 优先，不静默选择近似结果），然后做 planning gate：`tasks.md` 缺失或 planning 未完成，停止并指向 `/to-plan`。
-2. 通过 `spect instructions apply` 读取上下文——proposal、delta specs、design 与 tasks。
+2. 通过 `spect instructions implement` 读取上下文——proposal、delta specs、design 与 tasks。
 3. 复述 seams：`specs/**/*.md` 的 Scenarios 是主要测试锚点，`design.md` Decisions 中已确认的 test seams 作为参考；两处都没有时警告，并由 `/tdd` 当场发问。
 4. 在未勾选任务上驱动 [tdd](https://aihero.dev/skills-tdd)，优先级按依赖顺序与代码现状判断。每完成一项任务即时勾选对应 checkbox；不勾选未实际完成的相邻任务。
 

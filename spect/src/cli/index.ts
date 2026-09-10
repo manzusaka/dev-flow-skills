@@ -13,7 +13,7 @@ import { registerContextCommand } from '../commands/context.js';
 import {
   statusCommand,
   instructionsCommand,
-  applyInstructionsCommand,
+  implementInstructionsCommand,
   archiveInstructionsCommand,
   templatesCommand,
   schemasCommand,
@@ -26,7 +26,7 @@ import {
   type NewChangeOptions,
 } from '../commands/workflow/index.js';
 
-const version = process.env.SPECT_VERSION ?? '0.1.4';
+const version = process.env.SPECT_VERSION ?? '0.2.0';
 
 function failWithError(
   error: unknown,
@@ -224,14 +224,18 @@ program
 // Instructions command
 program
   .command('instructions [artifact]')
-  .description('输出制品、apply 或 archive 的增强指令')
+  .description('输出制品、implement 或 archive 的增强指令')
   .option('--change <id>', '变更名称')
   .option('--schema <name>', 'Schema 覆盖（从 config.yaml 自动检测）')
   .option('--json', '以 JSON 格式输出')
   .action(async (artifactId: string | undefined, options: InstructionsOptions) => {
     try {
       if (artifactId === 'apply') {
-        await applyInstructionsCommand(options);
+        throw new Error(
+          "'spect instructions apply' 已重命名为 'spect instructions implement'；请使用新命令。"
+        );
+      } else if (artifactId === 'implement') {
+        await implementInstructionsCommand(options);
       } else if (artifactId === 'archive') {
         await archiveInstructionsCommand(options);
       } else {

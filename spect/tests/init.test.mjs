@@ -91,6 +91,28 @@ test('a new project receives a complete default scaffold and repeated init prese
     'templates',
     'proposal.md'
   );
+  const specTemplate = await readFile(
+    path.join(projectRoot, 'openspec', 'schemas', 'templates', 'spec.md'),
+    'utf8'
+  );
+  const schema = await readFile(
+    path.join(projectRoot, 'openspec', 'schemas', 'schema.yaml'),
+    'utf8'
+  );
+  assert.match(specTemplate, /^## Purpose$/m);
+  assert.match(specTemplate, /^### Requirement:/m);
+  assert.match(specTemplate, /^#### Scenario:/m);
+  assert.match(specTemplate, /^- \*\*当\*\*/m);
+  assert.doesNotMatch(specTemplate, /^- \*\*WHEN\*\*/m);
+  assert.match(schema, /### Requirement: 用户可以导出数据/);
+  assert.match(schema, /#### Scenario: 成功导出/);
+  assert.match(schema, /系统必须允许用户以 CSV 格式导出自己的数据/);
+  assert.match(schema, /标题下的正文、字段内容、故事标题和 capability 描述使用中文/);
+  assert.match(schema, /Purpose、需求名称、规范性正文、场景名称与步骤内容使用中文/);
+  assert.doesNotMatch(schema, /The system SHALL allow users/);
+  assert.match(schema, /^version: 2$/m);
+  assert.match(schema, /^implement:$/m);
+  assert.doesNotMatch(schema, /^apply:$/m);
   await writeFile(proposalPath, '# Project-specific proposal\n');
 
   const second = runInit(projectRoot);

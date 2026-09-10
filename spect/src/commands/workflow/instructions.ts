@@ -1,8 +1,8 @@
 /**
  * Instructions Command
  *
- * Generates enriched instructions for creating artifacts or applying tasks.
- * Includes both artifact instructions and apply instructions.
+ * Generates enriched instructions for creating artifacts or implementing tasks.
+ * Includes both artifact instructions and implement instructions.
  */
 
 import ora from 'ora';
@@ -43,7 +43,7 @@ import {
   validateChangeExists,
   validateSchemaExists,
   type TaskItem,
-  type ApplyInstructions,
+  type ImplementInstructions,
   type ArchiveInstructions,
 } from './shared.js';
 import { parseTaskLines, type ParsedTask } from '../../utils/task-progress.js';
@@ -52,7 +52,7 @@ import { parseTaskLines, type ParsedTask } from '../../utils/task-progress.js';
 // Types
 // -----------------------------------------------------------------------------
 
-export interface InstructionsOptions {
+export interface WorkflowInstructionsOptions {
   change?: string;
   schema?: string;
   store?: string;
@@ -60,15 +60,7 @@ export interface InstructionsOptions {
   json?: boolean;
 }
 
-export interface ApplyInstructionsOptions {
-  change?: string;
-  schema?: string;
-  store?: string;
-  storePath?: string;
-  json?: boolean;
-}
-
-export type ArchiveInstructionsOptions = ApplyInstructionsOptions;
+export type InstructionsOptions = WorkflowInstructionsOptions;
 
 // -----------------------------------------------------------------------------
 // Artifact Instructions Command
@@ -83,7 +75,8 @@ async function loadRootConfigContext(root: ResolvedOpenSpecRoot): Promise<{
   projectConfig: ProjectConfig | null;
   references: ReferenceIndexEntry[] | undefined;
 }> {
-  // readProjectConfig never throws: missing/unparseable configs are null.
+  // Missing or generally malformed configs degrade to null; retired operation
+  // keys throw so task guidance cannot silently disappear.
   const projectConfig = readProjectConfig(root.path);
 
 
@@ -316,7 +309,7 @@ export function printInstructionsText(instructions: ArtifactInstructions, isBloc
 }
 
 // -----------------------------------------------------------------------------
-// Apply Instructions Command
+// Implement Instructions Command
 // -----------------------------------------------------------------------------
 
 /**
@@ -327,7 +320,7 @@ export function printInstructionsText(instructions: ArtifactInstructions, isBloc
  * It still counts toward progress, which is taken from every parsed line, so
  * this list can be shorter than the totals beside it but never disagrees with
  * `openspec list` or archive about how much work is left. An empty list is also
- * what puts apply in its "nothing to work on" state, so a file of nothing but
+ * what puts implement in its "nothing to work on" state, so a file of nothing but
  * text-less checkboxes asks to be rewritten instead of being called done.
  */
 function toTaskItems(parsed: ParsedTask[]): TaskItem[] {
@@ -345,23 +338,23 @@ function toTaskItems(parsed: ParsedTask[]): TaskItem[] {
   return tasks;
 }
 
-export interface GenerateApplyInstructionsOptions {
+export interface GenerateImplementInstructionsOptions {
   planningHome?: PlanningHome;
   references?: ReferenceIndexEntry[];
   projectConfig?: ProjectConfig | null;
 }
 
 /**
- * Generates apply instructions for implementing tasks from a change.
- * Schema-aware: reads apply phase configuration from schema to determine
+ * Generates implement instructions for completing tasks from a change.
+ * Schema-aware: reads implement phase configuration from schema to determine
  * required artifacts, tracking file, and instruction.
  */
-export async function generateApplyInstructions(
+export async function generateImplementInstructions(
   projectRoot: string,
   changeName: string,
   schemaName?: string,
-  options: GenerateApplyInstructionsOptions = {}
-): Promise<ApplyInstructions> {
+  options: GenerateImplementInstructionsOptions = {}
+): Promise<ImplementInstructions> {
   const planningHome =
     options.planningHome ?? resolveCurrentPlanningHomeSync({ startPath: projectRoot });
   const references = options.references;
@@ -373,20 +366,20 @@ export async function generateApplyInstructions(
   });
   const changeDir = context.changeDir;
 
-  // Get the full schema to access the apply phase configuration
+  // Get the full schema to access the implement phase configuration
   const schema = resolveSchema(context.schemaName, projectRoot);
-  const applyConfig = schema.apply;
+  const implementConfig = schema.implement;
 
   // Determine required artifacts and tracking file from schema
-  // Fallback: if no apply block, require all artifacts
-  const requiredArtifactIds = applyConfig?.requires ?? schema.artifacts.map((a) => a.id);
-  const tracksFile = applyConfig?.tracks ?? null;
-  const schemaInstruction = applyConfig?.instruction ?? null;
-  const operationInputs = loadOperationInputs(options.projectConfig ?? null, 'apply');
+  // Fallback: if no implement block, require all artifacts
+  const requiredArtifactIds = implementConfig?.requires ?? schema.artifacts.map((a) => a.id);
+  const tracksFile = implementConfig?.tracks ?? null;
+  const schemaInstruction = implementConfig?.instruction ?? null;
+  const operationInputs = loadOperationInputs(options.projectConfig ?? null, 'implement');
 
   // Check which required artifacts are missing. Artifacts the change skips
   // via skip_specs count as present - their files must not exist, and
-  // status already reports them complete, so apply cannot block on them.
+  // status already reports them complete, so implement cannot block on them.
   const missingArtifacts: string[] = [];
   for (const artifactId of requiredArtifactIds) {
     if (context.skippedArtifacts?.has(artifactId)) {
@@ -427,12 +420,12 @@ export async function generateApplyInstructions(
   const remaining = total - complete;
 
   // Determine state and instruction
-  let state: ApplyInstructions['state'];
+  let state: ImplementInstructions['state'];
   let instruction: string;
 
   if (missingArtifacts.length > 0) {
     state = 'blocked';
-    instruction = `暂时无法应用此变更。缺少产出物：${missingArtifacts.join(', ')}。\n请先使用 openspec-continue-change skill 创建缺失的产出物。`;
+    instruction = `暂时无法实施此变更。缺少产出物：${missingArtifacts.join(', ')}。\n请先使用 openspec-continue-change skill 创建缺失的产出物。`;
   } else if (tracksFile && !tracksFileExists) {
     // Tracking file configured but doesn't exist yet
     const tracksFilename = path.basename(tracksFile);
@@ -448,7 +441,7 @@ export async function generateApplyInstructions(
     state = 'all_done';
     instruction = '所有任务已完成！此变更可以归档了。\n归档前请考虑运行测试并审查变更。';
   } else if (!tracksFile) {
-    // No tracking file configured in schema - ready to apply
+    // No tracking file configured in schema - ready to implement
     state = 'ready';
     instruction = schemaInstruction?.trim() ?? '所有必需的产出物已完成。可以开始实现。';
   } else {
@@ -471,14 +464,16 @@ export async function generateApplyInstructions(
   };
 }
 
-export async function applyInstructionsCommand(options: ApplyInstructionsOptions): Promise<void> {
+export async function implementInstructionsCommand(
+  options: WorkflowInstructionsOptions
+): Promise<void> {
   // Resolve (and banner) before the spinner starts so stderr stays readable.
   const root = await resolveRootForCommand(options, { json: options.json });
   if (!root) {
     return;
   }
 
-  const spinner = options.json ? undefined : ora('正在生成应用指令...').start();
+  const spinner = options.json ? undefined : ora('正在生成实施指令...').start();
 
   try {
     const planningHome = toPlanningHome(root);
@@ -498,7 +493,7 @@ export async function applyInstructionsCommand(options: ApplyInstructionsOptions
     // One parsed config snapshot supplies schema fallback, references, context,
     // and operation guidance for this command.
     const { projectConfig, references } = await loadRootConfigContext(root);
-    const instructions = await generateApplyInstructions(projectRoot, changeName, options.schema, {
+    const instructions = await generateImplementInstructions(projectRoot, changeName, options.schema, {
       planningHome,
       references,
       projectConfig,
@@ -511,17 +506,17 @@ export async function applyInstructionsCommand(options: ApplyInstructionsOptions
       return;
     }
 
-    printApplyInstructionsText(instructions);
+    printImplementInstructionsText(instructions);
   } catch (error) {
     spinner?.stop();
     throw error;
   }
 }
 
-export function printApplyInstructionsText(instructions: ApplyInstructions): void {
+export function printImplementInstructionsText(instructions: ImplementInstructions): void {
   const { changeName, schemaName, contextFiles, progress, tasks, state, missingArtifacts, instruction } = instructions;
 
-  console.log(`## Apply: ${changeName}`);
+  console.log(`## Implement: ${changeName}`);
   console.log(`Schema：${schemaName}`);
   console.log();
 
@@ -591,7 +586,7 @@ export function generateArchiveInstructions(
 }
 
 export async function archiveInstructionsCommand(
-  options: ArchiveInstructionsOptions
+  options: WorkflowInstructionsOptions
 ): Promise<void> {
   const root = await resolveRootForCommand(options, { json: options.json });
   if (!root) {

@@ -32,7 +32,7 @@ function assertDiscoveredSpecPath(specsRoot: string, capabilityDir: string, spec
  *
  * A missing root (ENOENT) yields an empty list, but any other read failure
  * (EACCES, EIO, ...) is thrown rather than swallowed: since this feeds the
- * archive/apply merge path, silently dropping an unreadable capability would
+ * archive merge path, silently dropping an unreadable capability would
  * recreate the exact data-loss class #1353 is closing.
  */
 export async function discoverSpecFiles(specsRoot: string): Promise<DiscoveredSpec[]> {

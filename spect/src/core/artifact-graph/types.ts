@@ -31,13 +31,13 @@ export const ArtifactSchema = z.object({
   requires: z.array(z.string()).default([]),
 });
 
-// Apply phase configuration for schema-aware apply instructions
-export const ApplyPhaseSchema = z.object({
-  // Artifact IDs that must exist before apply is available
+// Implement phase configuration for schema-aware implement instructions
+export const ImplementPhaseSchema = z.object({
+  // Artifact IDs that must exist before implement is available
   requires: z.array(z.string()).min(1, { error: '至少需要一个必需的产出物' }),
   // Path to file with checkboxes for progress (relative to change dir), or null if no tracking
-  tracks: relativePathSchema('apply.tracks').nullable().optional(),
-  // Custom guidance for the apply phase
+  tracks: relativePathSchema('implement.tracks').nullable().optional(),
+  // Custom guidance for the implement phase
   instruction: z.string().optional(),
 });
 
@@ -47,13 +47,13 @@ export const SchemaYamlSchema = z.object({
   version: z.number().int().positive({ error: '版本必须是正整数' }),
   description: z.string().optional(),
   artifacts: z.array(ArtifactSchema).min(1, { error: '至少需要一个产出物' }),
-  // Optional apply phase configuration (for schema-aware apply instructions)
-  apply: ApplyPhaseSchema.optional(),
+  // Optional implement phase configuration (for schema-aware implement instructions)
+  implement: ImplementPhaseSchema.optional(),
 });
 
 // Derived TypeScript types
 export type Artifact = z.infer<typeof ArtifactSchema>;
-export type ApplyPhase = z.infer<typeof ApplyPhaseSchema>;
+export type ImplementPhase = z.infer<typeof ImplementPhaseSchema>;
 export type SchemaYaml = z.infer<typeof SchemaYamlSchema>;
 
 // Runtime state types (not Zod - internal only)

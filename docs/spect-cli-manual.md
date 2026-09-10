@@ -188,7 +188,7 @@ $ spect validate --all --no-interactive
 
 ### `spect instructions [artifact]`
 
-输出制品写作的增强指令（供 agent 消费），另有两个特殊分支：`apply`（实现指令）与 `archive`（归档输入）。
+输出制品写作的增强指令（供 agent 消费），另有两个特殊分支：`implement`（实现指令）与 `archive`（归档输入）。
 
 | 选项 | 说明 |
 | --- | --- |
@@ -203,8 +203,8 @@ $ spect instructions proposal --change add-search
 为变更 "add-search" 创建 proposal 产出物。
 ...
 
-$ spect instructions apply --change add-search
-## Apply: add-search
+$ spect instructions implement --change add-search
+## Implement: add-search
 ### 上下文文件
 - proposal: .../openspec/changes/add-search/proposal.md
 ...
