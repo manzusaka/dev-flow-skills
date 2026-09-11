@@ -1,0 +1,5 @@
+interface:
+  display_name: "Spec 收尾"
+  short_description: "收尾已完成的 OpenSpec change 并压缩为单个提交"
+policy:
+  allow_implicit_invocation: false

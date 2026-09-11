@@ -53,7 +53,7 @@ npx skills@latest add manzusaka/devtrain-skills
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)** - 把当前对话整理成 OpenSpec change proposal，创建兼容的变更元数据与 `proposal.md`。
 - **[to-plan](./skills/engineering/to-plan/SKILL.md)** - 读取 OpenSpec proposal，经过架构 grilling 补齐 delta specs、design 与 tracer-bullet tasks。
 - **[implement](./skills/engineering/implement/SKILL.md)** - 实现 OpenSpec change 或 spec 中指定的工作：按 `tasks.md` checkbox 状态续做，收尾统一提交并以 `/code-review` 审查。
-- **[archive](./skills/engineering/archive/SKILL.md)** - 归档已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 合并规格，并把本次 change 的提交压成单个 commit。
+- **[finalize-spec](./skills/engineering/finalize-spec/SKILL.md)** - 收尾已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 归档并合并规格，并把本次 change 的提交压成单个 commit。
 
 **Model-invoked**
 

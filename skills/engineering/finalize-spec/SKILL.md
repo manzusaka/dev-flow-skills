@@ -1,20 +1,20 @@
 ---
-name: archive
-description: "归档已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 合并规格，并把本次 change 的提交压成单个 commit。"
+name: finalize-spec
+description: "收尾已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 归档并合并规格，并把本次 change 的提交压成单个 commit。"
 disable-model-invocation: true
 ---
 
-# Archive
+# Finalize Spec
 
-归档用户在 OpenSpec change 中完成的工作。调用形式是 `/archive [change-name]`。上游是 `/implement`：实现、提交与审查都已完成，归档只做收尾——不重开计划，不修改实现代码，不重跑测试。
+收尾用户在 OpenSpec change 中完成的工作。调用形式是 `/finalize-spec [change-name]`。上游是 `/implement`：实现、提交与审查都已完成，收尾不重开计划，不修改实现代码，不重跑测试。
 
-边界：只写入归档产物（规格合并、summary.md、trace.md、CONTEXT.md/ADR 更新）与一次压缩提交；不合并回 base、不创建 PR（PR 由用户手动创建）、不丢弃工作、不清理 worktree。`spect` 缺失或报错时停止并报告，不代为安装。
+边界：只写入收尾产物（规格合并、summary.md、trace.md、CONTEXT.md/ADR 更新）与一次压缩提交；不合并回 base、不创建 PR（PR 由用户手动创建）、不丢弃工作、不清理 worktree。`spect` 缺失或报错时停止并报告，不代为安装。
 
 ## Process
 
 ### 1. Resolve the change
 
-传入 `change-name` 且 exact match 时直接选择。否则运行 `spect list --json` 列出 active changes 让用户选择；没有 exact match 时按相关度展示候选让用户确认，不静默选择近似结果。不存在对应 change 时（上游来源是裸 spec 或对话内计划），报告"无可归档内容"并停止。
+传入 `change-name` 且 exact match 时直接选择。否则运行 `spect list --json` 列出 active changes 让用户选择；没有 exact match 时按相关度展示候选让用户确认，不静默选择近似结果。不存在对应 change 时（上游来源是裸 spec 或对话内计划），报告"无可收尾内容"并停止。
 
 ### 2. Gate on tasks
 
@@ -68,10 +68,10 @@ spect archive <change-name> -y
 
 确定压缩起点：先读 `trace.md` 的 implement section 中记录的 review fixed point；缺失时从 `HEAD` 往回找 commit message 引用 `<change-name>` 的最老提交，取其 parent。
 
-- 确定起点 → squash 范围为 [fixed point .. HEAD] 加上未提交的归档产物。若范围内存在 message 不引用 `<change-name>` 的提交，列出它们并警告，用户确认后继续。在 `trace.md` 追加 archive section（change 目录已被 `spect archive` 移动，写入移动后的路径）：
+- 确定起点 → squash 范围为 [fixed point .. HEAD] 加上未提交的收尾产物。若范围内存在 message 不引用 `<change-name>` 的提交，列出它们并警告，用户确认后继续。在 `trace.md` 追加 finalize-spec section（change 目录已被 `spect archive` 移动，写入移动后的路径）：
 
 ```text
-## archive
+## finalize-spec
 - archive path: openspec/changes/archive/<日期>-<change-name>/
 ```
 
@@ -83,7 +83,7 @@ git add openspec/ <本次 /domain-modeling 写入的文件>
 git commit  # 复用被压缩的最老 change commit 的 message
 ```
 
-- 未找到起点 → 把未提交的归档产物（含 `trace.md` 的 archive section）提交为新提交，message 为 `chore: archive <change-name>`。
+- 未找到起点 → 把未提交的收尾产物（含 `trace.md` 的 finalize-spec section）提交为新提交，message 为 `chore: finalize <change-name>`。
 
 只提交本次 change 相关的文件（`openspec/` 目录与本次 `/domain-modeling` 写入的文件）；工作区中无关的未提交文件保持不动。
 
@@ -93,10 +93,10 @@ git commit  # 复用被压缩的最老 change commit 的 message
 
 ## 结束提示
 
-本次变更已归档，PR 由用户手动创建；可以开始下一个 change（`/grill-with-docs` 或 `/to-spec`）。
+本次变更已完成收尾，PR 由用户手动创建；可以开始下一个 change（`/grill-with-docs` 或 `/to-spec`）。
 
 ## 注意
 
-- 任务未全部勾选不阻塞归档，但必须警告并经用户确认。
+- 任务未全部勾选不阻塞收尾，但必须警告并经用户确认。
 - 未经用户确认不得同步规格。
 - 不得删除 change 目录；只允许 `spect archive` 的移动操作。

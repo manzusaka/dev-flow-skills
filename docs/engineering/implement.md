@@ -51,7 +51,7 @@ OpenSpec 输入假设 `spect` 可用——`/setup-skills`、`/to-spec` 与 `/to-
 5. 运行完整测试套件；失败则回到实现。
 6. 记录当前 `HEAD` 为 review fixed point——change 完成前不做任何提交，`HEAD` 全程不动。把代码与 `tasks.md` 勾选作为一次提交落在当前 branch，commit message 引用 change name。
 7. 对 fixed point 运行 [code-review](https://aihero.dev/skills-code-review)，显式传入本 change 的 delta specs 与 proposal 作为 Spec 轴来源。修复 findings、重新通过测试后再次提交；review 只跑一轮，不循环。
-8. 在 change 目录写入 `trace.md` 执行记录：review fixed point、最终提交与审查结果——重入审查与 `/archive` 的压缩直接读取它，不再从 commit messages 重新推导。
+8. 在 change 目录写入 `trace.md` 执行记录：review fixed point、最终提交与审查结果——重入审查与 `/finalize-spec` 的压缩直接读取它，不再从 commit messages 重新推导。
 
 因为没有 checkpoint 提交，中断的运行会把一切留在工作区；再次调用 `/implement <change-name>` 凭 checkbox 状态续做。全部任务已勾选但提交未发生时，重跑直达收尾闸；提交已落地但审查没跑时，重跑会补跑审查：先读 `trace.md` 记录的 review fixed point，缺失时从最老引用该 change name 的 commit 推导。
 
@@ -103,6 +103,6 @@ grill-with-docs → to-spec → to-plan → implement → code-review
 
 这份信任正是 [wayfinder](https://aihero.dev/skills-wayfinder) 在 [to-spec](https://aihero.dev/skills-to-spec) 处并入这条 chain、而不是把它的地图直接循环进 `implement` 的原因。只有当场得出 effort 确实很小时，才从一张地图直接去 `implement`。
 
-归档不在这条 chain 上：change 提交并审查完成后，`spect archive <change-name>` 会把 delta specs 合并进 `openspec/specs/`——由你自己运行。收尾时 `implement` 以 `Handoff Next Step` 章节提示下一步：由用户显式运行 `/archive <change-name>`。
+收尾不在这条 chain 上：change 提交并审查完成后，`spect archive <change-name>` 会把 delta specs 合并进 `openspec/specs/`——由你自己运行。`implement` 以 `Handoff Next Step` 章节提示下一步：由用户显式运行 `/finalize-spec <change-name>`。
 
 当你不确定自己身处哪个 flow 时，[ask-matt](https://aihero.dev/skills-ask-matt) 是覆盖全集的 router。

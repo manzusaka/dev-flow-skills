@@ -74,7 +74,7 @@ disable-model-invocation: true
 
 ## Handoff Next Step
 
-OpenSpec change 完成后，下一步由用户显式运行 `/archive <change-name>` 归档变更。来源是裸 spec 或对话内计划时无此步骤。
+OpenSpec change 完成后，下一步由用户显式运行 `/finalize-spec <change-name>` 收尾变更。来源是裸 spec 或对话内计划时无此步骤。
 
 ## 注意
 

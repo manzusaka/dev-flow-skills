@@ -1,5 +1,0 @@
-interface:
-  display_name: "归档"
-  short_description: "归档已完成的 OpenSpec change 并压缩为单个提交"
-policy:
-  allow_implicit_invocation: false
