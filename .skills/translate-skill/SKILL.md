@@ -1,11 +1,11 @@
 ---
 name: translate-skill
-description: 将 mattpocock/skills 的内容翻译、刷新或复核到简体中文本地化仓库 manzusaka/devtrain-skills 时使用这个项目级 skill。适用于 skill files、README content、CLAUDE.md、CONTEXT.md、docs，以及其他需要保留行为关键 identifiers 的上游用户可见内容。
+description: 将 mattpocock/skills 的内容翻译、刷新或复核到简体中文本地化仓库 manzusaka/dev-flow-skills 时使用这个项目级 skill。适用于 skill files、README content、CLAUDE.md、CONTEXT.md、docs，以及其他需要保留行为关键 identifiers 的上游用户可见内容。
 ---
 
 # Translate Skill
 
-Use this skill to translate upstream `mattpocock/skills` content into Simplified Chinese for `manzusaka/devtrain-skills`.
+Use this skill to translate upstream `mattpocock/skills` content into Simplified Chinese for `manzusaka/dev-flow-skills`.
 
 This skill is for **content localization**, not Git synchronization.
 
@@ -65,7 +65,7 @@ mattpocock/skills
 with the localized repo path:
 
 ```text
-manzusaka/devtrain-skills
+manzusaka/dev-flow-skills
 ```
 
 Only make this replacement where the command or prose is telling users how to install or use the localized repo.
@@ -122,7 +122,7 @@ When translating one file:
 4. Translate only natural-language prose.
 5. Restore protected spans exactly.
 6. Check that commands, code blocks, paths, URLs, identifiers, and frontmatter keys are unchanged.
-7. Check that localized install commands use `manzusaka/devtrain-skills`.
+7. Check that localized install commands use `manzusaka/dev-flow-skills`.
 8. Return the translated file content or a patch, plus any review flags.
 
 ## Workflow for a repo refresh
@@ -201,7 +201,7 @@ README sync log:
 - ...
 
 Invariant checks:
-- install commands point to manzusaka/devtrain-skills
+- install commands point to manzusaka/dev-flow-skills
 - code blocks preserved
 - frontmatter keys preserved
 - paths and identifiers preserved

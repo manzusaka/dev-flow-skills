@@ -5,7 +5,7 @@ description: 检查、安装或更新 spect（精简版 OpenSpec CLI）命令。
 
 # Init CLI
 
-确认本机可用的 `spect` 命令；缺失时安装它，版本过旧时更新它。支持 macOS、Linux 与 Windows（PowerShell）。`spect` 是 devtrain-skills 的精简版 OpenSpec CLI（规范驱动开发的变更管理命令），随本 skill 分发单文件可执行程序，安装不需要联网、不需要 npm。OpenSpec 模板的单一事实来源在本 skill 的 `assets/schemas/` 下，构建期内嵌进可执行程序，`spect init` 会把它们写入目标项目。
+确认本机可用的 `spect` 命令；缺失时安装它，版本过旧时更新它。支持 macOS、Linux 与 Windows（PowerShell）。`spect` 是 dev-flow-skills 的精简版 OpenSpec CLI（规范驱动开发的变更管理命令），随本 skill 分发单文件可执行程序，安装不需要联网、不需要 npm。OpenSpec 模板的单一事实来源在本 skill 的 `assets/schemas/` 下，构建期内嵌进可执行程序，`spect init` 会把它们写入目标项目。
 
 ## Process
 

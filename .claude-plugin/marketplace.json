@@ -1,13 +1,13 @@
 {
-  "name": "devtrain",
+  "name": "dev-flow",
   "owner": {
-    "name": "Mitix devtrain",
+    "name": "manzusaka",
     "url": ""
   },
   "description": "真实工程使用的 skills，以可安装的 Claude Code plugin 形式提供简体中文本地化版本。",
   "plugins": [
     {
-      "name": "devtrain-skills",
+      "name": "dev-flow-skills",
       "source": "./",
       "description": "面向真实工程工作的 agent skills：持续追问、spec/ticket flows、TDD、代码审查、领域建模等。",
       "category": "engineering",

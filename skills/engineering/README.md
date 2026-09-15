@@ -1,12 +1,12 @@
 # Engineering
 
-我每天用于代码工作的 skills。
+面向日常代码工作的 skills。
 
 ## User-invoked
 
 只有在你显式输入名称时才能调用（Claude Code：`disable-model-invocation: true`；Codex：`agents/openai.yaml` 中的 `policy.allow_implicit_invocation: false`）。
 
-- **[ask-matt](./ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
+- **[ask-matt](./ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库所有 skills 的 router。
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)** - 扫描 codebase 中的 deepening opportunities，生成可视化 HTML report，然后围绕你选中的候选项继续 grilling。
 - **[setup-skills](./setup-skills/SKILL.md)** - 初始化一个 repository 的工程前置：spect CLI、agent instructions 与 CONTEXT、ADR、OpenSpec 脚手架。
 - **[wayfinder](./wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 `docs/wayfinding/` 下的 decision records 共享 map，逐一解决直到通往 destination 的路清晰。

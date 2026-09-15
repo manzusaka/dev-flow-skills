@@ -1,6 +1,6 @@
 # spect CLI 移植实现计划（阶段一）
 
-把参考仓库 `openspec/`（`@studyzy/openspec-cn` v1.9.0，本地未跟踪目录）中的 OpenSpec CLI 裁剪移植为本仓库自有的精简 CLI，命令名 **spect**（spectools）。用户通过 `npx skills add manzusaka/devtrain-skills` 安装 `init-cli` skill 时，随 skill 目录获得编译好的可执行文件与安装脚本，即可把 `spect` 安装到本地环境。
+把参考仓库 `openspec/`（`@studyzy/openspec-cn` v1.9.0，本地未跟踪目录）中的 OpenSpec CLI 裁剪移植为本仓库自有的精简 CLI，命令名 **spect**（spectools）。用户通过 `npx skills add manzusaka/dev-flow-skills` 安装 `init-cli` skill 时，随 skill 目录获得编译好的可执行文件与安装脚本，即可把 `spect` 安装到本地环境。
 
 ## 已敲定的决定
 

@@ -54,10 +54,10 @@ if (files.includes("README.md")) {
   if (/vinvcn\/(?:skills-zh-CN|mattpocock-skills-zh-CN)/.test(readme)) {
     fail("README.md", "README still points at an old localized repository");
   }
-  if (!/manzusaka\/devtrain-skills/.test(readme)) {
+  if (!/manzusaka\/dev-flow-skills/.test(readme)) {
     fail(
       "README.md",
-      "README does not reference manzusaka/devtrain-skills",
+      "README does not reference manzusaka/dev-flow-skills",
     );
   }
 }

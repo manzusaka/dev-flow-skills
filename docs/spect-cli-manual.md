@@ -1,13 +1,13 @@
 # spect CLI 命令手册
 
-`spect`（spectools）是 devtrain-skills 的精简版 OpenSpec CLI：规范驱动开发的变更管理命令。单文件可执行程序随 `init-cli` skill 分发，安装无需联网与 npm，仅需 Node.js >= 22。本手册基于 spect 0.1.2 实测输出编写。
+`spect`（spectools）是 dev-flow-skills 的精简版 OpenSpec CLI：规范驱动开发的变更管理命令。单文件可执行程序随 `init-cli` skill 分发，安装无需联网与 npm，仅需 Node.js >= 22。本手册基于 spect 0.1.2 实测输出编写。
 
 ## 安装
 
 **macOS / Linux**
 
 ```bash
-npx skills@latest add manzusaka/devtrain-skills   # 选择 init-cli skill
+npx skills@latest add manzusaka/dev-flow-skills   # 选择 init-cli skill
 bash <init-cli skill 目录>/install-spect.sh        # 安装到 ~/.local/bin/spect
 spect --version                                    # 验证
 ```
@@ -17,7 +17,7 @@ spect --version                                    # 验证
 **Windows（PowerShell）**
 
 ```powershell
-npx skills@latest add manzusaka/devtrain-skills   # 选择 init-cli skill
+npx skills@latest add manzusaka/dev-flow-skills   # 选择 init-cli skill
 powershell -NoProfile -ExecutionPolicy Bypass -File <init-cli skill 目录>\install-spect.ps1   # 安装到 %USERPROFILE%\.local\bin
 spect --version                                    # 配置 PATH 后验证
 ```

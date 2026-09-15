@@ -1,18 +1,18 @@
-# Devtrain Skills
+# dev-flow-skills
 
-## 关于Devtrain Skills
+## 关于 dev-flow-skills
 
-这是 [`mattpocock/skills`](https://github.com/mattpocock/skills) 的针对自身业务做了修改，本仓库后续会自行修改。
+dev-flow-skills 借鉴自 [`mattpocock/skills`](https://github.com/mattpocock/skills)，并在此基础上持续演化。
 
-## 30 秒安装
+## 快速安装与初始化
 
 1. 运行 skills.sh installer：
 
 ```bash
-npx skills@latest add manzusaka/devtrain-skills
+npx skills@latest add manzusaka/dev-flow-skills
 ```
 
-2. 选择你想安装的 skills，以及要安装到哪些 coding agents。**确保选择 `/setup-skills`**。
+2. 选择你想安装的 skills，以及要安装到哪些 coding agents。**确保选择 `/setup-skills` 和 `/init-cli`**。
 
 3. 在你的 agent 中运行 `/setup-skills`。它会：
    - 安装或更新 spect（精简版 OpenSpec CLI）
@@ -21,31 +21,21 @@ npx skills@latest add manzusaka/devtrain-skills
 
 4. 完成后即可开始使用。
 
-### 作为 Claude Code plugin 安装
+## 为什么这些 Skills 存在
 
-如果你更喜欢无需手动维护的即装即用方式，这些 skills 也以原生 [Claude Code plugin](https://code.claude.com/docs/en/plugins) 发布。与把可编辑文件复制进 repo 不同，plugin 会把整套 skills 安装为受管理的 bundle；新版本发布后可以统一更新。
+这些 skills 用于解决 Claude Code、Codex 和其他 coding agents 在真实工程中反复出现的常见失败模式。
 
-在 Claude Code 中运行：
-
-```
-/plugin marketplace add manzusaka/devtrain-skills
-```
-
-### 为什么这些 Skills 存在
-
-我创建这些 skills，是为了解决我在 Claude Code、Codex 和其他 coding agents 中反复看到的常见失败模式。
-
-### Reference
+## Reference
 
 这些 skills 按一个维度区分：谁能调用它们。**User-invoked** skills 只有在你输入名称时才能触达（例如 `/handoff`）；它们的工作是编排。**Model-invoked** skills 可以由你调用，也可以在任务匹配时由 agent 自动触达；它们承载可复用纪律。User-invoked skill 可以调用 model-invoked skills，但不能调用另一个 user-invoked skill。
 
-#### Engineering
+### Engineering
 
-我每天用于代码工作的 skills。
+面向日常代码工作的 skills。
 
 **User-invoked**
 
-- **[ask-matt](./skills/engineering/ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库 user-invoked skills 的 router。
+- **[ask-matt](./skills/engineering/ask-matt/SKILL.md)** - 询问当前情境适合哪个 skill 或 flow；它是本仓库所有 skills 的 router。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** - 扫描 codebase 中的 deepening opportunities，生成可视化 HTML report，然后围绕你选中的候选项继续 grilling。
 - **[setup-skills](./skills/engineering/setup-skills/SKILL.md)** - 初始化一个 repository 的工程前置：spect CLI、agent instructions 与 CONTEXT、ADR、OpenSpec 脚手架。
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 `docs/wayfinding/` 下的 decision records 共享 map，逐一解决直到通往 destination 的路清晰。
@@ -69,7 +59,7 @@ npx skills@latest add manzusaka/devtrain-skills
 - **[wizard](./skills/engineering/wizard/SKILL.md)** - 生成一个交互式 bash wizard，带人走过只有人才能完成的步骤：provisioning infrastructure、设置 credentials 或 CI secrets、操作陌生的第三方 dashboard，或执行一次性 migration/cutover。
 - **[using-git-worktrees](./skills/engineering/using-git-worktrees/SKILL.md)** - 确保 feature 工作在隔离的 workspace 中进行：优先原生 worktree 工具，没有时 fallback 到 git worktree，并完成 setup 与 baseline 验证。
 
-#### Productivity
+### Productivity
 
 通用工作流工具，不限于代码。
 
