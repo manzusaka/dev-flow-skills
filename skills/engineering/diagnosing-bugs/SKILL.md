@@ -111,30 +111,62 @@ Tool preference：
 
 **Perf branch。** 对 performance regressions，logs 通常不对。改为先建立 baseline measurement（timing harness、`performance.now()`、profiler、query plan），然后 bisect。先 measure，再 fix。
 
-## Phase 5 - Fix + regression test
+Phase 4 完成条件：证据支持至少一个 root-cause hypothesis；其他仍有竞争力的 hypotheses 已被排除，或明确不会改变本次修复决策。否则回到 Phase 3/4 继续验证，不要提出 fix。
+
+## Phase 5 - Regression test + approval + execution
 
 在 fix 前写 regression test，但前提是存在 **correct seam**。
 
 Correct seam 是 test 能以 call site 中真实发生的方式触发 **real bug pattern** 的地方。如果唯一可用 seam 太 shallow（bug 需要多个 callers，但 test 只有 single-caller；unit test 无法复制触发 bug 的 chain），那里的 regression test 会给出 false confidence。
 
-**如果不存在 correct seam，这本身就是发现。** 记录下来。Codebase architecture 阻止你锁住 bug。把它标记给下一阶段。
+**如果不存在 correct seam，这本身就是发现。** 记录下来。Codebase architecture 阻止你锁住 bug；不要写一条 shallow test 制造 false confidence。后续用原始 Phase 1 loop 验证 fix。
 
 如果存在 correct seam：
 
 1. 把 minimised repro 变成该 seam 上的 failing test。
 2. 看它 fail。
-3. 应用 fix。
-4. 看它 pass。
-5. 重新针对原始（未 minimised）场景运行 Phase 1 feedback loop。
 
-## Phase 6 - Cleanup + post-mortem
+然后向用户输出一个紧凑的确认包：
 
-声明完成前必须做：
+```markdown
+### Diagnosis
 
-- [ ] Original repro 不再复现（重跑 Phase 1 loop）
-- [ ] Regression test 通过（或记录缺少 seam）
-- [ ] 所有 `[DEBUG-...]` instrumentation 已移除（grep prefix）
-- [ ] Throwaway prototypes 已删除（或移动到明确标记的 debug location）
-- [ ] 正确 hypothesis 已写进 commit / PR message，让下一个 debugger 能学习
+| Hypothesis | Verdict | Key evidence |
+| --- | --- | --- |
+| <hypothesis> | Root cause / Rejected / Uncertain | <decisive evidence> |
 
-**然后问：什么本可以预防这个 bug？** 如果答案涉及 architecture change（没有好 test seam、callers 缠绕、hidden coupling），带着具体细节交给 `/improve-codebase-architecture` skill。这个建议要在 fix 之后提出，不要在之前提出；现在你比开始时知道得更多。
+### Fix plan
+
+<修复方式、修改范围与执行方式（Direct fix 或 /implement）。合并说明行为变化、风险和未决问题；没有则写 None。>
+
+### Regression
+
+- Seam / assertion: <测试位置及捕获的 exact symptom；没有 correct seam 时明确写出>
+- Command: `<regression test 或原始 Phase 1 loop 的运行命令>`
+```
+
+**等待用户明确批准。** 在此之前可以保留 failing regression test 和诊断 probes，但不得应用或保留任何改变产品行为的 fix。用户不回复就停在这里。
+
+批准只覆盖确认包中展示的方案。如果后续证据改变了 diagnosis、修改范围或外部行为，停止并提交更新后的确认包重新请求批准；等价的局部实现细节不需要重复确认。
+
+### Execution branches
+
+#### Direct fix
+
+修复局部、单一且能在当前 session 完成时：
+
+1. 应用最小 fix。
+2. 看 regression test 变绿（如果存在）。
+3. 重跑原始 Phase 1 loop，确认 original repro 不再复现。
+4. 完成 Phase 6 cleanup + post-mortem：
+   - [ ] Regression test 通过（或记录缺少 seam）
+   - [ ] 所有 `[DEBUG-...]` instrumentation 已移除（grep prefix）
+   - [ ] Throwaway prototypes 已删除（或移动到明确标记的 debug location）
+   - [ ] 已追问什么本可以预防这个 bug
+5. 输出 commit-ready 摘要，以及包含正确 hypothesis 的建议 commit / PR message。
+
+不要自动 commit；只有用户另行明确要求时才提交。如果预防措施涉及 architecture change（没有好 test seam、callers 缠绕、hidden coupling），带着具体细节建议用户显式调用 `/improve-codebase-architecture`。这个建议要在 fix 之后提出，不要在之前提出；现在你比开始时知道得更多。
+
+#### `/implement` handoff
+
+修复涉及多个 tasks、需要跨 session，或属于 OpenSpec change 时，在确认包中选择此执行方式。`/implement` 是 user-invoked；不要自动调用。用户批准后，请用户显式运行 `/implement`，并把已批准的确认包作为计划，同时传递 regression test、原始 loop、`[DEBUG-...]` 与 throwaway artifacts 的清理要求、root-cause message 要求，以及 architecture findings。当前 skill 在 handoff 后结束，不再进入 Phase 6。
