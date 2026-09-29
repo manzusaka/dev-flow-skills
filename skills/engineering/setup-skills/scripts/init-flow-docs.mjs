@@ -48,7 +48,9 @@ async function main() {
 
   const multiContext = await exists(contextMapTarget);
 
-  await mkdir(path.join(projectRoot, 'docs', 'adr'), { recursive: true });
+  for (const directory of ['adr', 'prds', 'prototype']) {
+    await mkdir(path.join(projectRoot, 'docs', directory), { recursive: true });
+  }
 
   if (multiContext) {
     console.log('Detected CONTEXT-MAP.md; skipped CONTEXT.md creation for multi-context repository.');
