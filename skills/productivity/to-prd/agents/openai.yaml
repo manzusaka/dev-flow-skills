@@ -1,0 +1,3 @@
+interface:
+  display_name: "产品需求文档"
+  short_description: "以产品经理视角访谈业务需求，确认企业级表格化 PRD 后保存版本文档"

@@ -70,4 +70,5 @@ npx skills@latest add manzusaka/dev-flow-skills
 **Model-invoked**
 
 - **[grilling](./skills/productivity/grilling/SKILL.md)** - 围绕计划、decision 或 idea 持续访谈用户，直到 design tree 的每个分支都被解决。它是 `grill-with-docs`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用访谈 primitive。
+- **[to-prd](./skills/productivity/to-prd/SKILL.md)** - 以产品经理视角访谈本次需求，确认企业级表格化单文档 PRD 后保存到 `docs/prds/`，从 v0.1 开始保留版本与历史变化。
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** - 为 agents 编写文档：skills、AGENTS.md/CLAUDE.md，以及任何 agent 通过 pointer 到达的文档。
