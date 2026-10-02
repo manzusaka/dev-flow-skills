@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>zero-to-design · 从 0 到 1 建立你的设计系统</title>
+  <meta name="description" content="一个交互式 agent skill：通过对话引导，把模糊的产品想法变成 DESIGN.md、真实页面设计稿和动效约束。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="case/tokens.css">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.7;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--container-padding); }
+
+    nav {
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav-brand {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: var(--text-lg);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .nav-link {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+    .nav-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+    .hero > *, .section > h2, .section > .lead {
+      animation: rise var(--duration-slow) var(--ease-out) both;
+    }
+    .hero > *:nth-child(2) { animation-delay: 120ms; }
+    .hero > *:nth-child(3) { animation-delay: 240ms; }
+    .section > .lead { animation-delay: 100ms; }
+    @media (prefers-reduced-motion: reduce) {
+      .hero > *, .section > h2, .section > .lead { animation: none; }
+    }
+
+    .hero { padding-block: var(--space-3xl) var(--space-2xl); }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-display);
+      line-height: 1.25;
+      margin: 0 0 var(--space-lg);
+      letter-spacing: 0.01em;
+    }
+    .hero p {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      max-width: 56ch;
+      margin: 0 0 var(--space-xl);
+    }
+    .install {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: var(--text-base);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      color: var(--text-primary);
+    }
+    .install em { font-style: normal; color: var(--text-tertiary); }
+
+    .section { padding-block: var(--space-2xl); border-top: 1px solid var(--border-subtle); }
+    .section h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-display-sm);
+      margin: 0 0 var(--space-md);
+    }
+    .section .lead { color: var(--text-secondary); max-width: 64ch; margin: 0 0 var(--space-xl); }
+
+    .phase {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: var(--space-xl);
+      align-items: start;
+      padding: var(--space-xl) 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .phase:last-child { border-bottom: none; }
+    .phase > div:last-child {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+    .phase .num {
+      font-family: var(--font-mono);
+      font-size: var(--text-xl);
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      line-height: 1.3;
+    }
+    .phase .num small {
+      display: block;
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+      margin-top: 2px;
+    }
+    .phase h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      margin: 0;
+      line-height: 1.3;
+    }
+    .phase p { font-size: var(--text-sm); color: var(--text-secondary); margin: 0; max-width: 60ch; }
+    .phase .out {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      background: var(--badge-bg);
+      border-radius: var(--radius-sm);
+      padding: 2px 8px;
+    }
+    @media (max-width: 640px) {
+      .phase { grid-template-columns: 44px 1fr; gap: var(--space-lg); }
+    }
+
+    .artifact { margin-bottom: var(--space-3xl); }
+    .artifact h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      margin: 0 0 var(--space-sm);
+    }
+    .artifact .why {
+      color: var(--text-secondary);
+      font-size: var(--text-base);
+      max-width: 64ch;
+      margin: 0 0 var(--space-md);
+    }
+    .artifact .why strong { color: var(--accent); font-weight: 500; }
+    .frame-wrap {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--surface-elevated);
+    }
+    .frame-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+    .frame-bar a { color: var(--accent); text-decoration: none; }
+    .frame-bar a:hover { text-decoration: underline; }
+    iframe {
+      width: 100%;
+      height: 680px;
+      border: 0;
+      display: block;
+      background: #fff;
+    }
+    pre {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      overflow: auto;
+      max-height: 420px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .file-link {
+      display: inline-block;
+      margin-top: var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .file-link:hover { text-decoration: underline; }
+
+    .qa {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      margin-bottom: var(--space-md);
+    }
+    .qa-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+      padding: var(--space-sm) 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: var(--text-sm);
+    }
+    .qa-row:last-child { border-bottom: none; }
+    .qa-row .q { color: var(--text-secondary); }
+    .qa-row .a { color: var(--text-primary); }
+    .qa-row .a::before {
+      content: "→";
+      font-family: var(--font-mono);
+      color: var(--accent);
+      margin-right: var(--space-sm);
+    }
+    .ref-list {
+      margin: 0 0 var(--space-md);
+      padding: 0;
+      list-style: none;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      max-width: 64ch;
+    }
+    .ref-list li {
+      padding: var(--space-xs) 0 var(--space-xs) var(--space-lg);
+      position: relative;
+    }
+    .ref-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.85em;
+      width: 8px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .ref-list strong { color: var(--text-primary); font-weight: 500; }
+    pre + .why { margin-top: var(--space-lg); }
+    .user-quote {
+      margin: 0 0 var(--space-md);
+      padding: var(--space-lg) var(--space-xl);
+      background: var(--badge-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: var(--text-base);
+      line-height: 1.8;
+    }
+    @media (max-width: 640px) {
+      .qa-row { grid-template-columns: 1fr; gap: var(--space-xs); }
+    }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding-block: var(--space-xl) var(--space-2xl);
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+    footer a { color: var(--text-secondary); }
+
+    @media (max-width: 640px) {
+      iframe { height: 420px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="container">
+    <a class="nav-brand" href="#">zero-to-design</a>
+    <div style="display:flex; gap:8px;">
+      <a class="nav-link" href="/en/">English ↗</a>
+      <a class="nav-link" href="https://github.com/mitaraifail/zero-to-design">GitHub ↗</a>
+    </div>
+  </nav>
+
+  <header class="hero container">
+    <h1>从一个模糊的想法，<br>到一套活着的设计系统。</h1>
+    <p>zero-to-design 是一个交互式 agent skill：通过对话引导，帮你完成产品定义、灵感收集、方向选择、界面迭代，最终产出可持续演进的 DESIGN.md、真实页面设计稿和动效约束。为没有设计师的团队而生。</p>
+    <code class="install">npx skills add mitaraifail/zero-to-design</code>
+  </header>
+
+  <section class="section container">
+    <h2>七个 Phase，一条闭环</h2>
+    <p class="lead">每个 Phase 都有明确产出，用户批准后进入下一步。DESIGN.md 从 Phase 4 起以草稿形式存在，随反馈持续演进，Phase 7 固化——而不是最后才凭空生成。</p>
+    <div class="phases">
+      <div class="phase">
+        <div class="num">01</div>
+        <div>
+          <h3>产品定义</h3>
+          <p>8 个关键问题锁定"做什么、做成什么感觉"，已回答的智能跳过，没答的自己推断。</p>
+          <span class="out">01-product.md</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">02</div>
+        <div>
+          <h3>参考图收集</h3>
+          <p>动态推荐同类型 / 跨类型 / 灵感库 / 字体库四类参考，收集整体感受与局部标注。</p>
+          <span class="out">02-references.md</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">03</div>
+        <div>
+          <h3>方向选择</h3>
+          <p>读取内置的方向设计指引与已有约束，再推导 3-4 个真正不同的方向。</p>
+          <span class="out">03-directions.html</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">04</div>
+        <div>
+          <h3>首屏迭代</h3>
+          <p>从这里起使用目标项目的框架和组件库生成可运行原型，逐版迭代 1–2 个关键屏；批准后生成 DESIGN.draft.md。</p>
+          <span class="out">按平台运行的 04-&lt;screen&gt;-v* 原型 + DESIGN.draft.md</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">05<small>单页可跳过</small></div>
+        <div>
+          <h3>核心页面扩展</h3>
+          <p>扩展到最小核心页面集：UI 状态与交互、实现契约，附页面地图与组件清单。</p>
+          <span class="out">05-&lt;screen&gt;-v* 原型 · 页面地图 · 组件清单</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">06</div>
+        <div>
+          <h3>跨屏打磨</h3>
+          <p>逐维度打磨字体、间距、色彩、组件、响应式、无障碍与动效，产出打磨日志与可选维度评审页。</p>
+          <span class="out">06-polish-log.md · 维度评审页</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">07</div>
+        <div>
+          <h3>固化设计系统</h3>
+          <p>把 draft 固化为 docs/prototype/DESIGN.md，生成 docs/prototype/design/tokens.css 和资源，并更新 AGENTS.md 引用。</p>
+          <span class="out">docs/prototype/DESIGN.md + docs/prototype/design/tokens.css</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <h2>一次真实的运行 · Pulse</h2>
+    <p class="lead">以下所有产物都来自一次真实运行的完整记录：为 Pulse（一个面向独立开发者的数据看板）从 0 建立设计系统。每个产物都是真实文件，可以点开亲自体验——不是截图。</p>
+
+    <div class="artifact">
+      <h3>Phase 1 · 产品定义：把模糊想法问清楚</h3>
+      <p class="why">用户只说了一句"我想给独立开发者设计一个看板"，skill 通过 8 个关键问题把它收敛成清晰的产品定义。以下是这次运行的真实问答（节选）：</p>
+      <div class="qa">
+        <div class="qa-row"><span class="q">Q · 这个产品叫什么名字？</span><span class="a">Pulse</span></div>
+        <div class="qa-row"><span class="q">Q · 一句话定义它是做什么的？</span><span class="a">把收入、用户和事件数据汇成一个清晰的首页，每天早上 30 秒就能判断产品有没有异常。</span></div>
+        <div class="qa-row"><span class="q">Q · 最典型的用户是谁？</span><span class="a">全栈 / 后端工程师、独立开发者、一人公司创始人。</span></div>
+        <div class="qa-row"><span class="q">Q · 用户打开页面前的心智状态？</span><span class="a">"我的产品今天还好吗？"——30 秒内确认，排除坏消息，也许发现一个小胜利。</span></div>
+        <div class="qa-row"><span class="q">Q · 相比 Stripe / GA / 自建看板，最核心的差异点？</span><span class="a">每天早上主动告诉你今天的状态，而不是等你自己去挖。</span></div>
+        <div class="qa-row"><span class="q">Q · 界面应该传达什么氛围？</span><span class="a">Calm（平静）+ Speed（效率）</span></div>
+        <div class="qa-row"><span class="q">Q · 目标平台是？</span><span class="a">Web</span></div>
+        <div class="qa-row"><span class="q">Q · 是否已有品牌资产？</span><span class="a">没有</span></div>
+      </div>
+      <p class="why">已经回答过的问题不会重复问；没答的由 agent 推断并标注"agent 推断"。产出 <strong>01-product.md</strong>。</p>
+      <a class="file-link" href="case/01-product.md">01-product.md ↗</a>
+    </div>
+
+    <div class="artifact">
+      <h3>Phase 2 · 参考收集：给出审美种子</h3>
+      <p class="why">Agent 根据产品定义动态推荐了四类参考，请用户逐个浏览，反馈整体感受和局部标注：</p>
+      <ul class="ref-list">
+        <li><strong>同类型产品</strong>（清晰但不冰冷的数据看板）：Stripe Dashboard / Linear / Plausible Analytics / Fathom Analytics</li>
+        <li><strong>跨类型气质</strong>（Calm + Speed 怎么表达）：Notion / Kinfolk / Aesop / Monocle</li>
+        <li><strong>设计灵感库</strong>（布局与交互细节）：Mobbin / Awwwards / Godly</li>
+        <li><strong>字体灵感库</strong>（挑字体搭配）：Typewolf / Fontshare</li>
+      </ul>
+      <p class="why">这位用户很早就给了显式偏好。<strong>这些原话被原样记录，成为 Phase 3 的硬约束</strong>：</p>
+      <blockquote class="user-quote">浅色模式，不要默认深色模式。不要紫色，不要蓝色做主色，不要渐变。继续。</blockquote>
+      <a class="file-link" href="case/02-references.md">02-references.md ↗</a>
+    </div>
+
+    <div class="artifact">
+      <h3>Phase 3 · 方向选择：读取内部能力，生成方向</h3>
+      <p class="why">流程按需读取内置的 shape、bolder 和 critique 指引，不要求用户安装或挑选外部设计 skill。</p>
+      <p class="why">基于 01-product.md + 02-references.md 推导出 3–4 个真正不同的方向。每个方向都有分层配色、具名字体、布局说明和<strong>可交互的签名动作</strong>——hover 下面的指标格、按钮、标题试试看：</p>
+      <div class="frame-wrap">
+        <div class="frame-bar">
+          <span>03-directions.html</span>
+          <a href="case/03-directions.html" target="_blank">新窗口打开 ↗</a>
+        </div>
+        <iframe src="case/03-directions.html" title="设计方向选择" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="artifact">
+      <h3>Phase 4 · 首屏（看板首页）迭代定稿</h3>
+      <p class="why">以下 HTML 是早期案例归档；现行流程从 Phase 4 起使用目标项目的框架和组件库制作可运行原型。</p>
+      <p class="why">用户选定方向后，迭代出完整的看板首页：真实指标数据、完整 hover / active / focus 状态。批准后 skill 立即从中提取出 DESIGN.draft.md。</p>
+      <div class="frame-wrap">
+        <div class="frame-bar">
+          <span>04-dashboard-v1.html</span>
+          <a href="case/04-dashboard-v1.html" target="_blank">新窗口打开 ↗</a>
+        </div>
+        <iframe src="case/04-dashboard-v1.html" title="看板首页设计稿" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="artifact">
+      <h3>动效评审</h3>
+      <p class="why">在继续扩展前，先系统性定稿动效语言：按钮状态、入场动画、组件动画、缓动曲线，<strong>全部可以亲手点一遍</strong>。批准后动效决策写回 draft。</p>
+      <div class="frame-wrap">
+        <div class="frame-bar">
+          <span>05-motion-review.html</span>
+          <a href="case/05-motion-review.html" target="_blank">新窗口打开 ↗</a>
+        </div>
+        <iframe src="case/05-motion-review.html" title="动效评审" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="artifact">
+      <h3>Phase 7 · DESIGN.md 固化</h3>
+      <p class="why">draft 固化为最终设计系统：多章结构覆盖设计灵魂、Tokens、组件规范、UX 约束、红线规则和 Agent 使用指南。它是后续所有页面开发的<strong>唯一视觉事实来源</strong>——AGENTS.md 会引用它，新 session 的 agent 开工前必须先读它。以下是真实文件的开头两章：</p>
+      <pre>## 一、设计灵魂
+
+Pulse 是一个面向独立开发者的数据看板。它的视觉风格是"编辑式平静"：
+像一份排版精良的晨报，用细线、留白和信息密度建立秩序，
+而不是堆叠卡片和装饰。目标是在 30 秒内缓解
+"我的产品今天还好吗？"这种底层焦虑。
+
+色彩策略：暖浅灰底 + 深炭黑文字 + 森林绿强调色。
+绿色代表"正常 / 健康"，只出现在状态和正向变化上；
+警告和错误用低饱和的暖棕 / 赭红，不刺眼。
+
+字体分工：大标题用 Source Serif 4 带来人文编辑感；
+正文用 Manrope 保证数据可读性；
+等宽用 JetBrains Mono 处理金额、百分比和时间戳。
+数字本身就是主角，不需要图表。
+
+## 二、Tokens（节选）
+
+| 名称     | Token              | Role                             |
+|----------|--------------------|----------------------------------|
+| 页面背景 | --bg-page          | 页面底色，营造暖纸感              |
+| 主文字   | --text-primary     | 标题、大数字、正文强调            |
+| 强调色   | --accent           | 品牌标识、正向状态、主操作        |
+| 卡片表面 | --surface-card     | 卡片、导航、操作项背景            |
+| 浅边框   | --border-subtle    | 细线、卡片边框、分隔线            |
+
+Role 使用规则：--accent 只做点缀，禁止用于大面积填充……</pre>
+      <a class="file-link" href="case/DESIGN.md">DESIGN.md 完整版 ↗</a>
+      <a class="file-link" href="case/tokens.css">tokens.css ↗</a>
+    </div>
+  </section>
+
+  <footer class="container">
+    <span>zero-to-design · MIT License</span>
+    <span><a href="https://github.com/mitaraifail/zero-to-design">GitHub</a> · <a href="case/DESIGN.md">案例 DESIGN.md</a></span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse · 今日</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #F5F4F0;
+      --text-primary: #1F1F1F;
+      --text-secondary: #5C5C5C;
+      --text-tertiary: #8A8A8A;
+      --accent: #2D5A3D;
+      --accent-hover: #234A30;
+      --surface-card: #FAFAF8;
+      --surface-hover: #F2F1EC;
+      --border-subtle: #DEDCD5;
+      --border-strong: #C8C6BF;
+      --status-ok: #2D5A3D;
+      --status-warn: #9A6B2B;
+      --status-error: #8B3A2E;
+      --badge-bg: #E8EDE9;
+
+      --font-display: "Source Serif 4", Georgia, "Noto Serif SC", serif;
+      --font-body: "Manrope", system-ui, "Noto Sans SC", "PingFang SC", sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+
+      --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+      --duration-fast: 150ms;
+      --duration-normal: 200ms;
+      --duration-slow: 350ms;
+      --rule-duration: 0.8s;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-page);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Top navigation */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface-card);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-brand::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-link {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: color var(--duration-fast) ease, background var(--duration-fast) ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background: var(--surface-hover);
+    }
+
+    .nav-link.active {
+      color: var(--text-primary);
+      background: var(--bg-page);
+    }
+
+    .nav-user {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-left: 12px;
+      transition: background var(--duration-fast) ease;
+    }
+
+    .nav-user:hover {
+      background: var(--border-strong);
+    }
+
+    /* Main container */
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+
+    /* Masthead */
+    .masthead {
+      padding: 48px 0 28px;
+      position: relative;
+    }
+
+    .masthead::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: var(--border-subtle);
+      transform-origin: left;
+      animation: ruleDrawH var(--rule-duration) var(--ease-out) forwards;
+    }
+
+    .masthead-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .masthead-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    .masthead-date {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .masthead-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 6px 12px;
+      background: var(--badge-bg);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--status-ok);
+    }
+
+    .masthead-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--status-ok);
+    }
+
+    /* Metric band */
+    .metric-band {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      position: relative;
+    }
+
+    .metric-band::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: var(--border-subtle);
+      transform-origin: left;
+      animation: ruleDrawH var(--rule-duration) var(--ease-out) 0.25s forwards;
+    }
+
+    @keyframes ruleDrawH {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    @keyframes ruleDrawV {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    .metric-cell {
+      position: relative;
+      padding: 28px 24px;
+      border-right: 1px solid var(--border-subtle);
+      transition: background var(--duration-fast) ease;
+      cursor: pointer;
+    }
+
+    .metric-cell:last-child {
+      border-right: none;
+    }
+
+    .metric-cell:hover {
+      background: var(--surface-hover);
+    }
+
+    .metric-cell::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background: var(--border-subtle);
+      transform-origin: top;
+      animation: ruleDrawV var(--rule-duration) var(--ease-out) 0.45s forwards;
+    }
+
+    .metric-cell:last-child::after {
+      display: none;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .metric-value {
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .metric-change {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--status-ok);
+    }
+
+    .metric-change.negative {
+      color: var(--status-error);
+    }
+
+    .metric-change::before {
+      content: "↑";
+      font-size: 10px;
+    }
+
+    .metric-change.negative::before {
+      content: "↓";
+    }
+
+    /* Dashboard body */
+    .dashboard-body {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 0;
+      min-height: 400px;
+    }
+
+    .main-column {
+      padding: 32px 32px 32px 0;
+      border-right: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .main-column::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 32px;
+      bottom: 32px;
+      width: 1px;
+      background: var(--border-subtle);
+      transform-origin: top;
+      animation: ruleDrawV var(--rule-duration) var(--ease-out) 0.65s forwards;
+    }
+
+    .side-column {
+      padding: 32px 0 32px 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .section-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Event list */
+    .event-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: baseline;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px dotted var(--border-subtle);
+      transition: background var(--duration-fast) ease;
+      cursor: pointer;
+      margin: 0 -16px;
+      padding-left: 16px;
+      padding-right: 16px;
+      border-radius: 8px;
+    }
+
+    .event-item:last-child {
+      border-bottom: none;
+    }
+
+    .event-item:hover {
+      background: var(--surface-hover);
+    }
+
+    .event-time {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      min-width: 48px;
+    }
+
+    .event-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .event-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .event-detail {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .event-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--badge-bg);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .event-tag.warning {
+      background: #F5F0E4;
+      color: var(--status-warn);
+    }
+
+    .event-tag.error {
+      background: #F5EAE8;
+      color: var(--status-error);
+    }
+
+    /* Quick actions */
+    .action-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .action-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      text-align: left;
+      transition: transform var(--duration-fast) ease, box-shadow var(--duration-fast) ease, border-color var(--duration-fast) ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-color: var(--border-strong);
+    }
+
+    .action-card:active {
+      transform: translateY(0);
+    }
+
+    .action-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--badge-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .action-text {
+      flex: 1;
+    }
+
+    .action-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .action-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .action-arrow {
+      color: var(--text-tertiary);
+      font-size: 14px;
+      transition: transform var(--duration-fast) ease, color var(--duration-fast) ease;
+    }
+
+    .action-card:hover .action-arrow {
+      transform: translateX(3px);
+      color: var(--accent);
+    }
+
+    /* Empty state hint */
+    .empty-hint {
+      padding: 24px;
+      background: var(--surface-card);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 10px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    /* Footer note */
+    .dashboard-footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .top-nav-inner,
+      .dashboard {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .metric-band {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .metric-cell:nth-child(2)::after {
+        display: none;
+      }
+
+      .metric-cell:nth-child(1),
+      .metric-cell:nth-child(2) {
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .dashboard-body {
+        grid-template-columns: 1fr;
+      }
+
+      .main-column {
+        border-right: none;
+        padding-right: 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .main-column::after {
+        display: none;
+      }
+
+      .side-column {
+        padding-left: 0;
+        padding-top: 32px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .metric-band {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-cell {
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .metric-cell::after {
+        display: none;
+      }
+
+      .metric-cell:last-child {
+        border-bottom: none;
+      }
+
+      .masthead-top {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .event-item {
+        grid-template-columns: 1fr auto;
+        gap: 8px 12px;
+      }
+
+      .event-time {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav" aria-label="主导航">
+    <div class="top-nav-inner">
+      <a href="#" class="nav-brand" aria-label="Pulse 首页">
+        <span>Pulse</span>
+      </a>
+      <div class="nav-links">
+        <a href="#" class="nav-link active" aria-current="page">首页</a>
+        <a href="#" class="nav-link">事件</a>
+        <a href="#" class="nav-link">报表</a>
+        <a href="#" class="nav-link">设置</a>
+      </div>
+      <button class="nav-user" aria-label="用户菜单">PS</button>
+    </div>
+  </nav>
+
+  <main class="dashboard">
+    <header class="masthead">
+      <div class="masthead-top">
+        <h1 class="masthead-title">Pulse</h1>
+        <time class="masthead-date" datetime="2026-08-11">2026年8月11日 周一</time>
+      </div>
+      <div class="masthead-status">今日状态正常 · 3 项指标健康</div>
+    </header>
+
+    <section class="metric-band" aria-label="关键指标">
+      <article class="metric-cell" tabindex="0" role="button" aria-label="查看今日收入详情">
+        <div class="metric-label">今日收入</div>
+        <div class="metric-value">$1,240</div>
+        <div class="metric-change">较昨日 +12%</div>
+      </article>
+      <article class="metric-cell" tabindex="0" role="button" aria-label="查看活跃用户详情">
+        <div class="metric-label">活跃用户</div>
+        <div class="metric-value">482</div>
+        <div class="metric-change">较昨日 +5%</div>
+      </article>
+      <article class="metric-cell" tabindex="0" role="button" aria-label="查看新增注册详情">
+        <div class="metric-label">新增注册</div>
+        <div class="metric-value">24</div>
+        <div class="metric-change negative">较昨日 -2%</div>
+      </article>
+      <article class="metric-cell" tabindex="0" role="button" aria-label="查看事件数量详情">
+        <div class="metric-label">事件数量</div>
+        <div class="metric-value">3.2k</div>
+        <div class="metric-change">较昨日 +8%</div>
+      </article>
+    </section>
+
+    <div class="dashboard-body">
+      <section class="main-column" aria-labelledby="events-title">
+        <header class="section-header">
+          <h2 id="events-title" class="section-title">最近事件</h2>
+          <span class="section-meta">过去 24 小时 · 12 条</span>
+        </header>
+        <div class="event-list">
+          <article class="event-item" tabindex="0" role="button">
+            <time class="event-time">08:42</time>
+            <div class="event-content">
+              <span class="event-title">Stripe 收到一笔年度订阅</span>
+              <span class="event-detail">用户 #4821 · $99 · 来自 Product Hunt 推荐</span>
+            </div>
+            <span class="event-tag">收入</span>
+          </article>
+          <article class="event-item" tabindex="0" role="button">
+            <time class="event-time">07:15</time>
+            <div class="event-content">
+              <span class="event-title">新功能「导出 CSV」被大量使用</span>
+              <span class="event-detail">过去 4 小时使用 38 次 · 较上周增长 240%</span>
+            </div>
+            <span class="event-tag">产品</span>
+          </article>
+          <article class="event-item" tabindex="0" role="button">
+            <time class="event-time">06:30</time>
+            <div class="event-content">
+              <span class="event-title">活跃用户主要来自桌面端</span>
+              <span class="event-detail">桌面 68% · 移动 24% · 平板 8%</span>
+            </div>
+            <span class="event-tag">分析</span>
+          </article>
+          <article class="event-item" tabindex="0" role="button">
+            <time class="event-time">昨天</time>
+            <div class="event-content">
+              <span class="event-title">页面加载优化已上线</span>
+              <span class="event-detail">LCP 从 2.4s 降至 1.1s · 影响所有落地页</span>
+            </div>
+            <span class="event-tag">部署</span>
+          </article>
+          <article class="event-item" tabindex="0" role="button">
+            <time class="event-time">昨天</time>
+            <div class="event-content">
+              <span class="event-title">一位用户发起了退款</span>
+              <span class="event-detail">金额 $29 · 原因：「不再需要」</span>
+            </div>
+            <span class="event-tag warning">需关注</span>
+          </article>
+        </div>
+      </section>
+
+      <aside class="side-column" aria-labelledby="actions-title">
+        <header class="section-header">
+          <h2 id="actions-title" class="section-title">快捷操作</h2>
+        </header>
+        <div class="action-list">
+          <button class="action-card">
+            <span class="action-icon" aria-hidden="true">⊕</span>
+            <span class="action-text">
+              <span class="action-title">连接数据源</span>
+              <span class="action-desc">连接 Stripe、数据库或 GA</span>
+            </span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="action-card">
+            <span class="action-icon" aria-hidden="true">▤</span>
+            <span class="action-text">
+              <span class="action-title">查看周报</span>
+              <span class="action-desc">上周的收入、事件与趋势</span>
+            </span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="action-card">
+            <span class="action-icon" aria-hidden="true">⚑</span>
+            <span class="action-text">
+              <span class="action-title">设置提醒</span>
+              <span class="action-desc">收入或活动异常时获得通知</span>
+            </span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="action-card">
+            <span class="action-icon" aria-hidden="true">⎔</span>
+            <span class="action-text">
+              <span class="action-title">邀请成员</span>
+              <span class="action-desc">让队友在 30 秒内看懂状态</span>
+            </span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="dashboard-footer">
+      <span>数据每 15 分钟同步一次 · 最后更新 08:45</span>
+      <div class="footer-links">
+        <a href="#">帮助</a>
+        <a href="#">反馈</a>
+        <a href="#">隐私</a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

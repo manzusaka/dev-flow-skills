@@ -1,0 +1,24 @@
+> 改编自 Impeccable `animate.md`（Apache-2.0）；已翻译并接入 zero-to-design。许可见 `../licenses/IMPECCABLE-APACHE-2.0.txt`。
+
+# Animate：用动效说明状态和关系
+
+先看已有动效、交互状态、目标设备和性能预算。动效应确认操作、解释状态变化或空间连续性，或形成一个由产品和方向支撑的标志性时刻。原生应用遵循 [iOS](native/ios.md) 或 [Android](native/android.md) 的 Motion 与 Reduce Motion 规则。
+
+## 动效主张
+
+编辑前简要写明：焦点时刻、需要连续性解释的状态/布局变化、操作反馈，以及昂贵效果的预算和触发频率。不能把每个滚动章节都做成同样的 fade-up；效果须服务内容。
+
+| 时长 | 常见用途 |
+|---|---|
+| 100–150ms | 即时反馈 |
+| 150–300ms | 常规状态变化 |
+| 300–500ms | 布局、弹层或视图过渡 |
+| 500–800ms | 有意设计的焦点入场 |
+
+退出一般快于进入。缓动体现距离与结果，不默认使用 bounce。Web 可按需要使用 CSS、Web Animations API 或项目现有方案；优先使用 transform 与 opacity，并限制 blur、filter、shadow、canvas 等昂贵效果的区域。内容在脚本失败时仍可见。
+
+Web/H5 的状态过渡应明确列出需要变化的 CSS 属性，避免用 `transition: all` 或 `transition-all` 掩盖意外变化。在运行预览中连续触发、取消和反向操作，确认过渡可被后续输入打断，弹层与页面元素离场完整，状态不会卡在中间。
+
+## 无障碍与验证
+
+为 Web 提供 `prefers-reduced-motion` 下仍能理解状态的替代效果；原生使用系统减少动效设置。非必要循环在隐藏时停止，声音遵守用户选择。检查中断、重复使用、键盘、触控和目标设备性能。阶段 6 选中动效项时，把缓动、时长和回退规则写入 `DESIGN.draft.md`。

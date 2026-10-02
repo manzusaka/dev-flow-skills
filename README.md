@@ -59,6 +59,19 @@ npx skills@latest add manzusaka/dev-flow-skills
 - **[wizard](./skills/engineering/wizard/SKILL.md)** - 生成一个交互式 bash wizard，带人走过只有人才能完成的步骤：provisioning infrastructure、设置 credentials 或 CI secrets、操作陌生的第三方 dashboard，或执行一次性 migration/cutover。
 - **[using-git-worktrees](./skills/engineering/using-git-worktrees/SKILL.md)** - 确保 feature 工作在隔离的 workspace 中进行：优先原生 worktree 工具，没有时 fallback 到 git worktree，并完成 setup 与 baseline 验证。
 
+### Design
+
+围绕产品定义、界面原型和设计语言的 skills。
+
+**User-invoked**
+
+暂无。
+
+**Model-invoked**
+
+- **[design-md](./skills/design/design-md/SKILL.md)** - 先写临时设计语言草案，用页面验证后创建或合并唯一的 `DESIGN.md`。
+- **[zero-to-design](./skills/design/zero-to-design/SKILL.md)** - 新产品从零设计、已有系统新增页面/组件或审查 UI：交互式确定方向、迭代预览并沉淀 `DESIGN.md`；[使用说明](./skills/design/zero-to-design/README.zh-CN.md)。
+
 ### Productivity
 
 通用工作流工具，不限于代码。

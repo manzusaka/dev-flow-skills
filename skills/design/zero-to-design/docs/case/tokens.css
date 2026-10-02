@@ -1,0 +1,78 @@
+:root {
+  /* 色彩 */
+  --bg-page: #F5F4F0;
+  --text-primary: #1F1F1F;
+  --text-secondary: #5C5C5C;
+  --text-tertiary: #8A8A8A;
+  --accent: #2D5A3D;
+  --accent-hover: #234A30;
+  --surface-card: #FAFAF8;
+  --surface-hover: #F2F1EC;
+  --border-subtle: #DEDCD5;
+  --border-strong: #C8C6BF;
+  --status-ok: #2D5A3D;
+  --status-warn: #9A6B2B;
+  --status-error: #8B3A2E;
+  --badge-bg: #E8EDE9;
+
+  /* 字体 */
+  --font-display: "Source Serif 4", "Noto Serif SC", Georgia, serif;
+  --font-body: "Manrope", "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", monospace;
+
+  /* 字号阶梯 */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 32px;
+  --text-display: clamp(36px, 5vw, 56px);
+
+  /* 间距 */
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 10px;
+  --space-5: 12px;
+  --space-6: 14px;
+  --space-7: 16px;
+  --space-8: 20px;
+  --space-9: 24px;
+  --space-10: 28px;
+  --space-11: 32px;
+  --space-12: 48px;
+  --space-13: 80px;
+
+  /* 圆角 */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-full: 50%;
+
+  /* 阴影 */
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* 动效 */
+  --ease-out-strong: cubic-bezier(0.25, 1, 0.5, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
+  --duration-rule: 800ms;
+
+  /* 展示页补充变量（仅用于 docs/index.html 与 docs/en/index.html 的页面骨架） */
+  --container-padding: 32px;
+  --nav-height: 56px;
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --text-display-sm: clamp(26px, 3.5vw, 36px);
+  --surface-elevated: #FAFAF8;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 80px;
+}

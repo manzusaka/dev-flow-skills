@@ -5,9 +5,10 @@
 Skills 按 bucket folder 组织在 `skills/` 下：
 
 - `engineering/` - 日常代码工作
+- `design/` - 设计方向、原型与设计规范
 - `productivity/` - 日常非代码工作流工具
 
-`engineering/` 和 `productivity/` 中的每个 skill，都必须在顶层 `README.md` 中有引用，并在 `.claude-plugin/plugin.json` 中有条目。
+每个 bucket 中的 skill，都必须在顶层 `README.md` 中有引用，并在 `.claude-plugin/plugin.json` 中有条目。
 
 顶层 `README.md` 中的每个 skill 条目都必须把 skill 名称链接到对应的 `SKILL.md`。
 

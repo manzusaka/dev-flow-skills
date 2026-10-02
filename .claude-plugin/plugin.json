@@ -38,6 +38,8 @@
     "./skills/engineering/implement",
     "./skills/engineering/finalize-spec",
     "./skills/engineering/wayfinder",
+    "./skills/design/design-md",
+    "./skills/design/zero-to-design",
     "./skills/productivity/grilling",
     "./skills/productivity/handoff",
     "./skills/productivity/to-prd",

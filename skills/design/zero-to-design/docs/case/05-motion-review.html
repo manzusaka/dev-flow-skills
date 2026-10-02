@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse · 第 5 阶段动效评审</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #F5F4F0;
+      --text-primary: #1F1F1F;
+      --text-secondary: #5C5C5C;
+      --text-tertiary: #8A8A8A;
+      --accent: #2D5A3D;
+      --accent-hover: #234A30;
+      --surface-card: #FAFAF8;
+      --surface-hover: #F2F1EC;
+      --border-subtle: #DEDCD5;
+      --border-strong: #C8C6BF;
+      --status-ok: #2D5A3D;
+      --status-warn: #9A6B2B;
+      --status-error: #8B3A2E;
+      --badge-bg: #E8EDE9;
+
+      --font-display: "Source Serif 4", Georgia, "Noto Serif SC", serif;
+      --font-body: "Manrope", system-ui, "Noto Sans SC", "PingFang SC", sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+
+      --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      --duration-fast: 150ms;
+      --duration-normal: 200ms;
+      --duration-slow: 350ms;
+      --duration-slower: 500ms;
+
+      --speed-multiplier: 1;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-page);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Reduce motion toggle */
+    body.reduce-motion * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    body.reduce-motion .rule-demo::after,
+    body.reduce-motion .rule-demo-v::after {
+      animation: none !important;
+      transform: scaleX(1) !important;
+    }
+
+    /* Speed adjustment */
+    body.slow-2x * {
+      animation-duration: calc(0.01ms / var(--speed-multiplier)) !important;
+      transition-duration: calc(0.01ms / var(--speed-multiplier)) !important;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+
+    /* Header */
+    .review-header {
+      padding: 48px 0 28px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .review-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 600;
+      line-height: 1.1;
+      margin: 0 0 12px;
+    }
+
+    .review-header p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 15px;
+      max-width: 680px;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 40px;
+      padding: 16px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+    }
+
+    .control-btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease-out);
+    }
+
+    .control-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+      background: var(--surface-hover);
+    }
+
+    .control-btn.active {
+      color: #FFFFFF;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .control-btn.active:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Section */
+    .motion-section {
+      margin-bottom: 56px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Demo grid */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 720px) {
+      .demo-grid { grid-template-columns: 1fr; }
+      .container { padding-left: 20px; padding-right: 20px; }
+    }
+
+    .demo-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .demo-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .demo-hint {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 12px;
+    }
+
+    /* 1. Entrance animations - Rules Draw */
+    .rule-demo {
+      position: relative;
+      height: 60px;
+      background: var(--bg-page);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .rule-demo::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 12px;
+      width: 100%;
+      height: 1px;
+      background: var(--accent);
+      transform-origin: left;
+      animation: ruleDrawH var(--duration-slower) var(--ease-out) infinite;
+    }
+
+    .rule-demo-v {
+      position: relative;
+      width: 60px;
+      height: 100px;
+      background: var(--bg-page);
+      border-radius: 8px;
+    }
+
+    .rule-demo-v::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 1px;
+      height: 100%;
+      background: var(--accent);
+      transform-origin: top;
+      animation: ruleDrawV var(--duration-slower) var(--ease-out) infinite;
+    }
+
+    @keyframes ruleDrawH {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    @keyframes ruleDrawV {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    .stagger-demo {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      height: 80px;
+    }
+
+    .stagger-bar {
+      width: 24px;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+      opacity: 0;
+      animation: barGrow 0.6s var(--ease-out) forwards;
+    }
+
+    .stagger-bar:nth-child(1) { height: 40px; animation-delay: 0.05s; }
+    .stagger-bar:nth-child(2) { height: 60px; animation-delay: 0.15s; }
+    .stagger-bar:nth-child(3) { height: 35px; animation-delay: 0.25s; }
+    .stagger-bar:nth-child(4) { height: 70px; animation-delay: 0.35s; }
+    .stagger-bar:nth-child(5) { height: 50px; animation-delay: 0.45s; }
+
+    @keyframes barGrow {
+      from { opacity: 0; transform: scaleY(0); }
+      to { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* 2. Hover states */
+    .hover-metric {
+      background: var(--bg-page);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 20px;
+      transition: background var(--duration-fast) var(--ease-out);
+      cursor: pointer;
+    }
+
+    .hover-metric:hover {
+      background: var(--surface-hover);
+    }
+
+    .hover-metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .hover-metric-value {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .hover-event {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      padding: 14px 12px;
+      border-bottom: 1px dotted var(--border-subtle);
+      border-radius: 8px;
+      transition: background var(--duration-fast) var(--ease-out);
+      cursor: pointer;
+      align-items: baseline;
+    }
+
+    .hover-event:hover {
+      background: var(--surface-hover);
+    }
+
+    .hover-event-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    .hover-event-text {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .hover-event-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--badge-bg);
+      color: var(--accent);
+    }
+
+    .hover-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform var(--duration-fast) var(--ease-out),
+                  box-shadow var(--duration-fast) var(--ease-out),
+                  border-color var(--duration-fast) var(--ease-out);
+    }
+
+    .hover-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-color: var(--border-strong);
+    }
+
+    .hover-card:active {
+      transform: translateY(0);
+    }
+
+    .hover-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--badge-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .hover-card-text {
+      flex: 1;
+    }
+
+    .hover-card-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .hover-card-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .hover-card-arrow {
+      color: var(--text-tertiary);
+      transition: transform var(--duration-fast) var(--ease-out),
+                  color var(--duration-fast) var(--ease-out);
+    }
+
+    .hover-card:hover .hover-card-arrow {
+      transform: translateX(3px);
+      color: var(--accent);
+    }
+
+    /* 3. Pressed states */
+    .press-demo {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .press-btn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      color: #FFFFFF;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      transition: transform var(--duration-fast) var(--ease-out),
+                  background var(--duration-fast) var(--ease-out);
+    }
+
+    .press-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .press-btn:active {
+      transform: scale(0.97);
+    }
+
+    .press-card {
+      flex: 1;
+      padding: 16px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform var(--duration-fast) var(--ease-out);
+    }
+
+    .press-card:active {
+      transform: translateY(1px);
+    }
+
+    /* 4. Focus states */
+    .focus-demo {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .focus-link {
+      padding: 10px 14px;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      width: fit-content;
+    }
+
+    .focus-link:hover {
+      color: var(--text-primary);
+      background: var(--surface-hover);
+    }
+
+    /* 5. Easing curves */
+    .easing-demo {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .easing-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .easing-name {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .easing-track {
+      height: 40px;
+      background: var(--bg-page);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .easing-ball {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: -10px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: slideAcross 1.2s var(--ease-out) infinite;
+    }
+
+    .easing-ball.bounce {
+      animation-timing-function: var(--ease-bounce);
+      background: var(--status-error);
+    }
+
+    @keyframes slideAcross {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(calc(100% - 20px)); }
+      100% { transform: translateX(0); }
+    }
+
+    .easing-curve {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    /* 6. Wrong vs right */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .compare-item {
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .compare-item.wrong {
+      background: #FDF8F8;
+      border-color: #E8D5D2;
+    }
+
+    .compare-item.right {
+      background: var(--surface-card);
+    }
+
+    .compare-label {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .compare-item.wrong .compare-label { color: var(--status-error); }
+    .compare-item.right .compare-label { color: var(--status-ok); }
+
+    .compare-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: transform var(--duration-fast) var(--ease-out);
+    }
+
+    .compare-btn.wrong {
+      background: var(--status-error);
+      color: #FFFFFF;
+      transition-timing-function: var(--ease-bounce);
+    }
+
+    .compare-btn.wrong:active {
+      transform: scale(0.9);
+    }
+
+    .compare-btn.right {
+      background: var(--accent);
+      color: #FFFFFF;
+    }
+
+    .compare-btn.right:active {
+      transform: scale(0.97);
+    }
+
+    .compare-note {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .review-footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .spec-table th,
+    .spec-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .spec-table th {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .spec-table td.mono {
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="review-header">
+      <h1>Pulse · 动效评审</h1>
+      <p>本页面用于体验和确认 Pulse 首页的动效语言。所有演示均基于第 4 阶段已确认的设计系统。</p>
+    </header>
+
+    <div class="controls" role="toolbar" aria-label="动效控制">
+      <button class="control-btn" id="toggle-motion">减弱动效</button>
+      <button class="control-btn" id="speed-1x" data-speed="1">1× 速度</button>
+      <button class="control-btn" id="speed-2x" data-speed="0.5">2× 慢速</button>
+      <button class="control-btn" id="speed-4x" data-speed="0.25">4× 慢速</button>
+      <button class="control-btn" id="replay-entrance">重播入场动画</button>
+    </div>
+
+    <!-- 1. Entrance animations -->
+    <section class="motion-section">
+      <header class="section-header">
+        <h2 class="section-title">入场动画</h2>
+        <span class="section-desc">页面加载时元素如何进入视口</span>
+      </header>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-label">水平细线</div>
+          <div class="rule-demo"></div>
+          <div class="demo-hint">首屏分隔线、指标带与区块底部的细线，在 0.8s 内从左向右绘制。</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-label">垂直细线</div>
+          <div class="rule-demo-v"></div>
+          <div class="demo-hint">指标之间的垂直线在 0.8s 内从上向下绘制。</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-label">错落入场</div>
+          <div class="stagger-demo">
+            <div class="stagger-bar"></div>
+            <div class="stagger-bar"></div>
+            <div class="stagger-bar"></div>
+            <div class="stagger-bar"></div>
+            <div class="stagger-bar"></div>
+          </div>
+          <div class="demo-hint">多个元素同时入场时，每个依次延迟 50–100ms，避免机械感。</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-label">无入场动画（对照组）</div>
+          <div class="hover-metric">
+            <div class="hover-metric-label">直接呈现</div>
+            <div class="hover-metric-value">482</div>
+          </div>
+          <div class="demo-hint">关键数字跳过花哨的入场，保持"一眼可读"的速度感。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Hover states -->
+    <section class="motion-section">
+      <header class="section-header">
+        <h2 class="section-title">悬停状态</h2>
+        <span class="section-desc">鼠标悬停时的反馈</span>
+      </header>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-label">指标单元格</div>
+          <div class="hover-metric">
+            <div class="hover-metric-label">今日收入</div>
+            <div class="hover-metric-value">$1,240</div>
+          </div>
+          <div class="demo-hint">150ms 背景提亮，提示可点击下钻查看详情。</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-label">事件列表项</div>
+          <div>
+            <div class="hover-event">
+              <span class="hover-event-time">08:42</span>
+              <span class="hover-event-text">Stripe 收到一笔年度订阅</span>
+              <span class="hover-event-tag">收入</span>
+            </div>
+            <div class="hover-event">
+              <span class="hover-event-time">07:15</span>
+              <span class="hover-event-text">CSV 导出被高频使用</span>
+              <span class="hover-event-tag">产品</span>
+            </div>
+          </div>
+          <div class="demo-hint">150ms 背景提亮并带圆角，保持阅读的连续性。</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-label">快捷操作卡片</div>
+          <div class="hover-card">
+            <div class="hover-card-icon">⊕</div>
+            <div class="hover-card-text">
+              <div class="hover-card-title">接入数据源</div>
+              <div class="hover-card-desc">连接 Stripe、数据库或 GA</div>
+            </div>
+            <div class="hover-card-arrow">→</div>
+          </div>
+          <div class="demo-hint">上浮 2px + 轻投影 + 边框加深 + 箭头右移 3px，150ms。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Pressed states -->
+    <section class="motion-section">
+      <header class="section-header">
+        <h2 class="section-title">按下状态</h2>
+        <span class="section-desc">点击 / 触摸时的即时反馈</span>
+      </header>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-label">按钮按下</div>
+          <div class="press-demo">
+            <button class="press-btn">保存设置</button>
+          </div>
+          <div class="demo-hint">按下时缩小到 97%，150ms ease-out，松开后回弹复原。</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-label">卡片按下</div>
+          <div class="press-card">
+            <div class="hover-card-title">快捷操作卡片</div>
+            <div class="hover-card-desc">按下时下沉 1px，抵消悬浮抬升</div>
+          </div>
+          <div class="demo-hint">与悬停抬升形成物理上的"按下"对比。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Focus states -->
+    <section class="motion-section">
+      <header class="section-header">
+        <h2 class="section-title">焦点状态</h2>
+        <span class="section-desc">键盘导航时的可见性</span>
+      </header>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-label">链接焦点</div>
+          <div class="focus-demo">
+            <a href="#" class="focus-link">首页</a>
+            <a href="#" class="focus-link">事件</a>
+            <a href="#" class="focus-link">设置</a>
+          </div>
+          <div class="demo-hint">按 Tab 键测试：2px 绿色描边，偏移 2px，清晰可见。</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-label">按钮焦点</div>
+          <div class="press-demo">
+            <button class="press-btn">可聚焦按钮</button>
+          </div>
+          <div class="demo-hint">同样是 2px 绿色描边，不依赖颜色变化。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Easing curves -->
+    <section class="motion-section">
+      <header class="section-header">
+        <h2 class="section-title">缓动曲线</h2>
+        <span class="section-desc">所有动效都使用同一条自然减速曲线</span>
+      </header>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-label">ease-out（推荐）</div>
+          <div class="easing-demo">
+            <div class="easing-row">
+              <span class="easing-name">cubic-bezier</span>
+              <div class="easing-track">
+                <div class="easing-ball"></div>
+              </div>
+            </div>
+            <div class="easing-curve">(0.25, 1, 0.5, 1) · 自然减速，先快后慢</div>
+          </div>
+          <div class="demo-hint">用于悬停、入场和按下。这是 Pulse 中唯一的缓动。</div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-label">bounce（已弃用）</div>
+          <div class="easing-demo">
+            <div class="easing-row">
+              <span class="easing-name">cubic-bezier</span>
+              <div class="easing-track">
+                <div class="easing-ball bounce"></div>
+              </div>
+            </div>
+            <div class="easing-curve">(0.34, 1.56, 0.64, 1) · 回弹效果，已弃用</div>
+          </div>
+          <div class="demo-hint">回弹 / 弹性效果显得过时且分散注意力。Pulse 不使用。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Wrong vs right -->
+    <section class="motion-section">
+      <header class="section-header">
+        <h2 class="section-title">错误示范 vs 正确示范</h2>
+        <span class="section-desc">动效选择的直观对比</span>
+      </header>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="compare-grid">
+            <div class="compare-item wrong">
+              <div class="compare-label">错误：回弹式按下</div>
+              <button class="compare-btn wrong">保存</button>
+              <div class="compare-note">像"弹跳"一样的过冲，会干扰操作确认感。</div>
+            </div>
+            <div class="compare-item right">
+              <div class="compare-label">正确：ease-out 按下</div>
+              <button class="compare-btn right">保存</button>
+              <div class="compare-note">轻微收缩 3%，干净利落，确认感强。</div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-card">
+          <div class="compare-grid">
+            <div class="compare-item wrong">
+              <div class="compare-label">错误：长时间闪烁</div>
+              <div class="hover-metric" style="animation: none;">
+                <div class="hover-metric-label">告警</div>
+                <div class="hover-metric-value">-35%</div>
+              </div>
+              <div class="compare-note">持续闪烁会加剧焦虑。Pulse 改用稳定的高亮。</div>
+            </div>
+            <div class="compare-item right">
+              <div class="compare-label">正确：稳定高亮</div>
+              <div class="hover-metric" style="border-color: var(--status-error);">
+                <div class="hover-metric-label" style="color: var(--status-error);">告警</div>
+                <div class="hover-metric-value" style="color: var(--status-error);">-35%</div>
+              </div>
+              <div class="compare-note">用边框 + 文字颜色传达异常。不闪烁，不刺眼。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Motion spec table -->
+    <section class="motion-section">
+      <header class="section-header">
+        <h2 class="section-title">动效规格</h2>
+        <span class="section-desc">已写入 DESIGN.md 的正式参数</span>
+      </header>
+      <div class="demo-card">
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>场景</th>
+              <th>时长</th>
+              <th>缓动</th>
+              <th>属性</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>悬停反馈</td>
+              <td class="mono">150ms</td>
+              <td class="mono">cubic-bezier(0.25, 1, 0.5, 1)</td>
+              <td class="mono">background, transform, border-color</td>
+            </tr>
+            <tr>
+              <td>按下反馈</td>
+              <td class="mono">150ms</td>
+              <td class="mono">cubic-bezier(0.25, 1, 0.5, 1)</td>
+              <td class="mono">transform: scale(0.97)</td>
+            </tr>
+            <tr>
+              <td>入场动画</td>
+              <td class="mono">350–500ms</td>
+              <td class="mono">cubic-bezier(0.25, 1, 0.5, 1)</td>
+              <td class="mono">transform, opacity</td>
+            </tr>
+            <tr>
+              <td>箭头微移</td>
+              <td class="mono">200ms</td>
+              <td class="mono">cubic-bezier(0.25, 1, 0.5, 1)</td>
+              <td class="mono">transform: translateX(3px)</td>
+            </tr>
+            <tr>
+              <td>细线绘制</td>
+              <td class="mono">800ms</td>
+              <td class="mono">cubic-bezier(0.25, 1, 0.5, 1)</td>
+              <td class="mono">transform: scaleX / scaleY</td>
+            </tr>
+            <tr>
+              <td>减弱动效</td>
+              <td class="mono">0.01ms</td>
+              <td class="mono">linear</td>
+              <td class="mono">强制关闭所有动画</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="review-footer">
+      <p>以上所有动效均遵循：只对 transform 和 opacity 做动画；不阻塞交互；尊重 prefers-reduced-motion。</p>
+    </footer>
+  </div>
+
+  <script>
+    // Reduce motion toggle
+    const motionBtn = document.getElementById('toggle-motion');
+    motionBtn.addEventListener('click', () => {
+      document.body.classList.toggle('reduce-motion');
+      motionBtn.classList.toggle('active');
+      motionBtn.textContent = document.body.classList.contains('reduce-motion') ? '恢复动效' : '减弱动效';
+    });
+
+    // Speed control
+    const speedBtns = document.querySelectorAll('[data-speed]');
+    speedBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        speedBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.body.style.setProperty('--speed-multiplier', btn.dataset.speed);
+        // Retrigger animation
+        document.querySelectorAll('.stagger-bar, .easing-ball').forEach(el => {
+          el.style.animation = 'none';
+          el.offsetHeight;
+          el.style.animation = '';
+        });
+      });
+    });
+
+    // Replay entrance
+    document.getElementById('replay-entrance').addEventListener('click', () => {
+      document.querySelectorAll('.stagger-bar, .rule-demo, .rule-demo-v').forEach(el => {
+        el.style.animation = 'none';
+        el.offsetHeight;
+        el.style.animation = '';
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设计方向选择 · [产品名称]</title>
+  <style>
+    /*
+      仅作骨架：此文件只提供页面结构和章节顺序。
+      下方颜色、字体、间距与视觉效果均为占位 token。
+      必须替换为从 01-product.md 和 02-references.md 推导的值。
+      不要把默认 token 值当作设计方向。
+    */
+    :root {
+      --bg: [page-background];
+      --card-bg: [card-background];
+      --text: [primary-text-color];
+      --text-dim: [secondary-text-color];
+      --hairline: [subtle-border-color];
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: [body-font-stack];
+      line-height: 1.6;
+    }
+    .header {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--hairline);
+      padding: 16px 24px;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 { font-size: 14px; font-weight: 600; letter-spacing: 0.05em; }
+    .header .letters { display: flex; gap: 8px; }
+    .header .letter {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--hairline);
+      border-radius: 6px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      transition: all 150ms ease;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .header .letter:hover { background: var(--card-bg); }
+    .product-card {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 32px;
+      background: var(--card-bg);
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+    }
+    .product-card h2 { font-size: 20px; margin-bottom: 12px; }
+    .product-card p { color: var(--text-dim); font-size: 14px; }
+    .directions {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+      /* At most 2 directions per row: a single-row 4-up layout squeezes each
+         mini-mockup to phone width, which cannot convey a desktop/web layout. */
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .direction {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .direction-header {
+      padding: 32px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .direction-name {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .direction-pitch {
+      font-size: 15px;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    .direction-body {
+      /* Preview sits on top at full card width so the mini-mockup keeps a
+         landscape, platform-appropriate proportion; specs stack below. */
+      display: flex;
+      flex-direction: column;
+    }
+    .direction-preview {
+      padding: 32px;
+      min-height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .direction-specs {
+      padding: 32px;
+    }
+    .spec-section { margin-bottom: 24px; }
+    .spec-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      color: var(--bg);
+      font-size: 10px;
+      font-weight: 700;
+      font-style: italic;
+      /* The parent .spec-label is uppercase; keep the badge's lowercase "i"
+         from being transformed into a serif capital I. */
+      text-transform: none;
+      letter-spacing: 0;
+      cursor: help;
+      position: relative;
+    }
+    .info-badge:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .tooltip {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      width: 240px;
+      padding: 10px 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--hairline);
+      border-radius: 8px;
+      font-size: 11px;
+      line-height: 1.5;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--hairline);
+    }
+    .spec-group { margin-bottom: 28px; }
+    .spec-group > .spec-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .spec-group .spec-section {
+      margin-left: 16px;
+      margin-bottom: 20px;
+    }
+    .swatches {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-bottom: 22px;
+      margin-bottom: 8px;
+    }
+    .swatch {
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      border: 1px solid var(--hairline);
+      position: relative;
+      cursor: pointer;
+    }
+    .swatch::after {
+      content: attr(data-hex);
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      font-family: monospace;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+    .type-spec {
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .type-spec .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .type-spec .role { color: var(--text-dim); }
+    .type-spec .font { font-family: monospace; }
+    .layout-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+    .signature-move {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.03);
+      border-left: 2px solid;
+      font-size: 13px;
+      font-style: italic;
+    }
+    .footer-hint {
+      text-align: center;
+      padding: 40px 24px;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+    .footer-hint code {
+      background: var(--card-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    @media (max-width: 900px) {
+      .directions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>[产品名称] · 设计方向选择</h1>
+    <div class="letters">
+      <a href="#a" class="letter">A</a>
+      <a href="#b" class="letter">B</a>
+      <a href="#c" class="letter">C</a>
+      <a href="#d" class="letter">D</a>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <h2>产品分析</h2>
+    <p>[一句话产品定义] · [目标用户] · [核心场景]</p>
+  </div>
+
+  <div class="directions">
+    <!-- 方向 A -->
+    <section id="a" class="direction" style="background: [A background color]; color: [A text color]; border: 1px solid var(--hairline);">
+      <div class="direction-header">
+        <div class="direction-name" style="color: [A title color];">[A 方向名称]</div>
+        <div class="direction-pitch">[A 一句话主张]</div>
+      </div>
+      <div class="direction-body">
+        <div class="direction-preview" style="background: [A preview background]; color: [A text color];">
+          <!-- 小型首页预览 -->
+          <div style="text-align: center; color: [A text color]; font-family: [A display font];">
+            <div style="font-size: 48px; font-weight: 800; margin-bottom: 16px; color: [A headline color];">[A 标题示例]</div>
+            <div style="font-size: 16px; opacity: 0.8; font-family: [A body font]; color: [A subheadline color];">[A 副标题示例]</div>
+            <div style="margin-top: 24px; padding: 12px 32px; background: [A button color]; color: [A button text]; display: inline-block; border-radius: 999px; font-weight: 600; font-family: [A body font];">[A 按钮文案]</div>
+          </div>
+        </div>
+        <div class="direction-specs" style="background: [A specs background]; border-color: [A hairline color];">
+          <div class="spec-section">
+            <div class="spec-label">
+              设计理由
+            </div>
+            <div class="layout-desc">[A 设计理由：此方向为何适合产品]</div>
+          </div>
+          <div class="spec-group">
+            <div class="spec-label">
+              色彩系统
+              <span class="info-badge">i
+                <span class="tooltip">本方向的完整色彩语言，分为决定整体气质的核心色板，以及按 UI 元素职责命名的语义 Tokens。</span>
+              </span>
+            </div>
+            <div class="spec-section">
+              <div class="spec-label">核心色板</div>
+              <div class="swatches">
+                <div class="swatch" style="background: [A color 1];" data-hex="[A color 1]"></div>
+                <div class="swatch" style="background: [A color 2];" data-hex="[A color 2]"></div>
+                <div class="swatch" style="background: [A color 3];" data-hex="[A color 3]"></div>
+                <div class="swatch" style="background: [A color 4];" data-hex="[A color 4]"></div>
+              </div>
+            </div>
+            <div class="spec-section">
+              <div class="spec-label">UI 语义 Tokens</div>
+              <div class="swatches">
+                <div class="swatch" style="background: [A token 1];" data-hex="[A token 1]"></div>
+                <div class="swatch" style="background: [A token 2];" data-hex="[A token 2]"></div>
+                <div class="swatch" style="background: [A token 3];" data-hex="[A token 3]"></div>
+                <div class="swatch" style="background: [A token 4];" data-hex="[A token 4]"></div>
+              </div>
+            </div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              字体系统
+              <span class="info-badge">i
+                <span class="tooltip">本方向使用的字体搭配。Display 是大标题字体；Body 是正文字体；Mono 是等宽字体，常用于价格、代码和标签。</span>
+              </span>
+            </div>
+            <div class="type-spec">
+              <div class="row"><span class="role">Display</span><span class="font">[A 字体 1]</span></div>
+              <div class="row"><span class="role">Body</span><span class="font">[A 字体 2]</span></div>
+              <div class="row"><span class="role">Mono</span><span class="font">[A 字体 3]</span></div>
+            </div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              布局模式
+              <span class="info-badge">i
+                <span class="tooltip">关键界面区域的排列方式。Hero 是首屏主视觉区；CTA 是引导行动的按钮区；内容区承载主要列表、网格或详情。</span>
+              </span>
+            </div>
+            <div class="layout-desc">[A 布局说明]</div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              标志动作
+              <span class="info-badge">i
+                <span class="tooltip">本方向最有记忆点的动画微交互，可用 hover 或点击体验。它让方向具有识别度，而不只是默认动效。</span>
+              </span>
+            </div>
+            <div class="signature-move" style="border-color: [A accent color]; color: [A text color]; background: [A signature-bg];">
+              [A 标志动作说明 + 演示]
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 方向 B -->
+    <section id="b" class="direction" style="background: [B background color]; color: [B text color]; border: 1px solid var(--hairline);">
+      <div class="direction-header">
+        <div class="direction-name" style="color: [B title color];">[B 方向名称]</div>
+        <div class="direction-pitch">[B 一句话主张]</div>
+      </div>
+      <div class="direction-body">
+        <div class="direction-preview" style="background: [B preview background]; color: [B text color];">
+          <div style="text-align: center; color: [B text color]; font-family: [B display font];">
+            <div style="font-size: 48px; font-weight: 800; margin-bottom: 16px; color: [B headline color];">[B 标题示例]</div>
+            <div style="font-size: 16px; opacity: 0.8; font-family: [B body font]; color: [B subheadline color];">[B 副标题示例]</div>
+            <div style="margin-top: 24px; padding: 12px 32px; background: [B button color]; color: [B button text]; display: inline-block; border-radius: 999px; font-weight: 600; font-family: [B body font];">[B 按钮文案]</div>
+          </div>
+        </div>
+        <div class="direction-specs" style="background: [B specs background]; border-color: [B hairline color];">
+          <div class="spec-section">
+            <div class="spec-label">
+              设计理由
+            </div>
+            <div class="layout-desc">[B 设计理由：此方向为何适合产品]</div>
+          </div>
+          <div class="spec-group">
+            <div class="spec-label">
+              色彩系统
+              <span class="info-badge">i
+                <span class="tooltip">本方向的完整色彩语言，分为决定整体气质的核心色板，以及按 UI 元素职责命名的语义 Tokens。</span>
+              </span>
+            </div>
+            <div class="spec-section">
+              <div class="spec-label">核心色板</div>
+              <div class="swatches">
+                <div class="swatch" style="background: [B color 1];" data-hex="[B color 1]"></div>
+                <div class="swatch" style="background: [B color 2];" data-hex="[B color 2]"></div>
+                <div class="swatch" style="background: [B color 3];" data-hex="[B color 3]"></div>
+                <div class="swatch" style="background: [B color 4];" data-hex="[B color 4]"></div>
+              </div>
+            </div>
+            <div class="spec-section">
+              <div class="spec-label">UI 语义 Tokens</div>
+              <div class="swatches">
+                <div class="swatch" style="background: [B token 1];" data-hex="[B token 1]"></div>
+                <div class="swatch" style="background: [B token 2];" data-hex="[B token 2]"></div>
+                <div class="swatch" style="background: [B token 3];" data-hex="[B token 3]"></div>
+                <div class="swatch" style="background: [B token 4];" data-hex="[B token 4]"></div>
+              </div>
+            </div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              字体系统
+              <span class="info-badge">i
+                <span class="tooltip">本方向使用的字体搭配。Display 是大标题字体；Body 是正文字体；Mono 是等宽字体，常用于价格、代码和标签。</span>
+              </span>
+            </div>
+            <div class="type-spec">
+              <div class="row"><span class="role">Display</span><span class="font">[B 字体 1]</span></div>
+              <div class="row"><span class="role">Body</span><span class="font">[B 字体 2]</span></div>
+              <div class="row"><span class="role">Mono</span><span class="font">[B 字体 3]</span></div>
+            </div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              布局模式
+              <span class="info-badge">i
+                <span class="tooltip">关键界面区域的排列方式。Hero 是首屏主视觉区；CTA 是引导行动的按钮区；内容区承载主要列表、网格或详情。</span>
+              </span>
+            </div>
+            <div class="layout-desc">[B 布局说明]</div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              标志动作
+              <span class="info-badge">i
+                <span class="tooltip">本方向最有记忆点的动画微交互，可用 hover 或点击体验。它让方向具有识别度，而不只是默认动效。</span>
+              </span>
+            </div>
+            <div class="signature-move" style="border-color: [B accent color]; color: [B text color]; background: [B signature-bg];">
+              [B 标志动作说明 + 演示]
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 方向 C -->
+    <section id="c" class="direction" style="background: [C background color]; color: [C text color]; border: 1px solid var(--hairline);">
+      <div class="direction-header">
+        <div class="direction-name" style="color: [C title color];">[C 方向名称]</div>
+        <div class="direction-pitch">[C 一句话主张]</div>
+      </div>
+      <div class="direction-body">
+        <div class="direction-preview" style="background: [C preview background]; color: [C text color];">
+          <div style="text-align: center; color: [C text color]; font-family: [C display font];">
+            <div style="font-size: 48px; font-weight: 800; margin-bottom: 16px; color: [C headline color];">[C 标题示例]</div>
+            <div style="font-size: 16px; opacity: 0.8; font-family: [C body font]; color: [C subheadline color];">[C 副标题示例]</div>
+            <div style="margin-top: 24px; padding: 12px 32px; background: [C button color]; color: [C button text]; display: inline-block; border-radius: 999px; font-weight: 600; font-family: [C body font];">[C 按钮文案]</div>
+          </div>
+        </div>
+        <div class="direction-specs" style="background: [C specs background]; border-color: [C hairline color];">
+          <div class="spec-section">
+            <div class="spec-label">
+              设计理由
+            </div>
+            <div class="layout-desc">[C 设计理由：此方向为何适合产品]</div>
+          </div>
+          <div class="spec-group">
+            <div class="spec-label">
+              色彩系统
+              <span class="info-badge">i
+                <span class="tooltip">本方向的完整色彩语言，分为决定整体气质的核心色板，以及按 UI 元素职责命名的语义 Tokens。</span>
+              </span>
+            </div>
+            <div class="spec-section">
+              <div class="spec-label">核心色板</div>
+              <div class="swatches">
+                <div class="swatch" style="background: [C color 1];" data-hex="[C color 1]"></div>
+                <div class="swatch" style="background: [C color 2];" data-hex="[C color 2]"></div>
+                <div class="swatch" style="background: [C color 3];" data-hex="[C color 3]"></div>
+                <div class="swatch" style="background: [C color 4];" data-hex="[C color 4]"></div>
+              </div>
+            </div>
+            <div class="spec-section">
+              <div class="spec-label">UI 语义 Tokens</div>
+              <div class="swatches">
+                <div class="swatch" style="background: [C token 1];" data-hex="[C token 1]"></div>
+                <div class="swatch" style="background: [C token 2];" data-hex="[C token 2]"></div>
+                <div class="swatch" style="background: [C token 3];" data-hex="[C token 3]"></div>
+                <div class="swatch" style="background: [C token 4];" data-hex="[C token 4]"></div>
+              </div>
+            </div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              字体系统
+              <span class="info-badge">i
+                <span class="tooltip">本方向使用的字体搭配。Display 是大标题字体；Body 是正文字体；Mono 是等宽字体，常用于价格、代码和标签。</span>
+              </span>
+            </div>
+            <div class="type-spec">
+              <div class="row"><span class="role">Display</span><span class="font">[C 字体 1]</span></div>
+              <div class="row"><span class="role">Body</span><span class="font">[C 字体 2]</span></div>
+              <div class="row"><span class="role">Mono</span><span class="font">[C 字体 3]</span></div>
+            </div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              布局模式
+              <span class="info-badge">i
+                <span class="tooltip">关键界面区域的排列方式。Hero 是首屏主视觉区；CTA 是引导行动的按钮区；内容区承载主要列表、网格或详情。</span>
+              </span>
+            </div>
+            <div class="layout-desc">[C 布局说明]</div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              标志动作
+              <span class="info-badge">i
+                <span class="tooltip">本方向最有记忆点的动画微交互，可用 hover 或点击体验。它让方向具有识别度，而不只是默认动效。</span>
+              </span>
+            </div>
+            <div class="signature-move" style="border-color: [C accent color]; color: [C text color]; background: [C signature-bg];">
+              [C 标志动作说明 + 演示]
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 方向 D -->
+    <section id="d" class="direction" style="background: [D background color]; color: [D text color]; border: 1px solid var(--hairline);">
+      <div class="direction-header">
+        <div class="direction-name" style="color: [D title color];">[D 方向名称]</div>
+        <div class="direction-pitch">[D 一句话主张]</div>
+      </div>
+      <div class="direction-body">
+        <div class="direction-preview" style="background: [D preview background]; color: [D text color];">
+          <div style="text-align: center; color: [D text color]; font-family: [D display font];">
+            <div style="font-size: 48px; font-weight: 800; margin-bottom: 16px; color: [D headline color];">[D 标题示例]</div>
+            <div style="font-size: 16px; opacity: 0.8; font-family: [D body font]; color: [D subheadline color];">[D 副标题示例]</div>
+            <div style="margin-top: 24px; padding: 12px 32px; background: [D button color]; color: [D button text]; display: inline-block; border-radius: 999px; font-weight: 600; font-family: [D body font];">[D 按钮文案]</div>
+          </div>
+        </div>
+        <div class="direction-specs" style="background: [D specs background]; border-color: [D hairline color];">
+          <div class="spec-section">
+            <div class="spec-label">
+              设计理由
+            </div>
+            <div class="layout-desc">[D 设计理由：此方向为何适合产品]</div>
+          </div>
+          <div class="spec-group">
+            <div class="spec-label">
+              色彩系统
+              <span class="info-badge">i
+                <span class="tooltip">本方向的完整色彩语言，分为决定整体气质的核心色板，以及按 UI 元素职责命名的语义 Tokens。</span>
+              </span>
+            </div>
+            <div class="spec-section">
+              <div class="spec-label">核心色板</div>
+              <div class="swatches">
+                <div class="swatch" style="background: [D color 1];" data-hex="[D color 1]"></div>
+                <div class="swatch" style="background: [D color 2];" data-hex="[D color 2]"></div>
+                <div class="swatch" style="background: [D color 3];" data-hex="[D color 3]"></div>
+                <div class="swatch" style="background: [D color 4];" data-hex="[D color 4]"></div>
+              </div>
+            </div>
+            <div class="spec-section">
+              <div class="spec-label">UI 语义 Tokens</div>
+              <div class="swatches">
+                <div class="swatch" style="background: [D token 1];" data-hex="[D token 1]"></div>
+                <div class="swatch" style="background: [D token 2];" data-hex="[D token 2]"></div>
+                <div class="swatch" style="background: [D token 3];" data-hex="[D token 3]"></div>
+                <div class="swatch" style="background: [D token 4];" data-hex="[D token 4]"></div>
+              </div>
+            </div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              字体系统
+              <span class="info-badge">i
+                <span class="tooltip">本方向使用的字体搭配。Display 是大标题字体；Body 是正文字体；Mono 是等宽字体，常用于价格、代码和标签。</span>
+              </span>
+            </div>
+            <div class="type-spec">
+              <div class="row"><span class="role">Display</span><span class="font">[D 字体 1]</span></div>
+              <div class="row"><span class="role">Body</span><span class="font">[D 字体 2]</span></div>
+              <div class="row"><span class="role">Mono</span><span class="font">[D 字体 3]</span></div>
+            </div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              布局模式
+              <span class="info-badge">i
+                <span class="tooltip">关键界面区域的排列方式。Hero 是首屏主视觉区；CTA 是引导行动的按钮区；内容区承载主要列表、网格或详情。</span>
+              </span>
+            </div>
+            <div class="layout-desc">[D 布局说明]</div>
+          </div>
+          <div class="spec-section">
+            <div class="spec-label">
+              标志动作
+              <span class="info-badge">i
+                <span class="tooltip">本方向最有记忆点的动画微交互，可用 hover 或点击体验。它让方向具有识别度，而不只是默认动效。</span>
+              </span>
+            </div>
+            <div class="signature-move" style="border-color: [D accent color]; color: [D text color]; background: [D signature-bg];">
+              [D 标志动作说明 + 演示]
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="footer-hint">
+    回复 <code>A</code> / <code>B</code> / <code>C</code> / <code>D</code> 选择方向，
+    也可以组合元素（例如 <code>A 的颜色 + B 的字体</code>），
+    或回复 <code>都不喜欢，试试更××的方向</code>
+  </div>
+</body>
+</html>

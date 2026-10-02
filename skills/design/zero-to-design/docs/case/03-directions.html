@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse · 第三阶段：设计方向</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page-bg: #FDFBF7;
+      --page-text: #2A2A2A;
+      --page-muted: #6B6B6B;
+      --page-border: #E8E5DE;
+      --accent: #5B8A5E;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", system-ui, "Noto Sans SC", "PingFang SC", sans-serif;
+      background: var(--page-bg);
+      color: var(--page-text);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-header {
+      padding: 48px 32px 24px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .page-header h1 {
+      font-family: "Bricolage Grotesque", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .page-header p {
+      margin: 0;
+      color: var(--page-muted);
+      font-size: 16px;
+      max-width: 720px;
+    }
+
+    main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 32px 96px;
+    }
+
+    /* Product analysis card */
+    .product-analysis {
+      background: #FFFFFF;
+      border: 1px solid var(--page-border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 40px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .product-analysis h2 {
+      font-family: "Bricolage Grotesque", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-analysis h2::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+
+    .analysis-item dt {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--page-muted);
+      margin-bottom: 6px;
+    }
+
+    .analysis-item dd {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* Directions grid */
+    .directions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 720px) {
+      .directions-grid { grid-template-columns: 1fr; }
+      main, .page-header { padding-left: 20px; padding-right: 20px; }
+    }
+
+    .direction-card {
+      background: #FFFFFF;
+      border: 1px solid var(--page-border);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .direction-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 13px;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    .direction-header h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 6px;
+      line-height: 1.2;
+    }
+
+    .direction-header .pitch {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+      opacity: 0.85;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin: 0 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+
+    .info-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: help;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      line-height: 1;
+    }
+
+    .tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      margin-bottom: 8px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: normal;
+      line-height: 1.5;
+      white-space: normal;
+      width: 240px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .info-badge:hover + .tooltip,
+    .info-badge:focus + .tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .section-body {
+      padding-left: 2px;
+    }
+
+    .rationale {
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .color-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .layer-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .swatch-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .swatch {
+      flex: 1;
+      min-width: 72px;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .swatch-color {
+      height: 32px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .swatch-name {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .swatch-token {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      opacity: 0.7;
+    }
+
+    .typography-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .type-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .type-spec {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 12px;
+      opacity: 0.75;
+    }
+
+    .layout-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .signature-text {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .mockup-frame {
+      border-radius: 14px;
+      border: 1px solid;
+      overflow: hidden;
+      margin-top: 4px;
+      min-height: 320px;
+    }
+
+    /* Direction A: Morning Paper */
+    .direction-a {
+      --a-bg: #FDFBF7;
+      --a-text: #2A2A2A;
+      --a-text-secondary: #6B6B6B;
+      --a-accent: #5B8A5E;
+      --a-card: #FFFFFF;
+      --a-border: #EBE8E0;
+      --a-ok: #5B8A5E;
+      --a-warn: #C4893A;
+      --a-error: #B84A39;
+      --a-badge: #F0F4EF;
+    }
+
+    .direction-a .direction-letter { background: var(--a-badge); color: var(--a-accent); }
+    .direction-a .direction-header h3 { font-family: "Bricolage Grotesque", "Noto Sans SC", "PingFang SC", sans-serif; color: var(--a-text); }
+    .direction-a .pitch { color: var(--a-text-secondary); }
+    .direction-a .section-title { color: var(--a-accent); }
+    .direction-a .info-badge { background: var(--a-badge); color: var(--a-accent); }
+    .direction-a .tooltip { background: var(--a-card); color: var(--a-text); border: 1px solid var(--a-border); }
+
+    .direction-a .mockup-frame {
+      background: var(--a-bg);
+      border-color: var(--a-border);
+      font-family: "Manrope", "Noto Sans SC", "PingFang SC", sans-serif;
+      color: var(--a-text);
+    }
+
+    .mockup-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--a-border);
+      background: var(--a-card);
+    }
+
+    .mockup-logo {
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mockup-logo::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--a-accent);
+    }
+
+    .mockup-nav-links {
+      display: flex;
+      gap: 14px;
+      font-size: 11px;
+      color: var(--a-text-secondary);
+    }
+
+    .mockup-body {
+      padding: 16px;
+    }
+
+    .mockup-summary {
+      background: var(--a-card);
+      border: 1px solid var(--a-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .direction-a .mockup-summary::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      box-shadow: 0 0 0 0 rgba(91, 138, 94, 0);
+      animation: calmPulse 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes calmPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(91, 138, 94, 0); }
+      50% { box-shadow: 0 0 28px 2px rgba(91, 138, 94, 0.08); }
+    }
+
+    .mockup-date {
+      font-size: 11px;
+      color: var(--a-text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .mockup-headline {
+      font-family: "Bricolage Grotesque", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+
+    .mockup-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .mockup-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mockup-metric-value {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .mockup-metric-label {
+      font-size: 10px;
+      color: var(--a-text-secondary);
+    }
+
+    .mockup-metric-change {
+      font-size: 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      color: var(--a-ok);
+    }
+
+    .mockup-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mockup-card {
+      background: var(--a-card);
+      border: 1px solid var(--a-border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .mockup-card-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--a-text-secondary);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .mockup-event {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--a-border);
+      font-size: 11px;
+    }
+
+    .mockup-event:last-child { border-bottom: none; }
+
+    .mockup-event-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--a-accent);
+      flex-shrink: 0;
+    }
+
+    .mockup-event-text { flex: 1; }
+    .mockup-event-time { color: var(--a-text-secondary); font-family: "JetBrains Mono", "SF Mono", monospace; font-size: 10px; }
+
+    .mockup-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .mockup-chip {
+      padding: 5px 9px;
+      border-radius: 6px;
+      background: var(--a-badge);
+      color: var(--a-accent);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* Direction B: Signal & Noise */
+    .direction-b {
+      --b-bg: #F8F7F4;
+      --b-text: #1A1A1A;
+      --b-text-secondary: #757575;
+      --b-accent: #C45D3A;
+      --b-card: #FFFFFF;
+      --b-border: #E5E3DD;
+      --b-ok: #4A7C59;
+      --b-warn: #C4893A;
+      --b-error: #C45D3A;
+      --b-badge: #FDF0EC;
+      --b-muted: #BFBDB6;
+    }
+
+    .direction-b .direction-letter { background: var(--b-badge); color: var(--b-accent); }
+    .direction-b .direction-header h3 { font-family: "Bricolage Grotesque", "Noto Sans SC", "PingFang SC", sans-serif; color: var(--b-text); }
+    .direction-b .pitch { color: var(--b-text-secondary); }
+    .direction-b .section-title { color: var(--b-accent); }
+    .direction-b .info-badge { background: var(--b-badge); color: var(--b-accent); }
+    .direction-b .tooltip { background: var(--b-card); color: var(--b-text); border: 1px solid var(--b-border); }
+
+    .direction-b .mockup-frame {
+      background: var(--b-bg);
+      border-color: var(--b-border);
+      font-family: "Manrope", "Noto Sans SC", "PingFang SC", sans-serif;
+      color: var(--b-text);
+    }
+
+    .direction-b .mockup-nav {
+      background: var(--b-card);
+      border-color: var(--b-border);
+    }
+
+    .direction-b .mockup-logo::before { background: var(--b-accent); }
+    .direction-b .mockup-nav-links { color: var(--b-text-secondary); }
+
+    .direction-b .mockup-body { padding: 16px; }
+
+    .direction-b .mockup-row-b {
+      display: grid;
+      grid-template-columns: 55% 45%;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .direction-b .focus-panel {
+      background: var(--b-card);
+      border: 1px solid var(--b-border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .direction-b .focus-date {
+      font-size: 10px;
+      color: var(--b-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .direction-b .focus-headline {
+      font-family: "Bricolage Grotesque", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .direction-b .focus-metric {
+      margin-bottom: 16px;
+      opacity: 0.55;
+      animation: focusReveal 1.4s ease-out 0.4s forwards;
+    }
+
+    .direction-b .focus-metric.attention {
+      opacity: 1;
+      animation: focusReveal 1.4s ease-out 0.9s forwards;
+    }
+
+    .direction-b .focus-metric-value {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: 4px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .direction-b .focus-metric.attention .focus-metric-value::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 2px;
+      width: 0;
+      height: 3px;
+      background: var(--b-accent);
+      border-radius: 2px;
+      animation: drawUnderline 0.7s ease-out 1.5s forwards;
+    }
+
+    @keyframes focusReveal {
+      from { opacity: 0.35; filter: blur(1px); }
+      to { opacity: 1; filter: blur(0); }
+    }
+
+    @keyframes drawUnderline {
+      to { width: 100%; }
+    }
+
+    .direction-b .focus-metric-label {
+      font-size: 11px;
+      color: var(--b-text-secondary);
+      margin-bottom: 3px;
+    }
+
+    .direction-b .focus-metric-change {
+      font-size: 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+    }
+
+    .direction-b .focus-metric.attention .focus-metric-change { color: var(--b-accent); }
+    .direction-b .focus-metric:not(.attention) .focus-metric-change { color: var(--b-ok); }
+
+    .direction-b .feed-panel {
+      background: var(--b-card);
+      border: 1px solid var(--b-border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .direction-b .feed-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .direction-b .feed-event {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--b-border);
+      font-size: 11px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .direction-b .feed-event:last-child { border-bottom: none; }
+    .direction-b .feed-event-tag { color: var(--b-accent); font-weight: 600; flex-shrink: 0; }
+    .direction-b .feed-event-text { color: var(--b-text-secondary); }
+
+    /* Direction C: Monocle Desk */
+    .direction-c {
+      --c-bg: #F5F4F0;
+      --c-text: #1F1F1F;
+      --c-text-secondary: #5C5C5C;
+      --c-accent: #2D5A3D;
+      --c-card: #FAFAF8;
+      --c-border: #DEDCD5;
+      --c-ok: #2D5A3D;
+      --c-warn: #9A6B2B;
+      --c-error: #8B3A2E;
+      --c-badge: #E8EDE9;
+    }
+
+    .direction-c .direction-letter { background: var(--c-badge); color: var(--c-accent); }
+    .direction-c .direction-header h3 { font-family: "Source Serif 4", "Noto Serif SC", serif; color: var(--c-text); }
+    .direction-c .pitch { color: var(--c-text-secondary); }
+    .direction-c .section-title { color: var(--c-accent); }
+    .direction-c .info-badge { background: var(--c-badge); color: var(--c-accent); }
+    .direction-c .tooltip { background: var(--c-card); color: var(--c-text); border: 1px solid var(--c-border); }
+
+    .direction-c .mockup-frame {
+      background: var(--c-bg);
+      border-color: var(--c-border);
+      font-family: "Manrope", "Noto Sans SC", "PingFang SC", sans-serif;
+      color: var(--c-text);
+    }
+
+    .direction-c .mockup-nav {
+      background: var(--c-card);
+      border-color: var(--c-border);
+    }
+
+    .direction-c .mockup-logo { font-family: "Source Serif 4", "Noto Serif SC", serif; }
+    .direction-c .mockup-logo::before { background: var(--c-accent); }
+    .direction-c .mockup-nav-links { color: var(--c-text-secondary); }
+
+    .direction-c .masthead {
+      padding: 16px;
+      border-bottom: 1px solid var(--c-border);
+      position: relative;
+    }
+
+    .direction-c .masthead::after {
+      content: "";
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 0;
+      height: 1px;
+      background: var(--c-border);
+      width: 0;
+      animation: ruleDraw 0.8s ease-out 0.2s forwards;
+    }
+
+    @keyframes ruleDraw {
+      to { width: calc(100% - 32px); }
+    }
+
+    .direction-c .masthead-title {
+      font-family: "Source Serif 4", "Noto Serif SC", serif;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .direction-c .masthead-date {
+      font-size: 11px;
+      color: var(--c-text-secondary);
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+    }
+
+    .direction-c .metric-band {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--c-border);
+      position: relative;
+    }
+
+    .direction-c .metric-band::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 1px;
+      background: var(--c-border);
+      width: 0;
+      animation: ruleDraw 0.8s ease-out 0.6s forwards;
+    }
+
+    .direction-c .band-metric {
+      padding: 14px 12px;
+      border-right: 1px solid var(--c-border);
+      position: relative;
+    }
+
+    .direction-c .band-metric::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 1px;
+      height: 0;
+      background: var(--c-border);
+      animation: ruleDrawV 0.6s ease-out 1s forwards;
+    }
+
+    @keyframes ruleDrawV {
+      to { height: 100%; }
+    }
+
+    .direction-c .band-metric:last-child { border-right: none; }
+    .direction-c .band-metric:last-child::after { display: none; }
+
+    .direction-c .band-value {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .direction-c .band-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--c-text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .direction-c .band-change {
+      font-size: 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      color: var(--c-ok);
+    }
+
+    .direction-c .c-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      min-height: 180px;
+    }
+
+    .direction-c .c-column {
+      padding: 14px;
+      border-right: 1px solid var(--c-border);
+      position: relative;
+    }
+
+    .direction-c .c-column::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 14px;
+      bottom: 14px;
+      width: 1px;
+      height: 0;
+      background: var(--c-border);
+      animation: ruleDrawV 0.6s ease-out 1.2s forwards;
+    }
+
+    .direction-c .c-column:last-child { border-right: none; }
+    .direction-c .c-column:last-child::after { display: none; }
+
+    .direction-c .c-col-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--c-text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .direction-c .c-event {
+      font-size: 11px;
+      padding: 6px 0;
+      border-bottom: 1px dotted var(--c-border);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .direction-c .c-event:last-child { border-bottom: none; }
+
+    /* Direction D: Soft Utility */
+    .direction-d {
+      --d-bg: #FDFDFC;
+      --d-text: #2D2D2D;
+      --d-text-secondary: #6E6E6E;
+      --d-accent: #4A7C59;
+      --d-card: #FFFFFF;
+      --d-border: #E8E8E6;
+      --d-ok: #4A7C59;
+      --d-warn: #B8832E;
+      --d-error: #B34A3C;
+      --d-badge: #EDF2EE;
+    }
+
+    .direction-d .direction-letter { background: var(--d-badge); color: var(--d-accent); }
+    .direction-d .direction-header h3 { font-family: "Manrope", "Noto Sans SC", "PingFang SC", sans-serif; color: var(--d-text); }
+    .direction-d .pitch { color: var(--d-text-secondary); }
+    .direction-d .section-title { color: var(--d-accent); }
+    .direction-d .info-badge { background: var(--d-badge); color: var(--d-accent); }
+    .direction-d .tooltip { background: var(--d-card); color: var(--d-text); border: 1px solid var(--d-border); }
+
+    .direction-d .mockup-frame {
+      background: var(--d-bg);
+      border-color: var(--d-border);
+      font-family: "Manrope", "Noto Sans SC", "PingFang SC", sans-serif;
+      color: var(--d-text);
+    }
+
+    .direction-d .mockup-nav {
+      background: var(--d-card);
+      border-color: var(--d-border);
+    }
+
+    .direction-d .mockup-logo::before { background: var(--d-accent); }
+    .direction-d .mockup-nav-links { color: var(--d-text-secondary); }
+
+    .direction-d .d-body { padding: 16px; }
+
+    .direction-d .welcome-card {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .direction-d .welcome-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+    }
+
+    .direction-d .welcome-card:active {
+      transform: translateY(-1px);
+    }
+
+    .direction-d .welcome-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .direction-d .welcome-sub {
+      font-size: 12px;
+      color: var(--d-text-secondary);
+    }
+
+    .direction-d .metric-grid-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .direction-d .d-metric-card {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: 12px;
+      padding: 14px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .direction-d .d-metric-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+    }
+
+    .direction-d .d-metric-card:active {
+      transform: translateY(-1px);
+    }
+
+    .direction-d .d-metric-value {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .direction-d .d-metric-label {
+      font-size: 11px;
+      color: var(--d-text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .direction-d .d-metric-change {
+      font-size: 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      color: var(--d-ok);
+    }
+
+    .direction-d .d-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .direction-d .d-chip {
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: var(--d-badge);
+      color: var(--d-accent);
+      font-size: 10px;
+      font-weight: 600;
+      border: 1px solid var(--d-border);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .direction-d .d-chip:hover {
+      transform: translateY(-2px);
+      background: #E2EBE4;
+    }
+
+    .direction-d .d-events {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .direction-d .d-event {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--d-border);
+      font-size: 11px;
+    }
+
+    .direction-d .d-event:last-child { border-bottom: none; }
+
+    .selection-hint {
+      margin-top: 48px;
+      padding: 24px;
+      background: #FFFFFF;
+      border: 1px solid var(--page-border);
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .selection-hint h3 {
+      font-family: "Bricolage Grotesque", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-size: 18px;
+      margin: 0 0 12px;
+    }
+
+    .selection-hint p, .selection-hint li {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--page-muted);
+    }
+
+    .selection-hint ul { margin: 8px 0 0; padding-left: 18px; }
+    .selection-hint li { margin-bottom: 6px; }
+
+    code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 0.92em;
+      background: rgba(0,0,0,0.04);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Pulse · 第三阶段：设计方向</h1>
+    <p>基于产品定义与参考收集，我们生成了 4 个风格迥异的设计语言方向。每个方向都包含色彩、字体、布局、标志性动效，以及一个迷你界面预览。可以选定一个，也可以混搭多个方向中的元素。</p>
+  </header>
+
+  <main>
+    <section class="product-analysis">
+      <h2>产品分析</h2>
+      <dl class="analysis-grid">
+        <div class="analysis-item">
+          <dt>一句话定位</dt>
+          <dd>把收入、用户与事件数据汇聚成一张清晰的主页——每天早上 30 秒内就能知道有没有异常。</dd>
+        </div>
+        <div class="analysis-item">
+          <dt>目标用户</dt>
+          <dd>25–40 岁的独立开发者 / 一人公司，目前需要在 Stripe、GA、SQL 和 Excel 之间手动核对数据。</dd>
+        </div>
+        <div class="analysis-item">
+          <dt>核心情绪</dt>
+          <dd>平静 + 高效：减少焦虑，一眼看完即走。</dd>
+        </div>
+        <div class="analysis-item">
+          <dt>关键差异点</dt>
+          <dd>每天早晨主动呈现“今日状态”，而不是等用户自己去挖。</dd>
+        </div>
+        <div class="analysis-item">
+          <dt>转化目标</dt>
+          <dd>默认状态：30 秒扫完即走；异常状态：一眼发现，一键下钻。</dd>
+        </div>
+        <div class="analysis-item">
+          <dt>美学约束</dt>
+          <dd>仅浅色模式；不用紫色，不用蓝色作主色，不用渐变。</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="directions-grid">
+      <!-- Direction A: Morning Paper -->
+      <article class="direction-card direction-a">
+        <div class="direction-header">
+          <h3><span class="direction-letter">A</span>晨报</h3>
+          <p class="pitch">像翻开一份晨报那样打开 Pulse：温暖、清晰，今日状况一眼尽览。</p>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            方向依据
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">为什么这个方向适合 Pulse：它延续了第一阶段的“平静 + 高效”，以及你在第二阶段对 Monocle“静中有序”的偏爱，用暖调中性底色 + 绿色状态色，把焦虑的早晨变成可预期的 30 秒例行公事。</span>
+          </h4>
+          <div class="section-body">
+            <p class="rationale">继承 Monocle 的编辑式秩序，但用更柔和的暖白底色替代冷灰；一个细微的“正常心跳”动效呼应“平静”，让默认状态显得安稳而不打扰。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            色彩系统
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">核心色板是一眼看去的 3–4 个主导色；UI 语义令牌是按界面角色命名的颜色变量，例如 surface-card 用于卡片背景，border-subtle 用于浅色边框。</span>
+          </h4>
+          <div class="section-body">
+            <div class="color-layers">
+              <div>
+                <div class="layer-label">核心色板</div>
+                <div class="swatch-row">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#FDFBF7"></div>
+                    <div class="swatch-name">bg-page</div>
+                    <div class="swatch-token">#FDFBF7</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#2A2A2A"></div>
+                    <div class="swatch-name">text-primary</div>
+                    <div class="swatch-token">#2A2A2A</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#5B8A5E"></div>
+                    <div class="swatch-name">accent</div>
+                    <div class="swatch-token">#5B8A5E</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="layer-label">UI 语义令牌</div>
+                <div class="swatch-row">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#FFFFFF"></div>
+                    <div class="swatch-name">surface-card</div>
+                    <div class="swatch-token">#FFFFFF</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#EBE8E0"></div>
+                    <div class="swatch-name">border-subtle</div>
+                    <div class="swatch-token">#EBE8E0</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#6B6B6B"></div>
+                    <div class="swatch-name">text-secondary</div>
+                    <div class="swatch-token">#6B6B6B</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#F0F4EF"></div>
+                    <div class="swatch-name">badge-bg</div>
+                    <div class="swatch-token">#F0F4EF</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            字体系统
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">标题字用于大号标题，正文用于连续文本，等宽用于数字、代码与标签。每种字体都标注了字重、字号与行高。</span>
+          </h4>
+          <div class="section-body">
+            <div class="typography-list">
+              <div class="type-row">
+                <span style="font-family:'Bricolage Grotesque','Noto Sans SC','PingFang SC',sans-serif;font-weight:700;font-size:18px;">标题</span>
+                <span class="type-spec">"Bricolage Grotesque" 700 40px/1.15</span>
+                <span style="font-size:11px;color:var(--a-text-secondary)">用于页面大标题；略带人文气息，绝不冰冷。</span>
+              </div>
+              <div class="type-row">
+                <span style="font-family:'Manrope','Noto Sans SC','PingFang SC',sans-serif;font-weight:400;font-size:14px;">正文</span>
+                <span class="type-spec">"Manrope" 400 15px/1.55</span>
+                <span style="font-size:11px;color:var(--a-text-secondary)">用于正文与卡片内容；清晰易读。</span>
+              </div>
+              <div class="type-row">
+                <span style="font-family:'JetBrains Mono','SF Mono',monospace;font-weight:500;font-size:13px;">等宽</span>
+                <span class="type-spec">"JetBrains Mono" 500 14px/1.4</span>
+                <span style="font-size:11px;color:var(--a-text-secondary)">金额、百分比、时间戳。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            布局模式
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">关键区域如何组织：Hero 是首屏可见的视觉区，CTA 是行动召唤区，列表区是内容列表区。</span>
+          </h4>
+          <div class="section-body">
+            <p class="layout-desc">顶部导航 + 全宽“今日”摘要卡片（占首屏 50%），内含 3 个关键指标；下方左右两栏：左侧是近期事件流，右侧是快捷操作。策略：把“一眼即览”放在最上面，把“再看一步”放在下面。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            标志性动效
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">这个方向中最令人印象深刻的微动效。把鼠标悬停在迷你预览的摘要卡片上，或在页面加载后观察那轻柔的光晕节律。</span>
+          </h4>
+          <div class="section-body">
+            <p class="signature-text"><strong>平静脉冲：</strong>当所有指标正常时，“今日”摘要卡片会发出极其柔和的绿色氛围脉冲，像平稳的心跳。它不是警报，而是在告诉用户“系统正在替你盯着”。一旦出现异常，脉冲停止，相关指标获得柔和的实心高亮，引导下钻。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            界面预览
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">用真实的颜色、字体与布局搭建的迷你主页，让你一眼判断这个方向是否合心意。</span>
+          </h4>
+          <div class="mockup-frame">
+            <div class="mockup-nav">
+              <div class="mockup-logo">Pulse</div>
+              <div class="mockup-nav-links">
+                <span>首页</span>
+                <span>事件</span>
+                <span>设置</span>
+              </div>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-summary">
+                <div class="mockup-date">今日摘要 · 8 月 11 日 星期一</div>
+                <div class="mockup-headline">今日产品状态一切正常</div>
+                <div class="mockup-metrics">
+                  <div class="mockup-metric">
+                    <div class="mockup-metric-value" style="color:var(--a-text)">$1,240</div>
+                    <div class="mockup-metric-label">收入</div>
+                    <div class="mockup-metric-change">+12%</div>
+                  </div>
+                  <div class="mockup-metric">
+                    <div class="mockup-metric-value" style="color:var(--a-text)">482</div>
+                    <div class="mockup-metric-label">活跃用户</div>
+                    <div class="mockup-metric-change">+5%</div>
+                  </div>
+                  <div class="mockup-metric">
+                    <div class="mockup-metric-value" style="color:var(--a-text)">24</div>
+                    <div class="mockup-metric-label">新增注册</div>
+                    <div class="mockup-metric-change">-2%</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mockup-row">
+                <div class="mockup-card">
+                  <div class="mockup-card-title">近期事件</div>
+                  <div class="mockup-event"><div class="mockup-event-dot"></div><div class="mockup-event-text">新功能“导出 CSV”被使用 38 次</div><div class="mockup-event-time">2 小时前</div></div>
+                  <div class="mockup-event"><div class="mockup-event-dot"></div><div class="mockup-event-text">Stripe 收到一笔 99 美元订阅</div><div class="mockup-event-time">4 小时前</div></div>
+                  <div class="mockup-event"><div class="mockup-event-dot"></div><div class="mockup-event-text">页面加载优化已于昨天上线</div><div class="mockup-event-time">12 小时前</div></div>
+                </div>
+                <div class="mockup-card">
+                  <div class="mockup-card-title">快捷操作</div>
+                  <div class="mockup-actions">
+                    <span class="mockup-chip">接入数据源</span>
+                    <span class="mockup-chip">查看报告</span>
+                    <span class="mockup-chip">邀请成员</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Direction B: Signal & Noise -->
+      <article class="direction-card direction-b">
+        <div class="direction-header">
+          <h3><span class="direction-letter">B</span>去噪存真</h3>
+          <p class="pitch">自动弱化正常的数字，只把“需要你过目”的内容推到眼前。</p>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            方向依据
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">为什么这个方向适合 Pulse：它直接呼应第一阶段的核心差异点——“主动告诉你今日状况”——用视觉分量来表达优先级。</span>
+          </h4>
+          <div class="section-body">
+            <p class="rationale">把“扫完即走”推向极致：正常指标最先淡入并保持低对比度；需要关注的指标最后登场并被强调。珊瑚色强调色只在出问题时出现，平时几乎不可见。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            色彩系统
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">核心色板是一眼看去的 3–4 个主导色；UI 语义令牌是按界面角色命名的颜色变量。</span>
+          </h4>
+          <div class="section-body">
+            <div class="color-layers">
+              <div>
+                <div class="layer-label">核心色板</div>
+                <div class="swatch-row">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#F8F7F4"></div>
+                    <div class="swatch-name">bg-page</div>
+                    <div class="swatch-token">#F8F7F4</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#1A1A1A"></div>
+                    <div class="swatch-name">text-primary</div>
+                    <div class="swatch-token">#1A1A1A</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#C45D3A"></div>
+                    <div class="swatch-name">accent</div>
+                    <div class="swatch-token">#C45D3A</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="layer-label">UI 语义令牌</div>
+                <div class="swatch-row">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#FFFFFF"></div>
+                    <div class="swatch-name">surface-card</div>
+                    <div class="swatch-token">#FFFFFF</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#E5E3DD"></div>
+                    <div class="swatch-name">border-subtle</div>
+                    <div class="swatch-token">#E5E3DD</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#757575"></div>
+                    <div class="swatch-name">text-secondary</div>
+                    <div class="swatch-token">#757575</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#FDF0EC"></div>
+                    <div class="swatch-name">badge-bg</div>
+                    <div class="swatch-token">#FDF0EC</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            字体系统
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">标题字用于大号标题，正文用于连续文本，等宽用于数字、代码与标签。</span>
+          </h4>
+          <div class="section-body">
+            <div class="typography-list">
+              <div class="type-row">
+                <span style="font-family:'Bricolage Grotesque','Noto Sans SC','PingFang SC',sans-serif;font-weight:800;font-size:20px;">标题</span>
+                <span class="type-spec">"Bricolage Grotesque" 800 48px/1.1</span>
+                <span style="font-size:11px;color:var(--b-text-secondary)">超大号标题，建立强烈的信息层级。</span>
+              </div>
+              <div class="type-row">
+                <span style="font-family:'Manrope','Noto Sans SC','PingFang SC',sans-serif;font-weight:500;font-size:14px;">正文</span>
+                <span class="type-spec">"Manrope" 500 15px/1.5</span>
+                <span style="font-size:11px;color:var(--b-text-secondary)">中等字重让数据卡片看起来更饱满。</span>
+              </div>
+              <div class="type-row">
+                <span style="font-family:'JetBrains Mono','SF Mono',monospace;font-weight:600;font-size:13px;">等宽</span>
+                <span class="type-spec">"JetBrains Mono" 600 16px/1.3</span>
+                <span style="font-size:11px;color:var(--b-text-secondary)">金额与百分比更粗，更易扫读。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            布局模式
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">关键区域如何组织。</span>
+          </h4>
+          <div class="section-body">
+            <p class="layout-desc">非对称两栏：左侧 55% 是一个巨大的“今日”面板，内含 3 个超大指标；右侧 45% 是事件流。正常指标收敛存在感，异常被放大。策略：用视觉分量直接表达“什么值得你关注”。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            标志性动效
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">这个方向中最令人印象深刻的微动效。观察页面加载时，数字如何逐个对焦成形。</span>
+          </h4>
+          <div class="section-body">
+            <p class="signature-text"><strong>聚焦显影：</strong>页面加载时，所有指标以低对比度、轻微模糊的状态出现；正常指标很快稳定在可读但不抢眼的状态；需要关注的指标最后对焦清晰，并伴随一条从左到右画出的下划线。它把“主动预警”变成视觉叙事，而不是弹窗打扰。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            界面预览
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">用真实的颜色、字体与布局搭建的迷你主页。</span>
+          </h4>
+          <div class="mockup-frame">
+            <div class="mockup-nav">
+              <div class="mockup-logo">Pulse</div>
+              <div class="mockup-nav-links">
+                <span>首页</span>
+                <span>事件</span>
+                <span>设置</span>
+              </div>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-row-b">
+                <div class="focus-panel">
+                  <div class="focus-date">今日状态 · 8 月 11 日</div>
+                  <div class="focus-headline">需要关注</div>
+                  <div class="focus-metric">
+                    <div class="focus-metric-label">收入</div>
+                    <div class="focus-metric-value">$842</div>
+                    <div class="focus-metric-change">较昨日 -18%</div>
+                  </div>
+                  <div class="focus-metric attention">
+                    <div class="focus-metric-label">活跃用户</div>
+                    <div class="focus-metric-value">312</div>
+                    <div class="focus-metric-change">较昨日 -35%</div>
+                  </div>
+                  <div class="focus-metric">
+                    <div class="focus-metric-label">新增注册</div>
+                    <div class="focus-metric-value">19</div>
+                    <div class="focus-metric-change">+3%</div>
+                  </div>
+                </div>
+                <div class="feed-panel">
+                  <div class="feed-title">近期事件</div>
+                  <div class="feed-event"><span class="feed-event-tag">警报</span><span class="feed-event-text">活跃用户在 09:00 骤降</span></div>
+                  <div class="feed-event"><span class="feed-event-tag">收入</span><span class="feed-event-text">收到一笔 49 美元订阅</span></div>
+                  <div class="feed-event"><span class="feed-event-tag">事件</span><span class="feed-event-text">导出 CSV 被使用 12 次</span></div>
+                  <div class="feed-event"><span class="feed-event-tag">产品</span><span class="feed-event-text">页面加载优化已上线</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Direction C: Monocle Desk -->
+      <article class="direction-card direction-c">
+        <div class="direction-header">
+          <h3><span class="direction-letter">C</span>编辑案头</h3>
+          <p class="pitch">编辑案头：用细线、留白与密度，把数据排成一份平静可读的晨报。</p>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            方向依据
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">为什么这个方向适合 Pulse：它最接近你在第二阶段喜欢的 Monocle 参考——编辑感 + 均衡的信息密度。</span>
+          </h4>
+          <div class="section-body">
+            <p class="rationale">把“报头 + 分栏 + 细线”的杂志语言转译成数据看板。衬线标题带来人文编辑气息；森林绿强调色取代冷蓝，整体显得有教养而不奢华。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            色彩系统
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">核心色板是一眼看去的 3–4 个主导色；UI 语义令牌是按界面角色命名的颜色变量。</span>
+          </h4>
+          <div class="section-body">
+            <div class="color-layers">
+              <div>
+                <div class="layer-label">核心色板</div>
+                <div class="swatch-row">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#F5F4F0"></div>
+                    <div class="swatch-name">bg-page</div>
+                    <div class="swatch-token">#F5F4F0</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#1F1F1F"></div>
+                    <div class="swatch-name">text-primary</div>
+                    <div class="swatch-token">#1F1F1F</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#2D5A3D"></div>
+                    <div class="swatch-name">accent</div>
+                    <div class="swatch-token">#2D5A3D</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="layer-label">UI 语义令牌</div>
+                <div class="swatch-row">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#FAFAF8"></div>
+                    <div class="swatch-name">surface-card</div>
+                    <div class="swatch-token">#FAFAF8</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#DEDCD5"></div>
+                    <div class="swatch-name">border-subtle</div>
+                    <div class="swatch-token">#DEDCD5</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#5C5C5C"></div>
+                    <div class="swatch-name">text-secondary</div>
+                    <div class="swatch-token">#5C5C5C</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#E8EDE9"></div>
+                    <div class="swatch-name">badge-bg</div>
+                    <div class="swatch-token">#E8EDE9</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            字体系统
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">标题字用于大号标题，正文用于连续文本，等宽用于数字、代码与标签。</span>
+          </h4>
+          <div class="section-body">
+            <div class="typography-list">
+              <div class="type-row">
+                <span style="font-family:'Source Serif 4','Noto Serif SC',serif;font-weight:600;font-size:20px;">标题</span>
+                <span class="type-spec">"Source Serif 4" 600 44px/1.2</span>
+                <span style="font-size:11px;color:var(--c-text-secondary)">衬线标题呼应 Monocle 的编辑气质。</span>
+              </div>
+              <div class="type-row">
+                <span style="font-family:'Manrope','Noto Sans SC','PingFang SC',sans-serif;font-weight:400;font-size:14px;">正文</span>
+                <span class="type-spec">"Manrope" 400 15px/1.6</span>
+                <span style="font-size:11px;color:var(--c-text-secondary)">正文保持无衬线，确保数据易读。</span>
+              </div>
+              <div class="type-row">
+                <span style="font-family:'JetBrains Mono','SF Mono',monospace;font-weight:500;font-size:13px;">等宽</span>
+                <span class="type-spec">"JetBrains Mono" 500 14px/1.4</span>
+                <span style="font-size:11px;color:var(--c-text-secondary)">数据与报头日期。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            布局模式
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">关键区域如何组织。</span>
+          </h4>
+          <div class="section-body">
+            <p class="layout-desc">顶部报头（Logo + 日期）；其下是四列指标横带，以竖细线分隔；再往下是左右两栏，同样以竖细线分隔。细线是核心结构语言。策略：用细线建立秩序，而不是靠堆叠卡片。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            标志性动效
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">这个方向中最令人印象深刻的微动效。观察页面加载时，细线如何自行画出网格。</span>
+          </h4>
+          <div class="section-body">
+            <p class="signature-text"><strong>细线绘制：</strong>页面加载后，横向与纵向的细线像用尺子画出一般，从左到右、从上到下延展。它把“秩序”从静态变为动态，暗示“数据正被整理成一份干净的日报”。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            界面预览
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">用真实的颜色、字体与布局搭建的迷你主页。</span>
+          </h4>
+          <div class="mockup-frame">
+            <div class="mockup-nav">
+              <div class="mockup-logo">Pulse</div>
+              <div class="mockup-nav-links">
+                <span>首页</span>
+                <span>事件</span>
+                <span>设置</span>
+              </div>
+            </div>
+            <div class="masthead">
+              <div class="masthead-title">Pulse</div>
+              <div class="masthead-date">2026 年 8 月 11 日 星期一</div>
+            </div>
+            <div class="metric-band">
+              <div class="band-metric">
+                <div class="band-label">收入</div>
+                <div class="band-value">$1,240</div>
+                <div class="band-change">+12%</div>
+              </div>
+              <div class="band-metric">
+                <div class="band-label">活跃用户</div>
+                <div class="band-value">482</div>
+                <div class="band-change">+5%</div>
+              </div>
+              <div class="band-metric">
+                <div class="band-label">新增注册</div>
+                <div class="band-value">24</div>
+                <div class="band-change">-2%</div>
+              </div>
+              <div class="band-metric">
+                <div class="band-label">事件</div>
+                <div class="band-value">3.2k</div>
+                <div class="band-change">+8%</div>
+              </div>
+            </div>
+            <div class="c-body">
+              <div class="c-column">
+                <div class="c-col-title">近期事件</div>
+                <div class="c-event"><span>收到 99 美元订阅</span><span>2 小时前</span></div>
+                <div class="c-event"><span>导出 CSV ×38</span><span>3 小时前</span></div>
+                <div class="c-event"><span>页面优化已上线</span><span>12 小时前</span></div>
+              </div>
+              <div class="c-column">
+                <div class="c-col-title">快捷操作</div>
+                <div class="c-event"><span>接入 Stripe</span></div>
+                <div class="c-event"><span>查看周报</span></div>
+                <div class="c-event"><span>设置提醒</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Direction D: Soft Utility -->
+      <article class="direction-card direction-d">
+        <div class="direction-header">
+          <h3><span class="direction-letter">D</span>温润实用</h3>
+          <p class="pitch">友好、像工具、有触感：像一张整洁的书桌，卡片为你把关。</p>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            方向依据
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">为什么这个方向适合 Pulse：它与 Monocle 的编辑感形成对照，测试你是否更喜欢一个更亲和、更像工具的仪表盘。</span>
+          </h4>
+          <div class="section-body">
+            <p class="rationale">对照方向：没有细线与衬线字，取而代之的是柔和的卡片、圆角与悬停反馈。它更接近常见 SaaS 仪表盘的直觉，但暖绿色与克制的阴影避免了“企业级冰冷感”。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            色彩系统
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">核心色板是一眼看去的 3–4 个主导色；UI 语义令牌是按界面角色命名的颜色变量。</span>
+          </h4>
+          <div class="section-body">
+            <div class="color-layers">
+              <div>
+                <div class="layer-label">核心色板</div>
+                <div class="swatch-row">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#FDFDFC"></div>
+                    <div class="swatch-name">bg-page</div>
+                    <div class="swatch-token">#FDFDFC</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#2D2D2D"></div>
+                    <div class="swatch-name">text-primary</div>
+                    <div class="swatch-token">#2D2D2D</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#4A7C59"></div>
+                    <div class="swatch-name">accent</div>
+                    <div class="swatch-token">#4A7C59</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="layer-label">UI 语义令牌</div>
+                <div class="swatch-row">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#FFFFFF"></div>
+                    <div class="swatch-name">surface-card</div>
+                    <div class="swatch-token">#FFFFFF</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#E8E8E6"></div>
+                    <div class="swatch-name">border-subtle</div>
+                    <div class="swatch-token">#E8E8E6</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#6E6E6E"></div>
+                    <div class="swatch-name">text-secondary</div>
+                    <div class="swatch-token">#6E6E6E</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background:#EDF2EE"></div>
+                    <div class="swatch-name">badge-bg</div>
+                    <div class="swatch-token">#EDF2EE</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            字体系统
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">标题字用于大号标题，正文用于连续文本，等宽用于数字、代码与标签。</span>
+          </h4>
+          <div class="section-body">
+            <div class="typography-list">
+              <div class="type-row">
+                <span style="font-family:'Manrope','Noto Sans SC','PingFang SC',sans-serif;font-weight:700;font-size:19px;">标题</span>
+                <span class="type-spec">"Manrope" 700 38px/1.2</span>
+                <span style="font-size:11px;color:var(--d-text-secondary)">单一字体家族；层级靠字重区分，更统一。</span>
+              </div>
+              <div class="type-row">
+                <span style="font-family:'Manrope','Noto Sans SC','PingFang SC',sans-serif;font-weight:400;font-size:14px;">正文</span>
+                <span class="type-spec">"Manrope" 400 15px/1.55</span>
+                <span style="font-size:11px;color:var(--d-text-secondary)">正文与标题同属一个字体家族，减少视觉噪音。</span>
+              </div>
+              <div class="type-row">
+                <span style="font-family:'JetBrains Mono','SF Mono',monospace;font-weight:500;font-size:13px;">等宽</span>
+                <span class="type-spec">"JetBrains Mono" 500 14px/1.4</span>
+                <span style="font-size:11px;color:var(--d-text-secondary)">金额、百分比、时间戳。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            布局模式
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">关键区域如何组织。</span>
+          </h4>
+          <div class="section-body">
+            <p class="layout-desc">卡片式仪表盘：顶部导航、欢迎卡片、2×2 指标卡网格、快捷操作标签、事件卡列表。策略：用卡片自然分组信息，让用户的手指/视线一次处理一块。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            标志性动效
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">这个方向中最令人印象深刻的微动效。把鼠标悬停在卡片上，或点击一个快捷操作标签。</span>
+          </h4>
+          <div class="section-body">
+            <p class="signature-text"><strong>触感卡片：</strong>所有可交互卡片在悬停时轻轻上浮 3px，并铺开温暖柔和的阴影；按下时下沉 1px。它让数据看板拥有可触摸的物理感，消减“看数字”的冰冷距离。</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">
+            界面预览
+            <span class="info-badge" tabindex="0">i</span>
+            <span class="tooltip">用真实的颜色、字体与布局搭建的迷你主页。</span>
+          </h4>
+          <div class="mockup-frame">
+            <div class="mockup-nav">
+              <div class="mockup-logo">Pulse</div>
+              <div class="mockup-nav-links">
+                <span>首页</span>
+                <span>事件</span>
+                <span>设置</span>
+              </div>
+            </div>
+            <div class="d-body">
+              <div class="welcome-card">
+                <div class="welcome-title">早上好——今日产品状态一切正常</div>
+                <div class="welcome-sub">8 月 11 日 星期一 · 3 项指标处于健康区间</div>
+              </div>
+              <div class="metric-grid-2x2">
+                <div class="d-metric-card">
+                  <div class="d-metric-label">收入</div>
+                  <div class="d-metric-value">$1,240</div>
+                  <div class="d-metric-change">+12%</div>
+                </div>
+                <div class="d-metric-card">
+                  <div class="d-metric-label">活跃用户</div>
+                  <div class="d-metric-value">482</div>
+                  <div class="d-metric-change">+5%</div>
+                </div>
+                <div class="d-metric-card">
+                  <div class="d-metric-label">新增注册</div>
+                  <div class="d-metric-value">24</div>
+                  <div class="d-metric-change">-2%</div>
+                </div>
+                <div class="d-metric-card">
+                  <div class="d-metric-label">事件</div>
+                  <div class="d-metric-value">3.2k</div>
+                  <div class="d-metric-change">+8%</div>
+                </div>
+              </div>
+              <div class="d-actions">
+                <span class="d-chip">接入 Stripe</span>
+                <span class="d-chip">查看报告</span>
+                <span class="d-chip">设置提醒</span>
+              </div>
+              <div class="d-events">
+                <div class="d-event"><div class="mockup-event-dot" style="background:var(--d-accent)"></div><div class="mockup-event-text">新功能“导出 CSV”被使用 38 次</div><div class="mockup-event-time">2 小时前</div></div>
+                <div class="d-event"><div class="mockup-event-dot" style="background:var(--d-accent)"></div><div class="mockup-event-text">Stripe 收到一笔 99 美元订阅</div><div class="mockup-event-time">4 小时前</div></div>
+                <div class="d-event"><div class="mockup-event-dot" style="background:var(--d-accent)"></div><div class="mockup-event-text">页面加载优化已上线</div><div class="mockup-event-time">12 小时前</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="selection-hint">
+      <h3>如何选择</h3>
+      <p>这四个方向是用于锁定色彩、字体、布局与动效的<strong>快速体验稿</strong>。选定之后，第四阶段将产出更完整、更接近真实效果的首页设计。</p>
+      <ul>
+        <li><strong>已经看中某个方向</strong>：回复字母 <code>A</code> / <code>B</code> / <code>C</code> / <code>D</code>；也可以混搭，例如<code>A 的色彩系统 + C 的报头布局 + D 的悬停动效</code>。</li>
+        <li><strong>还不满意</strong>：回复<code>都不行，再试试更 ×× 的</code>（例如更温暖 / 更大胆 / 更极简）；或者<code>A 的颜色不错，但字体感觉太冷——换成更有人文气息的字体再重新生成</code>。</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
