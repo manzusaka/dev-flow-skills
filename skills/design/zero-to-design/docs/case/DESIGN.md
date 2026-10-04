@@ -262,7 +262,7 @@
 
 ## 文件清单
 
-- `docs/prototype/DESIGN.md` —— 本文件，完整的设计系统文档
-- `docs/prototype/design/tokens.css` —— 可直接导入的 CSS 自定义属性
-- `docs/prototype/design/04-dashboard-v1.html` —— 首页实现参考
-- `docs/prototype/design/05-motion-review.html` —— 动效审查参考
+- `docs/prototype/pulse/DESIGN.md` —— 本文件，完整的设计系统文档
+- `docs/prototype/pulse/design/tokens.css` —— 可直接导入的 CSS 自定义属性
+- `docs/prototype/pulse/design/04-dashboard-v1.html` —— 首页实现参考
+- `docs/prototype/pulse/design/05-motion-review.html` —— 动效审查参考

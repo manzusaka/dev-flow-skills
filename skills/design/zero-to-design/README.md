@@ -10,12 +10,12 @@
 
 | 场景 | 可以这样说 | 入口 |
 |------|------------|------|
-| 新产品从零设计 | “用 zero-to-design 为新项目设计 Web 首页，建立 DESIGN.md” | 从产品定义开始 |
-| 已有系统新增页面或组件 | “用 zero-to-design 在当前项目设计订单详情页，沿用现有组件” | 先核对现有设计资产，再扩展页面 |
+| 新产品从零设计 | “用 zero-to-design 在 admin 端设计 Web 首页，建立 DESIGN.md” | 从产品定义开始 |
+| 已有系统新增页面或组件 | “用 zero-to-design 在 admin 端设计订单详情页，沿用现有组件” | 先核对现有设计资产，再扩展页面 |
 | 审查现有 UI 或提取设计系统 | “用 zero-to-design 检查当前界面，并提取 DESIGN.md” | 先建立或核对设计基线 |
-| 继续上次设计 | “继续 zero-to-design 上次的首屏设计” | 从 `docs/prototype/design/state.md` 恢复 |
+| 继续上次设计 | “继续 zero-to-design 的 admin 端首屏设计” | 从 `docs/prototype/{end}/design/state.md` 恢复 |
 
-目标项目不是当前目录时，请在请求中给出项目路径；需要 Web、H5 或双端时也请说明。收集参考时，你可以主动提供竞品名称、链接、截图或具体页面，并指出想借鉴或避免的地方。完整流程见 [SKILL.md](SKILL.md)。
+每次先选定产品端目录名，如 `admin` 或 `user-app`；未指定时 skill 会询问。`{end}` 表示该名称，只接受小写字母、数字和中间的连字符；中文别名记录在该端的状态文件。Web/H5 是端目录内的平台子目录。目标项目不是当前目录时，请在请求中给出项目路径；需要 Web、H5 或双平台时也请说明。收集参考时，你可以主动提供竞品名称、链接、截图或具体页面，并指出想借鉴或避免的地方。完整流程见 [SKILL.md](SKILL.md)。
 
 ```mermaid
 flowchart TD
@@ -25,7 +25,7 @@ flowchart TD
     P3["<b>Phase 3 · 方向选择</b> → 03-directions.html"]
     P4["<b>Phase 4 · 首屏迭代</b> → 按平台运行的 04-screen-v* 原型"]
     Draft["生成 <b>DESIGN.draft.md</b><br/>十章骨架草稿 · 反馈循环中枢"]
-    P7["<b>Phase 7 · 固化设计系统</b><br/>→ docs/prototype/DESIGN.md + docs/prototype/design/tokens.css + assets/"]
+    P7["<b>Phase 7 · 固化设计系统</b><br/>→ docs/prototype/{end}/DESIGN.md + docs/prototype/{end}/design/tokens.css + assets/"]
 
     subgraph OPT["核心页面扩展与跨屏打磨"]
         P5["<b>Phase 5 · 核心页面扩展</b><br/>→ 05-screen* 原型 · 页面地图"]
@@ -47,7 +47,7 @@ flowchart TD
     C3 -->|只需单页| P6
     P5 -->|核心页面齐了| P6
     P6 -->|各维度都 OK| P7
-    P7 --> Done(["完成 · DESIGN.md 留在 docs/prototype/<br/>AGENTS.md 已关联引用"])
+    P7 --> Done(["完成 · DESIGN.md 留在所选端目录<br/>AGENTS.md 按端关联引用"])
     Done -.->|之后设计新页面（扩展模式）| P6
 ```
 
@@ -60,14 +60,14 @@ flowchart TD
 | 1 | 产品定义 | `01-product.md` — 8 个关键问题锁定"做什么、做成什么感觉" |
 | 2 | 灵感收集 | `02-references.md` — 用户与代理推荐的参考、截图标注、喜欢/不喜欢、显式偏好 |
 | 3 | 方向选择 | `03-directions.html` — 3-4 个真正不同的设计方向，每个含配色、字体、布局和可交互的签名动作 |
-| 4 | 首屏迭代 | 各目标端的 `04-<screen>-v*` 可运行原型 + `DESIGN.draft.md` — 迭代 1–2 个关键首屏直到你说"不错" |
-| 5 | 核心页面扩展 | 各目标端的 `05-<screen>-v*` 可运行原型 + `05-screen-map.md` + `component-inventory.md` — 最小核心页面集、UI 状态与实现契约 |
+| 4 | 首屏迭代 | 各目标平台的 `04-<screen>-v*` 可运行原型 + `DESIGN.draft.md` — 迭代 1–2 个关键首屏直到你说"不错" |
+| 5 | 核心页面扩展 | 各目标平台的 `05-<screen>-v*` 可运行原型 + `05-screen-map.md` + `component-inventory.md` — 最小核心页面集、UI 状态与实现契约 |
 | 6 | 跨屏打磨 | `06-polish-log.md` + 可选维度评审页 — 字体、间距、色彩、组件、响应式、无障碍与动效 |
-| 7 | 设计系统固化 | `docs/prototype/DESIGN.md` + `docs/prototype/design/tokens.css` + `docs/prototype/design/assets/` — 最终可复用的设计系统，并在 AGENTS.md 中关联引用 |
+| 7 | 设计系统固化 | `docs/prototype/{end}/DESIGN.md` + `docs/prototype/{end}/design/tokens.css` + `docs/prototype/{end}/design/assets/` — 最终可复用的设计系统，并在 AGENTS.md 中关联引用 |
 
-阶段草稿、预览、状态和其他过程产物默认保存在项目根目录下的 `docs/prototype/design/`。
+阶段草稿、预览、状态和其他过程产物保存在项目根目录下的 `docs/prototype/{end}/design/`。
 
-阶段 3 仍用轻量 HTML 比较方向。阶段 4 起，新项目默认 Vue 3 + TypeScript + Vite；Web 使用 Ant Design Vue，H5 使用 Vant 4。已有项目沿用自己的框架、构建工具和组件库。只制作用户要求的端；双端任务在 `docs/prototype/design/web/` 和 `docs/prototype/design/h5/` 分别提供独立预览入口。原型使用示例数据与本地交互，不接入真实 API 或业务状态管理；实际技术选择、组件使用和语义 Token 映射记录在 `docs/prototype/DESIGN.md`。
+阶段 3 仍用轻量 HTML 比较方向。阶段 4 起，新项目默认 Vue 3 + TypeScript + Vite；Web 使用 Ant Design Vue，H5 使用 Vant 4。已有项目沿用自己的框架、构建工具和组件库。只制作用户要求的平台；双平台任务在 `docs/prototype/{end}/design/web/` 和 `docs/prototype/{end}/design/h5/` 分别提供独立预览入口。原型使用示例数据与本地交互，不接入真实 API 或业务状态管理；实际技术选择、组件使用和语义 Token 映射记录在 `docs/prototype/{end}/DESIGN.md`。
 
 ## 为什么写这个 skill
 
@@ -149,10 +149,10 @@ npx skills remove -g zero-to-design
 
 ## 内置设计能力与检查
 
-阶段 3–7 按需读取 `references/` 中的 12 项设计能力；iOS/Android 使用相应的 `references/native/` 指引。`scripts/doctor.mjs` 检查 `docs/prototype/design/state.md` 与阶段产物；`scripts/scan.mjs` 对 Web 源码提供有限的字体、布局和实现线索，结果仍需结合渲染核对。两个脚本只依赖 Node.js 内置模块。用户明确指定其他 skill 时可以额外使用。
+阶段 3–7 按需读取 `references/` 中的 12 项设计能力；iOS/Android 使用相应的 `references/native/` 指引。`scripts/doctor.mjs` 检查 `docs/prototype/{end}/design/state.md` 与阶段产物；`scripts/scan.mjs` 对 Web 源码提供有限的字体、布局和实现线索，结果仍需结合渲染核对。两个脚本只依赖 Node.js 内置模块。用户明确指定其他 skill 时可以额外使用。
 
 ```bash
-node <zero-to-design目录>/scripts/doctor.mjs --target <项目目录> --json
+node <zero-to-design目录>/scripts/doctor.mjs --target <项目目录> --folder <端目录名> --json
 node <zero-to-design目录>/scripts/scan.mjs --target <Web源码路径> --scope type,layout,audit --json
 ```
 

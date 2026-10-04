@@ -19,11 +19,13 @@ triggers:
 
 这是为后端工程师和非设计师准备的交互式设计引导 skill。通过多轮对话和 7 个阶段（其中 2 个可选），把模糊的产品想法变成可执行的 `DESIGN.md`、页面设计预览和动效约束。
 
+**端目录约定**：`{end}` 是本次设计所属的产品端（如 `user-app`、`admin`），与下文的 Web/H5 平台目录不同。用户指定 `docs/prototype/` 下的一级端目录名；目录名只接受小写字母、数字和中间的连字符。用户未指定时，先询问端目录名，再读取状态或创建产物。从零设计、已有系统新增页面/组件、恢复和扩展都使用选定端的 `docs/prototype/{end}/`；不要从其他端的状态推断当前端。中文名称可作为别名，记录在该端的 `design/state.md`。
+
 **核心原则**：不要假设用户懂设计。每一步都解释“为什么”，并给出具体的选择。
 
 **全局规则：匹配用户语言（强制）**
 
-- 以用户第一条消息的语言贯穿对话、问题、反馈示例、所有文档和预览中的可见文字。文档的章节标题、表头、字段名和说明，页面的标题、提示、按钮及演示区名称都须一致；`01-product.md`、`02-references.md`、`DESIGN.md` 和 `docs/prototype/design/state.md` 也不例外。
+- 以用户第一条消息的语言贯穿对话、问题、反馈示例、所有文档和预览中的可见文字。文档的章节标题、表头、字段名和说明，页面的标题、提示、按钮及演示区名称都须一致；`01-product.md`、`02-references.md`、`DESIGN.md` 和 `docs/prototype/{end}/design/state.md` 也不例外。
 - 文件名、目录名、CSS 自定义属性、token、代码标识符、组件库和字体家族名保留英文。同一产物不混用界面语言；中文文档不用 `Product Definition`、`Core Palette` 等英文标题。
 
 ## 内部设计能力
@@ -40,7 +42,7 @@ triggers:
 
 原生平台的排版、布局、适配、动效和审查还需按目标平台读取 [iOS](references/native/ios.md)、[Android](references/native/android.md)、[原生适配](references/native/adapt.native.md) 或 [原生审查](references/native/audit.native.md)。
 
-**Node.js 辅助检查**：`<skill>` 代表本 `SKILL.md` 所在目录。`node <skill>/scripts/doctor.mjs --target <项目目录>` 检查 `docs/prototype/design/state.md` 与阶段产物；Web 源码的机械线索使用 `node <skill>/scripts/scan.mjs --target <文件或目录> [--scope type|layout|audit]`。两者均支持 `--json`。脚本不能替代对运行界面、原生应用和用户路径的观察。
+**Node.js 辅助检查**：`<skill>` 代表本 `SKILL.md` 所在目录。`node <skill>/scripts/doctor.mjs --target <项目目录> --folder <端目录名>` 检查选定端的状态与阶段产物；Web 源码的机械线索使用 `node <skill>/scripts/scan.mjs --target <文件或目录> [--scope type|layout|audit]`。两者均支持 `--json`。脚本不能替代对运行界面、原生应用和用户路径的观察。
 
 以下负面约束与内部能力同时适用，不负责推导正面设计方向。用户明确要求优先；没有明确要求时，已核实的现有设计资产优先；其余字体和视觉选择来自产品定义与参考。
 
@@ -56,7 +58,7 @@ triggers:
 入口 A：新产品            → 阶段 1
 入口 B：已有系统          → 已有系统盘点 → 阶段 5 / 阶段 6
   ├─ 有可复用设计资产      → 读取并核对现有事实来源
-  └─ 没有设计资产          → 探索系统 → 建立观察到的基线 docs/prototype/DESIGN.md
+  └─ 没有设计资产          → 探索系统 → 建立观察到的基线 docs/prototype/{end}/design/DESIGN.draft.md
 
 阶段 1：产品定义          → 01-product.md
 阶段 2：收集设计参考      → 02-references.md
@@ -64,25 +66,26 @@ triggers:
 阶段 4：首屏预览迭代      → 按平台运行的 04-<screen>-v1 源码 → v2 → v3... + DESIGN.draft.md
 阶段 5：核心页面扩展（可选）→ 按平台运行的 05-<screen>-v1 源码 + 页面地图 + 组件清单
 阶段 6：跨页面打磨（可选）→ 打磨日志/评审 + 更新后的页面预览 + DESIGN.draft.md
-阶段 7：设计系统          → docs/prototype/DESIGN.md + docs/prototype/design/tokens.css + docs/prototype/design/assets/
+阶段 7：设计系统          → docs/prototype/{end}/DESIGN.md + docs/prototype/{end}/design/tokens.css + docs/prototype/{end}/design/assets/
 ```
 
-文件编号与阶段一致：阶段 N 的产物以 `0N-` 开头；阶段 7 的最终文档固定为项目根目录下的 `docs/prototype/DESIGN.md`，`tokens.css` 和资源仍放在 `docs/prototype/design/` 下。
+文件编号与阶段一致：阶段 N 的产物以 `0N-` 开头；阶段 7 的最终文档固定为项目根目录下的 `docs/prototype/{end}/DESIGN.md`，`tokens.css` 和资源仍放在 `docs/prototype/{end}/design/` 下。
 
-**Web/H5 原型技术约束**：阶段 3 的 `03-directions.html` 只比较视觉方向。阶段 4 起使用目标项目的框架、组件库和样式生成可运行的 UI 原型；已有项目沿用现有技术栈与构建工具。新项目默认 Vue 3 + TypeScript + Vite，Web 使用 Ant Design Vue（`ant-design-vue`），H5 使用 Vant 4（`vant`）；用户明确指定的项目技术栈优先。只产出用户要求的端；同时设计 Web 和 H5 时，在 `docs/prototype/design/web/` 与 `docs/prototype/design/h5/` 分别设置预览入口，共用语义 tokens，但各自采用适合设备的组件、布局和交互。预览入口无需接入目标应用路由。原型使用示例数据和必要的本地交互状态，不接入真实 API 或业务状态管理。必要时可制作原型专用 UI 组件，并记录使用边界。原生平台不适用上述 Web/H5 默认技术栈。
+**Web/H5 原型技术约束**：阶段 3 的 `03-directions.html` 只比较视觉方向。阶段 4 起使用目标项目的框架、组件库和样式生成可运行的 UI 原型；已有项目沿用现有技术栈与构建工具。新项目默认 Vue 3 + TypeScript + Vite，Web 使用 Ant Design Vue（`ant-design-vue`），H5 使用 Vant 4（`vant`）；用户明确指定的项目技术栈优先。只产出用户要求的平台；同时设计 Web 和 H5 时，在 `docs/prototype/{end}/design/web/` 与 `docs/prototype/{end}/design/h5/` 分别设置预览入口，共用语义 tokens，但各自采用适合设备的组件、布局和交互。预览入口无需接入目标应用路由。原型使用示例数据和必要的本地交互状态，不接入真实 API 或业务状态管理。必要时可制作原型专用 UI 组件，并记录使用边界。原生平台不适用上述 Web/H5 默认技术栈。
 
 ## 入口解析与项目范围
 
-读取 `docs/prototype/design/state.md`、检查源码或创建产物**之前**，先确定用户意图与项目范围。项目范围是本 skill 允许读写设计文件的仓库或应用。
+读取状态、检查源码或创建产物**之前**，先确定用户意图、项目范围和端目录。项目范围是本 skill 允许读写设计文件的仓库或应用。
 
 1. **明确意图优先。** 用户已经说清是新产品、重设计、已有应用新增页面/组件、继续上次流程，还是重新开始，就直接采用。明确的“从头开始”“重新开始”“完整重设计”优先于自动恢复状态；不要让用户重复选择模式。
 2. **当前目录明确时直接使用。** 如果请求指向当前项目，且工作目录明显是目标项目，直接使用并告知用户范围，不再重复询问路径。
 3. **只有模式不清时才提问。** 对“帮我设计这个”这类泛化请求，用用户语言提出一个聚焦问题：这是从零创建产品、在已有项目中设计页面/组件，还是继续上次流程？
 4. **区分本地范围与运行时证据。** 明确的本地项目路径决定可读写范围；运行 URL 仅用于检查运行界面。如果路径和 URL 指向不同应用，URL 只作运行时证据，产物仍写入明确指定的本地项目。用户只提供 URL、且当前目录明显不是对应项目时，读取源码或创建产物前先询问本地项目目录。不要读一个应用，却把产物写到无关目录。
 5. **仅在目录不清时确认。** 两种入口都优先使用本地项目目录；只有运行时 UI 检查能增加证据时，才请求运行 URL。
-6. **恢复状态前先保证重启安全。** 简要说明选定的入口模式、本地项目目录及可选运行 URL。用户明确要求重新开始或完整重设计、且已有 `docs/prototype/design/state.md` 时，不恢复或覆盖旧状态。默认创建 `<project>/design-restarts/<YYYYMMDD-HHmmss>/`；用户指定其他工作区则按其路径。在重启工作区中，本 skill 的相对产物路径都以该工作区为根，新的状态文件为 `<workspace>/docs/prototype/design/state.md`，其他产物也在 `<workspace>/docs/prototype/design/`。可检查原项目作为实现参考，但只在已确定的工作区写入。若用户选择在原项目继续，先把原有 `docs/prototype/design/` 非破坏性复制到获批的备份/归档路径，核实备份存在，再写新产物。其他情况下，在已确定项目中检查 `docs/prototype/design/state.md`，适用时恢复。明确的本地路径优先于当前目录；URL 永远不是写入范围。
+6. **选定端目录。** 用户明确指定端目录名时直接采用；未指定时先询问。核对名称符合端目录约定，并告知用户本次读写的 `docs/prototype/{end}/`。已有端目录由用户管理，不自动改用其他端或覆盖其中的设计。
+7. **恢复状态前先保证重启安全。** 简要说明选定的入口模式、本地项目目录、端目录及可选运行 URL。用户明确要求重新开始或完整重设计、且已有 `docs/prototype/{end}/design/state.md` 时，不恢复或覆盖旧状态。默认创建 `<project>/design-restarts/<YYYYMMDD-HHmmss>/`；用户指定其他工作区则按其路径。在重启工作区中，本 skill 的相对产物路径都以该工作区为根，新的状态文件为 `<workspace>/docs/prototype/{end}/design/state.md`，其他产物也在 `<workspace>/docs/prototype/{end}/`。可检查原项目作为实现参考，但只在已确定的工作区写入。若用户选择在原项目继续，先把原有 `docs/prototype/{end}/` 非破坏性复制到获批的备份/归档路径，核实备份存在，再写新产物。其他情况下，在已确定项目中检查 `docs/prototype/{end}/design/state.md`，适用时恢复。明确的本地路径优先于当前目录；URL 永远不是写入范围。
 
-不要让用户分别回答已经明确的模式和位置。项目目录未确定前，不检查或创建设计产物。
+不要让用户分别回答已经明确的模式和位置。项目目录与端目录未确定前，不检查或创建设计产物。
 
 ## 入口模式
 
@@ -98,15 +101,15 @@ triggers:
 
 先区分两种情况：
 
-1. **已有设计资产。** 搜索 `DESIGN.md`、`design-system.md`、token 文件、主题文件、组件文档和项目级代理指令。用户指定的事实来源，经与运行实现核对后应视为权威。阅读相关路由、全局样式、tokens 和复用组件。不要仅因文件不在 `docs/prototype/design/` 下就再造一套设计系统。
+1. **已有设计资产。** 搜索 `DESIGN.md`、`design-system.md`、token 文件、主题文件、组件文档和项目级代理指令。用户指定的事实来源，经与运行实现核对后作为已有系统的设计依据。阅读相关路由、全局样式、tokens 和复用组件。不要仅因文件不在 `docs/prototype/{end}/design/` 下就再造一套设计系统。
 2. **没有可用设计资产。** 探索仓库，可能时也检查运行应用。检查路由、布局、代表性页面、全局 CSS、主题变量、字体导入、基础组件、响应式断点、交互状态以及加载/空/错误状态。以观察到的实现为证据，不发明新视觉方向。生成基线设计系统文档，记录观察到的规则、源码路径、信心程度、尚未解决的不一致和安全扩展规则。
 
-进入阶段 5 前，已有系统盘点必须生成或确定这些产物。除非用户明确选择其他位置，新产物放在 `docs/prototype/design/` 下：
+进入阶段 5 前，已有系统盘点必须生成或确定这些产物。新产物放在 `docs/prototype/{end}/design/` 下：
 
-- `docs/prototype/design/existing-system.md`：系统范围、技术与组件库、现有路由、视觉语言、响应式行为、无障碍基线和事实来源路径
-- `docs/prototype/design/component-inventory.md`：可复用组件与基础元素；每个目标标记为 `reuse`、`extend` 或 `new`
-- `DESIGN.md` 或现有等效文件：权威设计系统来源；若由探索生成，保存到项目根目录下的 `docs/prototype/DESIGN.md`，标为“观察到的基线”，并保留指向源码的证据链接
-- `docs/prototype/design/state.md`：记录 `Entry Mode: existing-system`、权威来源路径、探索状态和目标页面
+- `docs/prototype/{end}/design/existing-system.md`：系统范围、技术与组件库、现有路由、视觉语言、响应式行为、无障碍基线和事实来源路径
+- `docs/prototype/{end}/design/component-inventory.md`：可复用组件与基础元素；每个目标标记为 `reuse`、`extend` 或 `new`
+- `docs/prototype/{end}/design/DESIGN.draft.md`：从已核对的设计资产或系统探索结果整理当前端的设计基线；没有可用来源时标为“观察到的基线”，保留指向源码的证据链接。已有 `DESIGN.md` 或等效文件留在原位置，作为输入依据
+- `docs/prototype/{end}/design/state.md`：记录 `Entry Mode: existing-system`、原始来源与当前权威来源路径、探索状态和目标页面；最终权威来源指向该端的 `DESIGN.md`
 
 盘点后，新增核心页面或多页面扩展直接进入阶段 5；单个现有页面的窄范围打磨直接进入阶段 6，并只执行相关打磨项。除非用户要求新视觉方向或完整重设计，否则不需要阶段 1–4。
 
@@ -114,10 +117,10 @@ triggers:
 
 - 优先使用仓库真实的事实来源：已有 tokens 优于重写的 tokens，已有组件优于静态模拟；页面导航以现有实现为证据。
 - 保持现有技术栈、组件库、构建工具和渲染方式。Nuxt/Vue 系统使用 Vue/Nuxt 原型，React 系统使用 React 原型；不要为适配新项目默认方案而迁移已有项目。
-- 在 `docs/prototype/design/existing-system.md` 和当前权威设计来源中，区分观察事实、推断规则和拟议改动。
+- 在 `docs/prototype/{end}/design/existing-system.md` 和当前权威设计来源中，区分观察事实、推断规则和拟议改动。
 - 系统已有不一致时，记录不一致，并为目标页面选择局部扩展规则；不要悄悄统一整个产品。
 - 只有组件清单解释了为什么复用或扩展不足时，新页面才可以引入 token 或组件。
-- 未获用户明确批准，不覆盖或移动已有设计资产。权威来源在 `docs/prototype/design/` 外时，从 `docs/prototype/design/state.md` 和生成产物引用它。
+- 不覆盖或移动已有设计资产。将其作为事实来源记录在 `docs/prototype/{end}/design/state.md` 中，并在该端最终 `DESIGN.md` 中注明出处；后续扩展以该端获批的最终规范为准。
 - 应用无法运行时继续静态检查，并标记运行时观察不可用；不要声称已验证运行行为。
 
 每个阶段完成后，如果当前产物可信度高（没有歧义或缺项，用户反馈明确），可直接进入下一阶段，无须问“要进入下一阶段吗？”阶段 1 和 2 须先按各自的批准门槛取得产物确认。
@@ -136,18 +139,18 @@ triggers:
 
 **全局规则：跨会话恢复**
 
-- 确定项目范围后，除非用户明确要求重新开始，第一项文件操作必须检查并读取目标项目的 `docs/prototype/design/state.md`（若存在）。不要读取未确定目录或其他项目的状态文件。
+- 确定项目范围与端目录后，除非用户明确要求重新开始，第一项文件操作必须检查并读取该端的 `docs/prototype/{end}/design/state.md`（若存在）。不要读取未确定端或其他端的状态文件。
 - 存在状态且未要求重启：从 `Current Phase` 恢复，简要告知已完成内容及下一步；不得重跑已完成阶段、再次提出 `Rejected Directions` 中的方向，或违反 `Decisions Locked`。
-- 明确要求重启或完整重设计，且状态已存在：保留旧状态，不自动恢复或覆盖；先建立入口解析规定的重启工作区或已验证备份/归档，再开始阶段 1。使用独立工作区时，状态和各阶段产物都写在其中，不能悄悄写回原项目的 `docs/prototype/design/`。
-- 没有状态：已有系统先做上述盘点并创建 `docs/prototype/design/state.md`；新产品进入阶段 1。
+- 明确要求重启或完整重设计，且状态已存在：保留旧状态，不自动恢复或覆盖；先建立入口解析规定的重启工作区或已验证备份/归档，再开始阶段 1。使用独立工作区时，状态和各阶段产物都写在其中，不能悄悄写回原项目的 `docs/prototype/{end}/design/`。
+- 没有状态：已有系统先做上述盘点并创建 `docs/prototype/{end}/design/state.md`；新产品进入阶段 1。
 
 **全局规则：完成后的扩展模式**
 
-- `docs/prototype/design/state.md` 已标为 `status: complete`，用户后来要求新页面或组件时，进入扩展模式，不重启全流程：
-  1. 读取 `docs/prototype/design/state.md` 中记录的权威设计来源，将其作为唯一约束来源。新生成的文档位于 `docs/prototype/DESIGN.md`；已有系统的权威来源也可能位于其他路径，不能按默认路径猜测。
+- `docs/prototype/{end}/design/state.md` 已标为 `status: complete`，用户后来要求新页面或组件时，进入扩展模式，不重启全流程：
+  1. 读取 `docs/prototype/{end}/design/state.md` 中记录的权威设计来源，即该端已获批的 `docs/prototype/{end}/DESIGN.md`，将其作为当前端的约束来源。已有系统的原始来源仍保留在状态文件中供核对。
   2. 遵循阶段 5 的 UI 契约及阶段 6 的相关打磨项，一次处理一个目标，并创建对应平台的 `06-<target>-v*` 预览源码。页面应有 default/loading/empty/error 状态；组件应有相关状态与变体矩阵。
   3. 用户反馈涉及设计系统级规则（例如所有页面的卡片圆角都应更大）时，更新状态文件记录的权威来源，并记下原因和用户原话。若来源是生成的 `DESIGN.md`，递增版本号（如 v1.0 → v1.1）；否则遵循该来源既有的版本约定。
-  4. 新页面或组件获批后，将其加入 `docs/prototype/design/state.md` 的 `File Checklist`。
+  4. 新页面或组件获批后，将其加入 `docs/prototype/{end}/design/state.md` 的 `File Checklist`。
 - 扩展模式不重跑阶段 1–4；产品定义、方向和首屏已经锁定。
 - 只有用户要求完整重设计（新方向或新风格）时，才启用重启安全流程，保留旧状态并建立新的工作区或已验证备份/归档。不得原地重置或覆盖旧状态。
 
@@ -202,7 +205,7 @@ triggers:
 - “要好看” → 追问希望用户因此感到专业、可信、有趣、高级，还是其他感受。
 - 心理状态含糊 → 追问用户第一次听到产品时，更可能觉得“我需要它”还是“这是做什么的”。
 
-**产物**：在项目根目录创建 `docs/prototype/design/01-product.md`，包含产品名称、一句话定义、目标用户、用户心理预期、氛围关键词、核心差异点、转化目标、设计约束和阶段 3/4 的关键页面。所有标题与字段名都使用用户语言（中文示例：`产品定义`、`产品名称`、`一句话定义`、`目标用户`、`用户心理预期`、`氛围关键词`、`核心差异点`、`转化目标`、`设计约束`）。
+**产物**：在项目根目录创建 `docs/prototype/{end}/design/01-product.md`，包含产品名称、一句话定义、目标用户、用户心理预期、氛围关键词、核心差异点、转化目标、设计约束和阶段 3/4 的关键页面。所有标题与字段名都使用用户语言（中文示例：`产品定义`、`产品名称`、`一句话定义`、`目标用户`、`用户心理预期`、`氛围关键词`、`核心差异点`、`转化目标`、`设计约束`）。
 
 ```markdown
 # 产品定义 · <产品名称>
@@ -239,7 +242,7 @@ triggers:
 - <页面 B>（仅当用户确认两个紧密关联的页面时）
 ```
 
-**批准门槛**：8 个必答问题都有明确答案（用户回答或代理推断，推断需标记），且用户明确确认 1 或 2 个关键页面。两项均满足后，在 `docs/prototype/design/state.md` 和 `01-product.md` 记录页面，创建尚不存在的 `01-product.md`。向用户展示完整 `01-product.md` 的文件入口和简短摘要，供其核对；根据反馈修改同一文件，直到用户明确确认整份产物，再进入阶段 2。产物获批后无须另问“要进入阶段 2 吗？”
+**批准门槛**：8 个必答问题都有明确答案（用户回答或代理推断，推断需标记），且用户明确确认 1 或 2 个关键页面。两项均满足后，在 `docs/prototype/{end}/design/state.md` 和 `01-product.md` 记录页面，创建尚不存在的 `01-product.md`。向用户展示完整 `01-product.md` 的文件入口和简短摘要，供其核对；根据反馈修改同一文件，直到用户明确确认整份产物，再进入阶段 2。产物获批后无须另问“要进入阶段 2 吗？”
 
 **阶段 1 → 阶段 2 的页面交接**：8 项完成后，提议阶段 3/4 应一起设计哪 1–2 个最重要页面。大多数产品先做 **1 个关键页面**；仅当两个页面紧密耦合、必须一起看才能判断设计语言时（例如聊天列表 + 聊天详情、商店首页 + 商品详情、卡片信息流 + 个人主页），才提议 2 个。询问用户是否接受或想换页面；最多 2 个。用户只选 1 个时，不得暗自加第 2 个。
 
@@ -290,7 +293,7 @@ triggers:
 | 移动社交/约会/通讯 | Hinge (hinge.co)、Bumble (bumble.com)、Soul (soulapp.cn)、Patook (patook.com)、Lex (lex.app)、Grindr (grindr.com) | Headspace (headspace.com) 的平静与信任、Aesop (aesop.com) 的安静高级质感、Monocle (monocle.com) 的编辑式温暖 | Mobbin mobile (mobbin.com/browse/ios/apps)、Screenlane (screenlane.com)、UI8 mobile (ui8.net/category/ios)、Dribbble“mobile”搜索 (dribbble.com/search/mobile) |
 | 移动工具/效率 | Things 3 (culturedcode.com/things)、Streaks (streaksapp.com)、Notion mobile (notion.so/product) | Headspace (headspace.com)、Bear (bear.app)、Clear (clearapp.me) | Mobbin mobile (mobbin.com/browse/ios/apps)、Screenlane (screenlane.com)、Behance mobile UI (behance.net) |
 
-**产物**：`docs/prototype/design/02-references.md`。所有章节标题和字段名须用用户语言（中文示例：“参考收集”“用户推荐”“Agent 推荐”“明确偏好”“用户标注”“提取的设计线索”）。
+**产物**：`docs/prototype/{end}/design/02-references.md`。所有章节标题和字段名须用用户语言（中文示例：“参考收集”“用户推荐”“Agent 推荐”“明确偏好”“用户标注”“提取的设计线索”）。
 
 ```markdown
 # 参考收集 · <产品名称>
@@ -345,7 +348,7 @@ triggers:
 
 **目标**：依据产品定义、参考资料及阶段 1 确认的 1–2 个关键页面，让用户从 3–4 个**真正不同**的设计方向中选择。
 
-**前置条件**：`01-product.md` 和 `02-references.md` 已存在，`docs/prototype/design/state.md` 已记录 1 或 2 个关键页面。阶段 3 不再追问氛围、目标用户、核心差异点等产品定义问题。即使 `01-product.md` 某些字段为空或标记为 `agent-inferred`，也直接依据现有推断生成方向，不让用户补填。
+**前置条件**：`01-product.md` 和 `02-references.md` 已存在，`docs/prototype/{end}/design/state.md` 已记录 1 或 2 个关键页面。阶段 3 不再追问氛围、目标用户、核心差异点等产品定义问题。即使 `01-product.md` 某些字段为空或标记为 `agent-inferred`，也直接依据现有推断生成方向，不让用户补填。
 
 **关键要求：**
 
@@ -358,9 +361,9 @@ triggers:
 
 1. **读取本阶段内部能力。** 按 [shape](references/shape.md) 从 `01-product.md`、`02-references.md` 和已确认的关键页面提炼设计张力；按 [bolder](references/bolder.md) 拉开候选差异；生成后按 [critique](references/critique.md) 检查方向是否服务产品。无需扫描或询问用户选择外部 skill。
 
-2. **记录约束来源。** 在 `docs/prototype/design/state.md` 记录已使用的内部能力及用户明确指定的额外 skill。用户的明确偏好和已锁定决策始终优先。
+2. **记录约束来源。** 在 `docs/prototype/{end}/design/state.md` 记录已使用的内部能力及用户明确指定的额外 skill。用户的明确偏好和已锁定决策始终优先。
 
-3. **生成方向文件**：创建 `docs/prototype/design/03-directions.html`。`templates/directions-template.html` **只能**作为页面结构骨架（顶部产品分析卡及方向列表框架）；其中颜色、字体、间距和视觉效果都是占位示例，必须用 `01-product.md` 和 `02-references.md` 推导出的值全部替换。不要把模板的默认暗色外观当作方向或起点。模板中可见标题、提示、页脚说明和按钮文案也必须翻译成用户语言。每个方向的具体内容都须在当前轮次重新推导。文件包含：
+3. **生成方向文件**：创建 `docs/prototype/{end}/design/03-directions.html`。`templates/directions-template.html` **只能**作为页面结构骨架（顶部产品分析卡及方向列表框架）；其中颜色、字体、间距和视觉效果都是占位示例，必须用 `01-product.md` 和 `02-references.md` 推导出的值全部替换。不要把模板的默认暗色外观当作方向或起点。模板中可见标题、提示、页脚说明和按钮文案也必须翻译成用户语言。每个方向的具体内容都须在当前轮次重新推导。文件包含：
 
    - 顶部产品分析卡：一句话产品定义、目标用户、核心场景。
    - 3–4 个方向：桌面端**两列网格，每行最多两个**；移动端单列。不能把所有方向排在同一行，让桌面 mini mockup 被挤成手机宽度。
@@ -418,7 +421,7 @@ triggers:
 
 错误示例：无论产品是什么都给大胆方向安排“午夜仓库 / 暗色 / 工业风”。正确做法：创作者数字商品平台可依据阶段 1/2 的信息，生成“纸页目录”等贴合产品的方向。
 
-**产物**：`docs/prototype/design/03-directions.html`。
+**产物**：`docs/prototype/{end}/design/03-directions.html`。
 
 **批准门槛**：用户明确选中一个方向，或提出元素组合指令。
 
@@ -431,32 +434,32 @@ triggers:
 
 **首屏由阶段 1 决定**：阶段 1 末确认的 1–2 个页面就是首屏；可以是首页、仪表盘、落地页、核心功能页，或聊天列表 + 详情、商店首页 + 商品详情、卡片流 + 主页等紧密关联的一组。不要假设一定是“首页”，也不要擅自增加第二页。
 
-**生成 v1 前再次核对关键页面**：简要复述 `docs/prototype/design/state.md` 中记录的页面，问用户是否仍正确。用户若想换页，不要立刻按新选择生成阶段 4 预览；应回到阶段 1 的页面交接，取得明确确认，更新 `docs/prototype/design/state.md` 和 `01-product.md`，重新生成 `03-directions.html`。由于新方向页展示的是新的页面组合，旧方向选择失效；必须让用户再次按阶段 3 门槛选方向，之后再进入阶段 4。
+**生成 v1 前再次核对关键页面**：简要复述 `docs/prototype/{end}/design/state.md` 中记录的页面，问用户是否仍正确。用户若想换页，不要立刻按新选择生成阶段 4 预览；应回到阶段 1 的页面交接，取得明确确认，更新 `docs/prototype/{end}/design/state.md` 和 `01-product.md`，重新生成 `03-directions.html`。由于新方向页展示的是新的页面组合，旧方向选择失效；必须让用户再次按阶段 3 门槛选方向，之后再进入阶段 4。
 
 **关键要求：**
 
 - 按内部 [typeset](references/typeset.md)、[layout](references/layout.md)、[delight](references/delight.md) 细化已选方向；Web/H5 还按 [adapt](references/adapt.md) 核对实际触控与焦点。只读取本轮实际需要的文件。
-- 生成 v1 前，核对目标项目的框架、构建工具、组件库、可复用 UI 组件和主题入口；新项目采用上述 Web/H5 默认技术栈。把实际选择和预览运行方式写入 `docs/prototype/design/state.md`，并带入 `DESIGN.draft.md`。
-- Web/H5 在 `docs/prototype/design/<platform>/` 建立独立预览入口，使用对应组件库和项目样式，并把共用语义 tokens 映射到各端主题。新项目可由同一 Vite 原型工程运行两个入口；已有项目使用其现有构建工具。每轮保留带版本号的页面源码，入口指向当前版本，旧版本仍可复查。源码后缀沿用目标框架（Web/H5 新项目为 `.vue`）；原生平台沿用原有预览形式和 native 指引。
+- 生成 v1 前，核对目标项目的框架、构建工具、组件库、可复用 UI 组件和主题入口；新项目采用上述 Web/H5 默认技术栈。把实际选择和预览运行方式写入 `docs/prototype/{end}/design/state.md`，并带入 `DESIGN.draft.md`。
+- Web/H5 在 `docs/prototype/{end}/design/<platform>/` 建立独立预览入口，使用对应组件库和项目样式，并把共用语义 tokens 映射到各端主题。新项目可由同一 Vite 原型工程运行两个入口；已有项目使用其现有构建工具。每轮保留带版本号的页面源码，入口指向当前版本，旧版本仍可复查。源码后缀沿用目标框架（Web/H5 新项目为 `.vue`）；原生平台沿用原有预览形式和 native 指引。
 - 每次迭代创建新版本源码（v1、v2、v3……），绝不覆盖旧版本。使用可信的示例数据，不用 Lorem Ipsum；本地状态只用于演示 UI 交互。
 
 **执行方式：**
 
 1. **生成 v1**：
-   - 确认 **1 个关键页面**时，在目标平台目录创建 `04-<screen>-v1` 页面源码；`<screen>` 是界面名称，如 `home`、`dashboard`、`landing`。新项目示例路径为 `docs/prototype/design/web/04-home-v1.vue` 或 `docs/prototype/design/h5/04-home-v1.vue`。
+   - 确认 **1 个关键页面**时，在目标平台目录创建 `04-<screen>-v1` 页面源码；`<screen>` 是界面名称，如 `home`、`dashboard`、`landing`。新项目示例路径为 `docs/prototype/{end}/design/web/04-home-v1.vue` 或 `docs/prototype/{end}/design/h5/04-home-v1.vue`。
    - 确认 **2 个关键页面**时，为每端创建展示两页的 `04-<screen1>-<screen2>-v1` 页面源码。桌面可并排，移动端可上下堆叠或切换标签；每页都要有足够内容以判断布局，并能一起评估连续性。
    - **画布符合已记录的设备形态**：手机界面放在真实比例的竖向手机画框内，平板使用平板画框，Web/桌面使用横向桌面比例。不能把手机界面拉到整页桌面宽度，或塞进平板画框。
    - 界面包含哪些区域，要由代理根据阶段 1 产品定义和阶段 3 获选方向的布局模式动态推导，而不是套固定模板。判断用户打开界面要完成什么动作，哪些区域支持该动作。例如数字商品首页通常需要导航、Hero、商品列表、分类/搜索入口、CTA 和页脚；仪表盘可能需要侧边栏、数据卡与图表；单页作品集可能只需导航、Hero、作品网格与页脚。
-   - 使用可信的商品名、价格、描述等示例数据，优先使用目标端的真实组件库组件；必要的自定义 UI 组件记录用途。提供符合平台的交互状态（Web：hover/active/focus；H5：tap/press/active），并保持颜色、字体、布局与已选方向一致。
+   - 使用可信的商品名、价格、描述等示例数据，优先使用目标平台的真实组件库组件；必要的自定义 UI 组件记录用途。提供符合平台的交互状态（Web：hover/active/focus；H5：tap/press/active），并保持颜色、字体、布局与已选方向一致。
 
-2. **打开预览**：运行记录在状态文件中的预览命令，展示对应端的单屏或双屏页面，核对组件实际渲染、交互和目标画布。Web/H5 展示给用户前，检查关键排版、表面层次、图标对齐、实际点击区域与焦点；修正影响阅读或操作的问题，并在 `docs/prototype/design/state.md` 的工艺检查记录中写明发现、修正与暂留项。双端任务分别核对 Web 与 H5；原型入口不要求接入目标应用路由。
+2. **打开预览**：运行记录在状态文件中的预览命令，展示对应平台的单屏或双屏页面，核对组件实际渲染、交互和目标画布。Web/H5 展示给用户前，检查关键排版、表面层次、图标对齐、实际点击区域与焦点；修正影响阅读或操作的问题，并在 `docs/prototype/{end}/design/state.md` 的工艺检查记录中写明发现、修正与暂留项。双平台任务分别核对 Web 与 H5；原型入口不要求接入目标应用路由。
 
 3. **用户反馈循环**：
    - 用户说“可以了” → 生成 `DESIGN.draft.md`，再进入步骤 5 的分流决策。
    - 用户说“修改 X” → 仅修改 X，生成 v2；其他内容保持不变。
    - 用户说“方向不对” → 回阶段 3，并记录拒绝原因。
 
-4. **生成 `DESIGN.draft.md`**：首屏获批后立即从最终预览提取设计决策，生成 `docs/prototype/design/DESIGN.draft.md`。其结构应与最终 `DESIGN.md` 同构，使用阶段 7 的十章骨架，但内容先从已批准首屏提取，并标记为 draft。至少包括：核心色板和 UI 语义 tokens；字体家族、字重、字号、行高；布局、间距、圆角；目标端的框架、构建工具、组件库、预览入口和主题映射；已批准首屏的平台交互状态以及 loading/empty/error 规则。阶段 5 持续更新，阶段 6 记录验证过的打磨决策。
+4. **生成 `DESIGN.draft.md`**：首屏获批后立即从最终预览提取设计决策，生成 `docs/prototype/{end}/design/DESIGN.draft.md`。其结构应与最终 `DESIGN.md` 同构，使用阶段 7 的十章骨架，但内容先从已批准首屏提取，并标记为 draft。至少包括：核心色板和 UI 语义 tokens；字体家族、字重、字号、行高；布局、间距、圆角；目标平台的框架、构建工具、组件库、预览入口和主题映射；已批准首屏的平台交互状态以及 loading/empty/error 规则。阶段 5 持续更新，阶段 6 记录验证过的打磨决策。
 
 5. **分流决策（代理主动建议，用户决定）**：首屏获批且 draft 生成后，依据产品类型提出建议并等待用户确认：
    - **阶段 5 核心页面扩展**：产品还有其他核心界面时，把已选方向扩展到能验证关键用户路径的最小页面集合。
@@ -466,7 +469,7 @@ triggers:
 
 **迭代规则**：每次只改用户明确提到的内容。双屏预览中若用户只评论一页，只改该页对应的源码，不暗自重设计另一页。不要主动增加元素；已锁定的内容保持不变。
 
-**产物**：目标平台目录中的 `04-<screen>-v*` 可运行预览源码（或双屏版本）、独立预览入口及 `docs/prototype/design/DESIGN.draft.md`。
+**产物**：目标平台目录中的 `04-<screen>-v*` 可运行预览源码（或双屏版本）、独立预览入口及 `docs/prototype/{end}/design/DESIGN.draft.md`。
 
 **批准门槛**：用户明确表示首屏“可以了”“这样行”或“就用这个”，且 `DESIGN.draft.md` 已生成。
 
@@ -497,7 +500,7 @@ triggers:
 **执行方式：**
 
 1. **确认核心页面集合**：向用户展示拟选页面及其覆盖的用户路径；只有产品范围含糊时才要求修正。生成预览前，先维护 `05-screen-map-v*.md` 和 `component-inventory.md`。
-2. **为集合生成 v1**：每页在目标平台目录创建 `05-<screen>-v1` 预览源码，并接入该端的独立预览入口。第一版为中等保真度：结构、内容、组件、状态和响应式意图应可信，但不必做完像素级打磨。沿用阶段 4 的画布规则：手机用竖向手机画框，平板用平板画框，Web/桌面用桌面比例。双端任务分别检查核心任务、示例数据与状态是否一致，允许导航和操作方式适配设备。
+2. **为集合生成 v1**：每页在目标平台目录创建 `05-<screen>-v1` 预览源码，并接入该平台的独立预览入口。第一版为中等保真度：结构、内容、组件、状态和响应式意图应可信，但不必做完像素级打磨。沿用阶段 4 的画布规则：手机用竖向手机画框，平板用平板画框，Web/桌面用桌面比例。双平台任务分别检查核心任务、示例数据与状态是否一致，允许导航和操作方式适配设备。
    - Web/H5 每页在运行预览中确认阶段 4 的关键工艺问题；再对照 `DESIGN.draft.md` 和组件清单，比较同类组件的字体、圆角、阴影、图片边界、点击区域及交互反馈。重复使用的处理归入现有组件或 token；在页面实现契约中记录发现、修正与暂留项，然后展示页面集合。
 3. **收集整组反馈**：展示完整页面集合，问“这个方向放到所有页面后仍合适吗？”
    - 满意 → 进入下方分流决策。
@@ -511,10 +514,10 @@ triggers:
 **产物：**
 
 - 目标平台目录中的 `05-<screen>-v*` 预览源码
-- `docs/prototype/design/05-screen-map-v*.md`
-- `docs/prototype/design/component-inventory.md`
-- `docs/prototype/design/05-<target>-implementation-v*.md`
-- 更新后的 `docs/prototype/design/DESIGN.draft.md`
+- `docs/prototype/{end}/design/05-screen-map-v*.md`
+- `docs/prototype/{end}/design/component-inventory.md`
+- `docs/prototype/{end}/design/05-<target>-implementation-v*.md`
+- 更新后的 `docs/prototype/{end}/design/DESIGN.draft.md`
 
 **版本规则**：每轮只为受影响页面、页面地图和已修改的实现契约递增版本；永不覆盖旧文件，保留 v1、v2、v3 供比较。
 
@@ -558,14 +561,14 @@ triggers:
 
 **执行方式：**
 
-1. 第一个打磨项开始前，创建或更新 `docs/prototype/design/06-polish-log.md`。每条记录包含打磨项、允许范围、禁止范围、修改文件、验收标准和用户反馈。Web/H5 先按 [audit](references/audit.md) 在运行预览中完整细查排版、表面、热区、焦点、动效及跨页一致性；记录可见问题、修正计划和暂留项。用户跳过的打磨维度仍记录发现，但不越过允许范围修改。
+1. 第一个打磨项开始前，创建或更新 `docs/prototype/{end}/design/06-polish-log.md`。每条记录包含打磨项、允许范围、禁止范围、修改文件、验收标准和用户反馈。Web/H5 先按 [audit](references/audit.md) 在运行预览中完整细查排版、表面、热区、焦点、动效及跨页一致性；记录可见问题、修正计划和暂留项。用户跳过的打磨维度仍记录发现，但不越过允许范围修改。
 2. 每次只处理一个维度，不要在无约束的一次请求中同时修改字体、间距、颜色、文案和动效。
 3. 每项完成后，在目标平台目录为受影响页面生成新版本 `06-<screen>-v*` 预览源码。不得覆盖原始 `04-*` 或 `05-*` 版本；它们是里程碑。
 4. 全局决定要更新 `DESIGN.draft.md`，并重新检查全部核心页面。
 5. 某维度需要互动比较（如动效或响应式）时，可选在相应平台的预览入口加入 `06-<dimension>-review` 页面。
 6. 进入阶段 7 前进行跨页面复核：确认视觉层级与主要操作清楚，共享组件使用当前 tokens 和状态矩阵，工艺检查中的关键发现已修正或明确记录暂留原因，且没有尚未解决的高严重度漂移。
 
-**产物**：目标平台目录中的 `06-<screen>-v*` 预览源码、`docs/prototype/design/06-polish-log.md`、可选维度评审页，以及更新后的 `docs/prototype/design/DESIGN.draft.md`。
+**产物**：目标平台目录中的 `06-<screen>-v*` 预览源码、`docs/prototype/{end}/design/06-polish-log.md`、可选维度评审页，以及更新后的 `docs/prototype/{end}/design/DESIGN.draft.md`。
 
 **批准门槛**：用户批准打磨后的核心页面集合；所选打磨项已记录；当前设计来源包含必须带入阶段 7 的全部决定。
 
@@ -602,26 +605,26 @@ triggers:
    **章节裁剪**：设计灵魂、Tokens、组件、UX、该做与不该做、代理提示为必需。无分层策略时可将第 6 章并入布局；不用图像时可简化第 7 章；仅桌面产品可简化第 8 章；Web/H5 保留第 9 章。渐变、理念和相近品牌按需补充；阶段 6 未做动效打磨时不强加动效章节，做过则详细记录动效与过渡。
 
 3. **生成 `tokens.css`**：提供可直接用于项目的 CSS 自定义属性。
-4. **生成资源**：若有 logo、图标等，保存到 `docs/prototype/design/assets/`。
-5. **更新 `AGENTS.md`**：在项目根目录加入设计系统引用说明。正常流程引用 `docs/prototype/DESIGN.md` 和 `docs/prototype/design/tokens.css`；已有系统模式引用 `docs/prototype/design/state.md` 记录的当前权威来源，不为满足示例而移动已有来源。例如：
+4. **生成资源**：若有 logo、图标等，保存到 `docs/prototype/{end}/design/assets/`。
+5. **更新 `AGENTS.md`**：在项目根目录按端追加设计系统引用，保留其他端已有条目。所有入口都引用 `docs/prototype/{end}/DESIGN.md`；生成了 `tokens.css` 时一并引用 `docs/prototype/{end}/design/tokens.css`。已有系统的原始设计资产保留在原位置，并在该端规范中注明来源。例如：
 
    ```markdown
    ## 设计系统
 
    本项目的设计系统由 zero-to-design 流程建立。新增页面、组件或视觉改动前，请先阅读：
 
-   - `docs/prototype/DESIGN.md`——完整设计系统文档（tokens、组件库、UX 约束、技术栈与预览方式等）
-   - `docs/prototype/design/tokens.css`——可直接使用的 CSS 自定义属性
+   - `admin`（运营后台）：`docs/prototype/admin/DESIGN.md`——完整设计系统文档
+     - `docs/prototype/admin/design/tokens.css`——可直接使用的 CSS 自定义属性
 
    所有视觉决策（颜色、字体、圆角、阴影、动效、交互）及 Web/H5 组件选择均以当前权威设计来源为准。
    ```
 
 6. **清理 draft**：`DESIGN.md` 获用户批准后，按用户选择将 `DESIGN.draft.md` 重命名为 `DESIGN.draft.md.bak` 或删除，避免日后混淆。
 
-**正常流程的产物结构（新项目 Web/H5 示例；只创建用户要求的端）：**
+**正常流程的产物结构（新项目 Web/H5 示例；只创建用户要求的平台）：**
 
 ```
-docs/prototype/design/
+docs/prototype/{end}/design/
 ├── 01-product.md
 ├── 02-references.md
 ├── 03-directions.html
@@ -639,7 +642,7 @@ docs/prototype/design/
 ├── existing-system.md          (已有系统盘点时)
 ├── tokens.css
 └── assets/
-docs/prototype/DESIGN.md
+docs/prototype/{end}/DESIGN.md
 ```
 
 新项目还需在原型工程提供 Vite 的依赖和运行配置；已有项目按其框架选择源码后缀与入口形式，并在状态文件记录实际路径和命令。`04-*`、`05-*`、`06-*` 的旧版本须可复查。
@@ -651,12 +654,16 @@ docs/prototype/DESIGN.md
 
 ## 状态管理
 
-在项目根目录维护 `docs/prototype/design/state.md`，记录：
+在项目根目录维护 `docs/prototype/{end}/design/state.md`，记录：
 
 ```markdown
 # zero-to-design 状态
 
 status: in-progress
+
+## 设计端
+- 目录名：<实际端名>
+- 中文别名：<中文别名或“无”>
 
 ## 当前阶段
 <当前阶段>
@@ -693,7 +700,8 @@ status: in-progress
 - 阶段 3 只生成三个方向时：<省略的角色及原因；否则写“不适用”>
 
 ## 设计系统来源
-- 权威来源：<实际文件路径；新生成时为 docs/prototype/DESIGN.md>
+- 权威来源：<当前实际文件路径；完成时为 docs/prototype/{end}/DESIGN.md>
+- 原始来源：<已有系统的原始设计资产路径，或“不适用”>
 - 来源状态：<validated / partially validated / generated from exploration>
 - 已有系统盘点：<not applicable / pending / complete>
 
@@ -723,20 +731,20 @@ status: in-progress
 - [ ] 01-product.md
 - [ ] 02-references.md
 - [ ] 03-directions.html
-- [ ] <platform>/index.html（按实际端与入口路径填写）
-- [ ] <platform>/04-<screen>-v1.<后缀>（按实际端与源码后缀填写）
+- [ ] <platform>/index.html（按实际平台与入口路径填写）
+- [ ] <platform>/04-<screen>-v1.<后缀>（按实际平台与源码后缀填写）
 - [ ] DESIGN.draft.md
-- [ ] <platform>/05-<screen>-v*.<后缀>（按实际端与源码后缀填写）
+- [ ] <platform>/05-<screen>-v*.<后缀>（按实际平台与源码后缀填写）
 - [ ] 05-screen-map-v*.md
 - [ ] component-inventory.md
 - [ ] 05-<target>-implementation-v*.md
 - [ ] 06-polish-log.md
-- [ ] <platform>/06-<screen>-v*.<后缀>（按实际端与源码后缀填写）
-- [ ] docs/prototype/DESIGN.md
+- [ ] <platform>/06-<screen>-v*.<后缀>（按实际平台与源码后缀填写）
+- [ ] docs/prototype/{end}/DESIGN.md
 ```
 
-文件清单只保留当前入口和目标端适用的条目；文件实际存在后再勾选，勾选前把占位路径替换为真实路径。每个阶段完成后、当前打磨维度变化后，以及阶段 5/6 每次候选选择后，都要更新 `docs/prototype/design/state.md`。
-每次阶段交接及标记 `status: complete` 前，针对已确定的项目或重启工作区运行 `node <skill>/scripts/doctor.mjs --target <项目或工作区目录>`；核对发现项后修正状态或产物，不让脚本自动修改用户已批准的设计文件。Node.js 不可用时，按同一清单人工核对并记录未执行脚本检查。
+文件清单只保留当前入口和目标平台适用的条目；文件实际存在后再勾选，勾选前把占位路径替换为真实路径。每个阶段完成后、当前打磨维度变化后，以及阶段 5/6 每次候选选择后，都要更新 `docs/prototype/{end}/design/state.md`。
+每次阶段交接及标记 `status: complete` 前，针对已确定的项目或重启工作区运行 `node <skill>/scripts/doctor.mjs --target <项目或工作区目录> --folder <端目录名>`；核对发现项后修正状态或产物，不让脚本自动修改用户已批准的设计文件。Node.js 不可用时，按同一清单人工核对并记录未执行脚本检查。
 
 ---
 
@@ -757,17 +765,17 @@ status: in-progress
 
 ## 完成标准
 
-`DESIGN.md` 已生成且获用户批准时，在 `docs/prototype/design/state.md` 中标记 `status: complete`，并按实际执行的入口与阶段告知用户相应产物（跳过的阶段不列为已完成）：
+`DESIGN.md` 已生成且获用户批准时，在 `docs/prototype/{end}/design/state.md` 中标记 `status: complete`，并按实际执行的入口与阶段告知用户相应产物（跳过的阶段不列为已完成）：
 
 1. 产品定义（`01-product.md`）
 2. 参考收集（`02-references.md`）
 3. 方向选择（`03-directions.html`）
-4. 首屏预览（目标端的独立预览入口和 `04-<screen>-v*` 源码；确认两页时用双屏预览）
-5. 核心页面扩展（目标端的 `05-<screen>-v*` 源码、`05-screen-map-v*.md`、`05-<target>-implementation-v*.md`、`component-inventory.md`）
-6. 跨页面打磨（目标端的 `06-<screen>-v*` 源码、`06-polish-log.md` 及可选维度评审页）
+4. 首屏预览（目标平台的独立预览入口和 `04-<screen>-v*` 源码；确认两页时用双屏预览）
+5. 核心页面扩展（目标平台的 `05-<screen>-v*` 源码、`05-screen-map-v*.md`、`05-<target>-implementation-v*.md`、`component-inventory.md`）
+6. 跨页面打磨（目标平台的 `06-<screen>-v*` 源码、`06-polish-log.md` 及可选维度评审页）
 7. 扩展模式中生成的页面或组件预览（若执行）
-8. 设计系统文档（`docs/prototype/DESIGN.md`、`docs/prototype/design/tokens.css`、`docs/prototype/design/assets/`）
+8. 设计系统文档（`docs/prototype/{end}/DESIGN.md`、`docs/prototype/{end}/design/tokens.css`、`docs/prototype/{end}/design/assets/`）
 9. 已增加设计系统引用的 `AGENTS.md`，便于今后的代理会话自动读取约束
 10. `DESIGN.draft.md.bak`（若用户选择保留原 draft）
 
-正常流程中，生成的 `DESIGN.md` 位于项目根目录下的 `docs/prototype/`，`tokens.css` 和资源留在 `docs/prototype/design/` 下。已有系统模式保留项目原本权威来源的位置，并从 `docs/prototype/design/state.md` 引用。以后开发页面都应遵循当前权威设计来源中的约束；`AGENTS.md` 已指向该来源。
+所有入口的最终 `DESIGN.md` 都位于 `docs/prototype/{end}/`；生成的 `tokens.css` 和资源位于该端的 `design/` 下。已有系统的原始设计资产保留在原位置，并由该端的 `DESIGN.md` 引用。以后开发页面都应遵循当前端最终规范中的约束；`AGENTS.md` 已按端指向相应来源。

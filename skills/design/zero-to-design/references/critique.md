@@ -2,7 +2,7 @@
 
 # Critique：从设计判断和实现证据两面评审
 
-先确定一个稳定目标（方向卡、页面或组件）及其当前设计来源。评审输出是面向用户的报告；阶段 3 的方向判断写入 `docs/prototype/design/state.md` 的候选/拒绝原因，阶段 6 的打磨判断写入 `06-polish-log.md`。不创建 `.impeccable/` 快照。
+先确定一个稳定目标（方向卡、页面或组件）及其当前设计来源。评审输出是面向用户的报告；阶段 3 的方向判断写入 `docs/prototype/{end}/design/state.md` 的候选/拒绝原因，阶段 6 的打磨判断写入 `06-polish-log.md`。不创建 `.impeccable/` 快照。
 
 ## 两项评估
 
