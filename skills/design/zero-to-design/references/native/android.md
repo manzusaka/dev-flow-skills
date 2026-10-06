@@ -4,6 +4,14 @@
 
 适用于 Jetpack Compose、Android Views、React Native、Expo 或 Flutter 的 Android 应用。结构、导航和控件遵循 Material 3，品牌表达通过其色彩角色、字体、形状与 Motion 体系进入。
 
+## Android 主张
+
+- 依据当前窗口空间调整信息结构，不把物理设备类型或固定竖屏当作布局前提。
+- 可在不同导航和内容布局间切换，但须保留当前对象、选择状态和导航上下文。
+- 核心操作要能被发现，并有手势之外的可用路径，供辅助技术及其他输入方式完成。
+
+## 平台规则
+
 - **结构**：紧凑宽度使用 navigation bar，宽屏改用 rail 或 drawer；系统 Back 与 predictive Back 保持可用。处理状态栏、导航栏、cutout 和 IME insets，避免控件被遮住。
 - **触控**：目标至少 48×48 dp，并留足相邻间隔。
 - **字体**：使用 Material 的 Display、Headline、Title、Body、Label 角色；尺寸采用可随系统字号变化的 sp，不按每页任意挑 px。
