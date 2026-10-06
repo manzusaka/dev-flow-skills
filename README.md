@@ -69,8 +69,7 @@ npx skills@latest add manzusaka/dev-flow-skills
 
 **Model-invoked**
 
-- **[design-md](./skills/design/design-md/SKILL.md)** - 先写临时设计语言草案，用页面验证后创建或合并唯一的 `DESIGN.md`。
-- **[zero-to-design](./skills/design/zero-to-design/SKILL.md)** - 新产品从零设计、已有系统新增页面/组件或审查 UI：交互式确定方向、迭代预览并沉淀 `DESIGN.md`；[使用说明](./skills/design/zero-to-design/README.zh-CN.md)。
+- **[zero-to-design](./skills/design/zero-to-design/SKILL.md)** - 新产品从零设计、已有系统新增页面/组件或审查 UI：交互式确定方向、迭代预览并沉淀 `DESIGN.md`；[使用说明](./skills/design/zero-to-design/README.md)。
 
 ### Productivity
 
