@@ -61,7 +61,7 @@ Research 是 *每个 session 一个 record* 的唯一例外。
 整张 map——整张 map 的 destination，而不只是最初的 session。这个问题读起来很含糊，因为 wayfinder 从定义上就是一个多 session 工具，所以 session 范围的答案永远没有意义。典型的 destination 包括一份要交接的 [spec](https://www.aihero.dev/ai-coding-dictionary/spec)、一个在规划开始前要锁定的 decision、一个 proof of concept，或像数据迁移那样就地完成的变更。
 
 **map 已经清除了。为什么我还需要 `/to-spec`——wayfinder 不是已经写了 spec 吗？**
-没有。Wayfinder 的 records 是 decision records，而到 map 关闭时它们也全部关闭了。剩下的是满满一张互相链接的 decisions，这还不是 OpenSpec change。[to-spec](https://aihero.dev/skills-to-spec) 把这些 decisions **逐个**收束——每个 decision 对应一个 OpenSpec change 的 `proposal.md`——再由 `to-plan` 补齐 delta specs、design 和 tasks。把 map 直接循环进 [implement](https://aihero.dev/skills-implement) 会跳过收束并丢掉相互链接的细节。只有当某个 decision 结果确实很小时，才直接进入实现。
+没有。Wayfinder 的 records 是 decision records，而到 map 关闭时它们也全部关闭了。剩下的是满满一张互相链接的 decisions，这还不是 OpenSpec change。[to-spec](https://aihero.dev/skills-to-spec) 把这些 decisions **逐个**收束——每个 decision 对应一个包含 `proposal.md` 与 delta specs 的 OpenSpec change——再由 `to-plan` 补齐 design 和 tasks。把 map 直接循环进 [implement](https://aihero.dev/skills-implement) 会跳过收束并丢掉相互链接的细节。只有当某个 decision 结果确实很小时，才直接进入实现。
 
 **我的 agent 在 wayfinder session 中途开始写生产代码了。**
 这是这个 skill 最常被报告的失败，背后曾经确实有个洞：Wayfinder 的 "plan, don't do" 默认可以在 map 的 **Notes** 中被覆盖——而 Notes 是 agent 写的，于是约束和它的豁免住在同一个文件里，而该文件归受约束的一方所有。一位用户看着 agent 把 "this map carries execution" 写进它自己的 Notes，然后在后续 session 里把它读回来当作自己的许可证，在线上服务器上继续构建。这个洞已经堵上：执行豁免只能由**人类在 chart 时**写入 Notes，agent 在任何时候都不得修改 Notes 节。剩余的口诀仍然有用：对你没有亲自 chart 的任何 map，都要读它的 Notes；把实现放在自己的 session 里；把任何看起来像 build 切片的 `task` 当作打错了类型。

@@ -151,6 +151,11 @@ export function printStatusText(status: ChangeStatus): void {
     console.log(line);
   }
 
+  if (status.planningInvalidated) {
+    console.log();
+    console.log(chalk.yellow('规划已失效：proposal 或 delta specs 已变更，需运行 /to-plan 复核。'));
+  }
+
   if (status.isPlanningComplete) {
     console.log();
     console.log(chalk.green('所有规划制品已完成！'));

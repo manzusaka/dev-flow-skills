@@ -132,4 +132,4 @@ Out-of-scope work 永远不会 graduate；frontier 会停在 destination。只�
 
 ## Hand off
 
-当所有 records 都 resolved、没有 fog 剩下时，map 清除了。Wayfinder 在此交接，不进入执行：decisions **逐个**交给 `/to-spec`——每个 decision 收束成一个 OpenSpec change——再由 `/to-plan` 补齐 delta specs、design 和 tasks，然后进入 `/implement`。只有当某个 decision 后来发现确实很小时，才跳过 OpenSpec planning 直接实现。
+当所有 records 都 resolved、没有 fog 剩下时，map 清除了。Wayfinder 在此交接，不进入执行：decisions **逐个**交给 `/to-spec`——每个 decision 收束成一个含 proposal 与 delta specs 的 OpenSpec change——再由 `/to-plan` 补齐 design 和 tasks，然后进入 `/implement`。只有当某个 decision 后来发现确实很小时，才跳过 OpenSpec planning 直接实现。

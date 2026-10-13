@@ -20,14 +20,14 @@ disable-model-invocation: true
    - **`/prototype`** 用 throwaway code 回答问题；
    - **`/handoff`** 把学到的内容带回来，并在原始 idea thread 中引用它。
 3. **分支 - 这是 multi-session build 吗？**
-   - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md`；再运行 **`/to-plan <change-name>`**，补齐 delta specs、design 和 tracer-bullet tasks；用 **`/implement <change-name>`** 按 tasks 实现、中断可续做，以统一提交和 **`/code-review`** 收尾。
+   - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md` 与 delta specs；再运行 **`/to-plan <change-name>`**，补齐 design 和 tracer-bullet tasks；用 **`/implement <change-name>`** 按 tasks 实现、中断可续做，以统一提交和 **`/code-review`** 收尾。
    - **否** -> 在当前 context window 里直接运行 **`/implement`**。
 
    无论哪种方式，**`/implement`** 都会在内部驱动 **`/tdd`** 构建每个 task slice：一次一个 red-green slice，边做边勾选；全部任务完成后统一提交一次，再由 **`/code-review`** 对提交的 diff 做 Standards + Spec 双轴 review。只想在没有完整 spec 的情况下 test-first 构建一个具体 behavior 时，单独用 **`/tdd`**；想按固定点 review branch 或 PR 时，单独用 **`/code-review`**。
 
 ### Context hygiene
 
-步骤 1 到 `/to-spec` 要留在 **同一个未中断的 context window** 中；不要 compact 或 clear，这样 proposal 才能建立在同一组思考之上。Proposal 落盘后，后续 OpenSpec artifacts 可以从文件恢复 context。
+步骤 1 到 `/to-spec` 完成 proposal 与 delta specs 要留在 **同一个未中断的 context window** 中；不要 compact 或 clear，这样行为契约才能建立在同一组思考之上。两者落盘后，后续 OpenSpec artifacts 可以从文件恢复 context。
 
 限制来自 **[smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**：在该窗口（最新模型大约 150k tokens）内，模型还能保持敏锐推理。如果 session 在 `/to-plan` 前接近这个区间，不要硬撑降级状态；在最近的 phase boundary 用 `/compact`，然后继续（见 Phase boundaries）。
 
@@ -39,7 +39,7 @@ disable-model-invocation: true
 
 - **巨大而模糊的 effort——greenfield project 或巨大 feature build，一个 session 装不下** -> **`/wayfinder`**，这是这里认知负担最重的 flow。当从当前位置到 destination 的路还看不见时，它在 `docs/wayfinding/` 下绘制 **decision records** 的 **shared map**，逐个解决，产出 **decisions, not deliverables**，直到 fog 被推开、路径清晰。`/grill-with-docs` 用于一个 session 能装下的想法，wayfinder 用于装不下的想法；它更慢、更密集，所以只应留给确实如此的 effort，绝不要用于范围明确的 feature。
 
-  Map 清晰后，**它会 hand off，而不是 build**：先进入 **`/to-spec`**，把 map 中相互链接的 decisions 收束成 OpenSpec proposal，再由 **`/to-plan`** 完成 planning。让 map 直接循环进入 `/implement` 会跳过这次收束并丢掉相互链接的细节；只有当 effort 后来发现确实很小时，才直接进入 `/implement`。
+  Map 清晰后，**它会 hand off，而不是 build**：先进入 **`/to-spec`**，把 map 中相互链接的 decisions 收束成 OpenSpec proposal 与 delta specs，再由 **`/to-plan`** 完成 planning。让 map 直接循环进入 `/implement` 会跳过这次收束并丢掉相互链接的细节；只有当 effort 后来发现确实很小时，才直接进入 `/implement`。
 
 ## Codebase health
 

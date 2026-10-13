@@ -89,7 +89,7 @@ Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 `code-review` 是 build chain 尾部的 review 步骤——`grill-with-docs → to-spec → to-plan → implement → code-review`——也能在你指向它的任何 branch 或 PR 上独立运行。
 
 - [implement](https://aihero.dev/skills-implement) 是最接近的邻居：它驱动构建，并在提交前把此 skill 作为自己的收尾 review 调用。
-- [to-spec](https://aihero.dev/skills-to-spec) 与 `to-plan` 产出 Spec 轴线所要核对的 proposal、delta specs、design 和 tasks；含糊的 planning artifacts 会让那条轴线也含糊。
+- [to-spec](https://aihero.dev/skills-to-spec) 产出 proposal 与 delta specs，`to-plan` 产出 design 与 tasks；含糊的 planning artifacts 会让 Spec 轴线也含糊。
 - [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) 是整个 codebase 的对口物——这个 skill 只看一个 diff。
 
 当你不确定这个处境想要哪个 skill 时，[ask-matt](https://aihero.dev/skills-ask-matt) 会跨整套路由。

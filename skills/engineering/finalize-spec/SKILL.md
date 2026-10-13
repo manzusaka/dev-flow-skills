@@ -20,6 +20,7 @@ disable-model-invocation: true
 
 运行 `spect status --change <change-name> --json`：
 
+- `planningInvalidated: true` → 停止，提示先运行 `/to-plan <change-name>` 复核；不能通过任务完成状态或归档选项绕过。
 - 全部任务已勾选 → 继续。
 - 存在未勾选任务 → 列出未完成任务，警告但不阻塞，用户确认后继续。
 - change 标记 `skip_specs: true` → 记下，步骤 5 传 `--skip-specs`。

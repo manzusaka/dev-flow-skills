@@ -1,5 +1,5 @@
 interface:
   display_name: "生成 OpenSpec 计划"
-  short_description: "从 proposal 生成 specs、design 与 tasks"
+  short_description: "基于已确认规格编写或复核 design 与 tasks"
 policy:
   allow_implicit_invocation: false

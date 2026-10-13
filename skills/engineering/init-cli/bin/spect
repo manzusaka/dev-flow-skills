@@ -33522,6 +33522,9 @@ var init_schema2 = __esm({
       // complete - that path prefix, not the artifact id, is the contract custom
       // schemas inherit.
       skip_specs: external_exports.boolean().optional(),
+      // Set when proposal or delta specs change after planning. to-plan clears it
+      // only after reviewing and validating the downstream planning artifacts.
+      planning_invalidated: external_exports.boolean().optional(),
       // Declares that this change may retire a capability: when its REMOVED entries
       // take the last requirement a capability has, archive deletes that
       // capability's main spec instead of aborting on a spec it could not write
@@ -34324,6 +34327,7 @@ function formatChangeStatus(context, options = {}) {
   const orderMap = new Map(buildOrder.map((id, idx) => [id, idx]));
   artifactStatuses.sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0));
   const isComplete = context.graph.isComplete(context.completed);
+  const planningInvalidated = context.metadata?.planning_invalidated === true;
   const artifactIds = artifactStatuses.map((artifact) => artifact.id);
   return {
     changeName: context.changeName,
@@ -34331,10 +34335,11 @@ function formatChangeStatus(context, options = {}) {
     planningHome: summarizePlanningHome(context.planningHome),
     changeRoot: context.changeDir,
     artifactPaths,
-    isPlanningComplete: isComplete,
-    isComplete,
+    isPlanningComplete: isComplete && !planningInvalidated,
+    planningInvalidated,
+    isComplete: isComplete && !planningInvalidated,
     implementRequires,
-    nextSteps: buildNextSteps({
+    nextSteps: planningInvalidated ? [`\u8FD0\u884C /to-plan ${context.changeName} \u590D\u6838 design.md\u3001tasks.md \u548C\u5DF2\u5B8C\u6210\u4EFB\u52A1\u3002`] : buildNextSteps({
       changeName: context.changeName,
       artifactStatuses,
       allArtifactsComplete: isComplete,
@@ -54957,6 +54962,12 @@ var ArchiveCommand = class {
         available.length > 0 ? `\u672A\u627E\u5230\u53D8\u66F4 '${changeName}'\u3002\u53EF\u7528\u7684\u53D8\u66F4\uFF1A${available.join(", ")}` : `\u672A\u627E\u5230\u53D8\u66F4 '${changeName}'\u3002\u6B64\u6839\u76EE\u5F55\u4E0B\u4E0D\u5B58\u5728\u6D3B\u8DC3\u7684\u53D8\u66F4\u3002`
       );
     }
+    if (readChangeMetadata(changeDir, root.path)?.planning_invalidated) {
+      throw new ArchiveBlockedError(
+        "archive_planning_invalidated",
+        `\u53D8\u66F4 '${changeName}' \u7684\u89C4\u5212\u5DF2\u5931\u6548\uFF1B\u8BF7\u5148\u8FD0\u884C /to-plan ${changeName} \u590D\u6838\u5E76\u9A8C\u8BC1 design.md\u3001tasks.md\u3002`
+      );
+    }
     const skipValidation = options.validate === false || options.noValidate === true;
     if (!skipValidation) {
       const validator = new Validator();
@@ -56903,6 +56914,10 @@ function printStatusText(status) {
     }
     console.log(line);
   }
+  if (status.planningInvalidated) {
+    console.log();
+    console.log(source_default.yellow("\u89C4\u5212\u5DF2\u5931\u6548\uFF1Aproposal \u6216 delta specs \u5DF2\u53D8\u66F4\uFF0C\u9700\u8FD0\u884C /to-plan \u590D\u6838\u3002"));
+  }
   if (status.isPlanningComplete) {
     console.log();
     console.log(source_default.green("\u6240\u6709\u89C4\u5212\u5236\u54C1\u5DF2\u5B8C\u6210\uFF01"));
@@ -57214,7 +57229,10 @@ async function generateImplementInstructions(projectRoot, changeName, schemaName
   const remaining = total - complete;
   let state;
   let instruction;
-  if (missingArtifacts.length > 0) {
+  if (context.metadata?.planning_invalidated) {
+    state = "blocked";
+    instruction = `\u89C4\u5212\u5DF2\u5931\u6548\uFF1Aproposal \u6216 delta specs \u5DF2\u53D8\u66F4\u3002\u8BF7\u5148\u8FD0\u884C /to-plan ${changeName} \u590D\u6838 design.md\u3001tasks.md \u548C\u5DF2\u5B8C\u6210\u4EFB\u52A1\u3002`;
+  } else if (missingArtifacts.length > 0) {
     state = "blocked";
     instruction = `\u6682\u65F6\u65E0\u6CD5\u5B9E\u65BD\u6B64\u53D8\u66F4\u3002\u7F3A\u5C11\u4EA7\u51FA\u7269\uFF1A${missingArtifacts.join(", ")}\u3002
 \u8BF7\u5148\u4F7F\u7528 openspec-continue-change skill \u521B\u5EFA\u7F3A\u5931\u7684\u4EA7\u51FA\u7269\u3002`;

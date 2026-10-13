@@ -11,8 +11,8 @@
 - **[setup-skills](./setup-skills/SKILL.md)** - 初始化一个 repository 的工程前置：spect CLI、agent instructions 与 CONTEXT、ADR、OpenSpec 脚手架。
 - **[wayfinder](./wayfinder/SKILL.md)** - 把超出单个 agent session 的大块工作规划成 `docs/wayfinding/` 下的 decision records 共享 map，逐一解决直到通往 destination 的路清晰。
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `CONTEXT.md` 与 ADRs。
-- **[to-spec](./to-spec/SKILL.md)** - 把当前对话整理成 OpenSpec change proposal，创建兼容的变更元数据与 `proposal.md`。
-- **[to-plan](./to-plan/SKILL.md)** - 读取 OpenSpec proposal，经过架构 grilling 补齐 delta specs、design 与 tracer-bullet tasks。
+- **[to-spec](./to-spec/SKILL.md)** - 创建或修改 OpenSpec proposal 与 delta specs，确认行为契约。
+- **[to-plan](./to-plan/SKILL.md)** - 基于已确认的 proposal 与 delta specs，经过架构 grilling 编写或复核 design 与 tracer-bullet tasks。
 - **[implement](./implement/SKILL.md)** - 实现 OpenSpec change 或 spec 中指定的工作：按 `tasks.md` checkbox 状态续做，收尾统一提交并以 `/code-review` 审查。
 - **[finalize-spec](./finalize-spec/SKILL.md)** - 收尾已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 归档并合并规格，并把本次 change 的提交压成单个 commit。
 

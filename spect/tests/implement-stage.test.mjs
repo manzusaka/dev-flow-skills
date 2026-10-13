@@ -84,6 +84,53 @@ test('instructions implement reports task progress and operation guidance', asyn
   assert.deepEqual(payload.operationGuidance, ['Keep the summary concise']);
 });
 
+test('changed planning inputs block status and implement until review clears the marker', async () => {
+  const projectRoot = await makeReadyProject();
+  const changeDir = path.join(projectRoot, 'openspec', 'changes', 'rename-stage');
+  const metadataPath = path.join(changeDir, '.openspec.yaml');
+  await writeFile(metadataPath, 'schema: spec-driven\nskip_specs: true\nplanning_invalidated: true\n');
+
+  const status = runCli(projectRoot, 'status', '--change', 'rename-stage', '--json');
+  assert.equal(status.status, 0, status.stderr);
+  const statusPayload = JSON.parse(status.stdout);
+  assert.equal(statusPayload.planningInvalidated, true);
+  assert.equal(statusPayload.isPlanningComplete, false);
+  assert.equal(statusPayload.artifacts.find((artifact) => artifact.id === 'specs').status, 'skipped');
+  assert.match(statusPayload.nextSteps.join('\n'), /to-plan rename-stage/);
+  const statusText = runCli(projectRoot, 'status', '--change', 'rename-stage');
+  assert.equal(statusText.status, 0, statusText.stderr);
+  assert.match(statusText.stdout, /规划已失效/);
+
+  const instructions = runCli(projectRoot, 'instructions', 'implement', '--change', 'rename-stage', '--json');
+  assert.equal(instructions.status, 0, instructions.stderr);
+  const instructionsPayload = JSON.parse(instructions.stdout);
+  assert.equal(instructionsPayload.state, 'blocked');
+  assert.match(instructionsPayload.instruction, /to-plan rename-stage/);
+
+  await writeFile(metadataPath, 'schema: spec-driven\nskip_specs: true\n');
+  const reviewed = runCli(projectRoot, 'status', '--change', 'rename-stage', '--json');
+  assert.equal(reviewed.status, 0, reviewed.stderr);
+  assert.equal(JSON.parse(reviewed.stdout).isPlanningComplete, true);
+});
+
+test('archive cannot bypass invalidated planning with yes or no-validate', async () => {
+  const projectRoot = await makeReadyProject();
+  const changeDir = path.join(projectRoot, 'openspec', 'changes', 'rename-stage');
+  await writeFile(
+    path.join(changeDir, '.openspec.yaml'),
+    'schema: spec-driven\nskip_specs: true\nplanning_invalidated: true\n'
+  );
+
+  for (const options of [['--yes'], ['--yes', '--no-validate']]) {
+    const result = runCli(projectRoot, 'archive', 'rename-stage', ...options, '--json');
+    assert.notEqual(result.status, 0);
+    const payload = JSON.parse(result.stdout);
+    assert.equal(payload.status[0].code, 'archive_planning_invalidated');
+    assert.equal(await readFile(path.join(changeDir, '.openspec.yaml'), 'utf8'),
+      'schema: spec-driven\nskip_specs: true\nplanning_invalidated: true\n');
+  }
+});
+
 test('instructions apply fails with an explicit migration message', async () => {
   const projectRoot = await makeReadyProject();
 

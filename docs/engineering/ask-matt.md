@@ -19,7 +19,7 @@
 
 Router 只点名 skills，它不安装它们。它指向的一切都必须已安装，推荐才具有可操作性，而且它只认识本仓库中那些已推广的 skills。
 
-`to-spec` 与 `to-plan` 依赖 `/init-flow-docs` 初始化的 `CONTEXT.md`、ADRs、OpenSpec schema 与 artifact templates。router 会乐于在这些前置条件完成前就推荐它们。
+`to-spec` 与 `to-plan` 依赖 `/setup-skills` 初始化的 OpenSpec schema 与 artifact templates；相关 `CONTEXT.md`、ADRs 存在时也会读取。router 会乐于在这些前置条件完成前就推荐它们。
 
 ## Flows, not skills
 
@@ -56,7 +56,7 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 **它描述了一个 skill 的行为，而那个 skill 并不那么做。**
 
-也是真的，也没有修复。Router 依据自己对每个 skill 的一行摘要来作答，而不是依据 skill 本身。一次详细报告在同一场会话里追到了三个实例，其中有一个仅凭简介就建议跳过 [to-spec](https://aihero.dev/skills-to-spec)，而 `to-spec/SKILL.md` 从未被打开过。那里跳过 `to-spec` 的代价是漏掉 seam 确认与 OpenSpec proposal。当 router 对另一个 skill 断言某个承重的信息时，先让它打开那个 `SKILL.md`。
+也是真的，也没有修复。Router 依据自己对每个 skill 的一行摘要来作答，而不是依据 skill 本身。一次详细报告在同一场会话里追到了三个实例，其中有一个仅凭简介就建议跳过 [to-spec](https://aihero.dev/skills-to-spec)，而 `to-spec/SKILL.md` 从未被打开过。那里跳过 `to-spec` 的代价是漏掉已确认的 OpenSpec proposal 与 delta specs。当 router 对另一个 skill 断言某个承重的信息时，先让它打开那个 `SKILL.md`。
 
 **为什么是散文，而不是一份编号的清单？**
 

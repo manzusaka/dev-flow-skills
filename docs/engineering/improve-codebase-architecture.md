@@ -47,7 +47,7 @@ report 以一条 **Top recommendation** 收尾——它最想先处理的那一�
 
 ## What happens after you pick one
 
-选中一个候选项就会开启一场围绕它的 [grilling](https://aihero.dev/skills-grilling) session：约束、seam 后面放着什么、哪些测试能存活、加深后的 interface 应该长什么样。那场 session 的输出是一个决策，而不是一个 diff。从那里开始走常规 flow——把决策带进 [to-spec](https://aihero.dev/skills-to-spec)，生成 OpenSpec proposal，再继续 planning 与 implementation。
+选中一个候选项就会开启一场围绕它的 [grilling](https://aihero.dev/skills-grilling) session：约束、seam 后面放着什么、哪些测试能存活、加深后的 interface 应该长什么样。那场 session 的输出是一个决策，而不是一个 diff。从那里开始走常规 flow——把决策带进 [to-spec](https://aihero.dev/skills-to-spec)，生成 OpenSpec proposal 与 delta specs，再继续 planning 与 implementation。
 
 ## Common questions
 
