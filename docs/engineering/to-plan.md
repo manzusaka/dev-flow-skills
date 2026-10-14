@@ -6,7 +6,7 @@
 proposal.md + delta specs → architecture grilling → design.md → tasks.md
 ```
 
-它不创建 change，也不发布 issue；最终的执行计划遵守 OpenSpec schema，写入 `tasks.md`。
+它不创建 change；最终的执行计划遵守 OpenSpec schema，写入 `tasks.md`。
 
 ## Invocation and change selection
 

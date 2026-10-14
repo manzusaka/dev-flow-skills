@@ -15,7 +15,7 @@
 | 一个有定义 inputs 和 outputs 的 behavior——business logic、request/response contract、transformation、validation | `tdd` |
 | behavior 还没钉住 | [to-spec](https://aihero.dev/skills-to-spec)，它也会在写任何代码之前商定 test seams |
 | 问题真正关乎 interface 的形状，而不是 tests | [codebase-design](https://aihero.dev/skills-codebase-design) |
-| 你有一份 [spec](https://www.aihero.dev/ai-coding-dictionary/spec) 或 [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)，并希望整个 build 替你运行 | [implement](https://aihero.dev/skills-implement)，它按 ticket 驱动 `tdd` |
+| 你有一份 [spec](https://www.aihero.dev/ai-coding-dictionary/spec) 或 OpenSpec change，并希望整个 build 替你运行 | [implement](https://aihero.dev/skills-implement)，它执行完整构建并调用 `tdd` |
 | Config、wiring、glue、type annotations、直白的 CRUD delegation | 这里没有合适的——见下面的开放缺口 |
 
 最后一行是一个真正的洞，而不是风格偏好。这个 skill 决定 seams *在哪里*；它内部没有任何东西决定一个 change 是否*值得*跑这个 loop。把它运行在一个没有独立真相来源可断言的变化上，你会得到一个重述 implementation 的 test——那个 skill 自己警告过的 tautological anti-pattern，从另一个方向抵达。它是 [issue #746](https://github.com/mattpocock/skills/issues/746)，而且是开放的。在它关闭之前，那个判断是你或你的 `CLAUDE.md` 的。
@@ -70,9 +70,9 @@ Mocks 只用于系统边界——外部 APIs、时间、随机性，有时是 fi
 
 在 v1.0 进入了 [codebase-design](https://aihero.dev/skills-codebase-design)，被泛化，让几个 skills 共享一个词汇。`refactoring.md` 同时离开；refactoring 现在是 [code-review](https://aihero.dev/skills-code-review) 的工作，那个 skill 携带 Fowler smell baseline。
 
-**它知道我其他的 tickets 吗？**
+**它知道其他任务的范围吗？**
 
-不知道。对一个 ticket 运行时，它会乐意提议属于兄弟 ticket 的工作，因为它看不到 issue graph 的其余部分（[issue #129](https://github.com/mattpocock/skills/issues/129)）。Matt 的立场是这不关 `tdd` 的事。把 spec 与 ticket 一起传过去会有帮助；先在源头把 tickets 切成合适的大小更有帮助。
+独立调用时，`tdd` 只依据本次提供的上下文，不会自动知道其他任务的范围。把当前 spec 和任务边界一并提供，避免把相邻工作带进来。上游的 [issue #129](https://github.com/mattpocock/skills/issues/129) 曾报告这种跨范围提议。
 
 ## It's working if
 
@@ -91,4 +91,4 @@ Mocks 只用于系统边界——外部 APIs、时间、随机性，有时是 fi
 grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
-[to-spec](https://aihero.dev/skills-to-spec) 预先商定 test seams，[implement](https://aihero.dev/skills-implement) 按 ticket 驱动 `tdd`，[code-review](https://aihero.dev/skills-code-review) 事后检查只用了已商定的 seams——并拥有 `tdd` 不再做的 refactoring。它的另一个邻居是 [codebase-design](https://aihero.dev/skills-codebase-design)，`tdd` 所说的 seam 和 deep-module 词汇的共享来源。你也可以单独使用它，只要有具体 behavior 要构建、又不在一个完整 spec 的推进中。当你不确定哪个 skill 适合你的处境时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。
+[to-spec](https://aihero.dev/skills-to-spec) 预先商定 test seams；[implement](https://aihero.dev/skills-implement) 在 OpenSpec change 中按 `tasks.md` 驱动 `tdd`，也可直接使用 spec；[code-review](https://aihero.dev/skills-code-review) 事后检查只用了已商定的 seams——并拥有 `tdd` 不再做的 refactoring。它的另一个邻居是 [codebase-design](https://aihero.dev/skills-codebase-design)，`tdd` 所说的 seam 和 deep-module 词汇的共享来源。你也可以单独使用它，只要有具体 behavior 要构建、又不在一个完整 spec 的推进中。当你不确定哪个 skill 适合你的处境时，[ask-matt](https://aihero.dev/skills-ask-matt) 会为你路由。

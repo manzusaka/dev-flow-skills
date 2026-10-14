@@ -68,7 +68,7 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 **它让我编辑一个 SKILL.md。**
 
-这条建议常常是对的，却很少持久。有人问它如何让 [implement](https://aihero.dev/skills-implement) 关闭 tickets，得到的建议是给 skill 加一行，然后立刻发现了问题：`npx skills update` 会覆盖这个文件，而 plugin 安装是只读的。把常驻行为放进你自己的 `CLAUDE.md` 或 `AGENTS.md`，或者在你调用时说出来。提示层面的改编能在更新之后存活下来——把 flow 指向 Linear 而不是 GitHub，或问它哪些 open tickets 可以并行运行，都是人们以这种方式做的事。
+这条建议常常是对的，却很少持久。直接给 skill 加一行会遇到一个问题：`npx skills update` 会覆盖这个文件，而 plugin 安装是只读的。把常驻行为放进你自己的 `CLAUDE.md` 或 `AGENTS.md`，或者在调用时说出来；这些提示层面的改编能在更新之后存活下来。
 
 **它点名了一个我没有的 skill，或者漏掉了一个我有的。**
 

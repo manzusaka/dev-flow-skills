@@ -1,8 +1,8 @@
 ## What it does
 
-`code-review` 沿两条轴线 review `HEAD` 与你点名的一个固定点——一个 commit、一个 branch、一个 tag、`main`、`HEAD~5`——之间的 diff。**Standards** 问的是代码是否符合本仓库写代码的方式。**Spec** 问的是代码是否做了来源 issue 或 [spec](https://www.aihero.dev/ai-coding-dictionary/spec) 所要求的事。每条轴线都在各自的 [sub-agent](https://www.aihero.dev/ai-coding-dictionary/subagent) 中运行，这样谁也不会看到对方的推理。
+`code-review` 沿两条轴线 review `HEAD` 与你点名的一个固定点——一个 commit、一个 branch、一个 tag、`main`、`HEAD~5`——之间的 diff。**Standards** 问的是代码是否符合本仓库写代码的方式。**Spec** 问的是代码是否做了来源 [spec](https://www.aihero.dev/ai-coding-dictionary/spec) 所要求的事。每条轴线都在各自的 [sub-agent](https://www.aihero.dev/ai-coding-dictionary/subagent) 中运行，这样谁也不会看到对方的推理。
 
-两条轴线从不合并、也从不重新排序。报告以*每条轴线*的最严重问题收尾，并拒绝在它们之间点名一个单独的赢家，因为一个变更可能通过一条轴线却在另一条上失败：一段遵循了每一条约定、却实现了错误东西的代码通过 Standards 却败给 Spec；一段完全按 [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) 要求去做、却破坏了仓库约定的代码则相反。一个混合的裁决会让通过的那条轴线掩盖失败的那条。
+两条轴线从不合并、也从不重新排序。报告以*每条轴线*的最严重问题收尾，并拒绝在它们之间点名一个单独的赢家，因为一个变更可能通过一条轴线却在另一条上失败：一段遵循了每一条约定、却实现了错误东西的代码通过 Standards 却败给 Spec；一段完全按 spec 要求去做、却破坏了仓库约定的代码则相反。一个混合的裁决会让通过的那条轴线掩盖失败的那条。
 
 ## When to reach for it
 
@@ -38,7 +38,7 @@ Spec 轴线需要一份 spec 存在且可找到。它按这个顺序查找：
 | | Standards | Spec |
 | --- | --- | --- |
 | 问题 | 构建得对吗？ | 是正确的东西吗？ |
-| 读取 | 仓库有文档记录的标准，外加 smell baseline | 来源 issue 或 spec |
+| 读取 | 仓库有文档记录的标准，外加 smell baseline | 来源 spec |
 | 报告 | 有文档记录的违规（可能很难），以及 smells（总是判断） | 缺失或部分实现的需求、scope creep、被错误实现的需求 |
 | 每条 finding 引用 | 标准文件和规则，或点名 smell 加上 hunk | spec 的那一行 |
 

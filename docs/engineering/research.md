@@ -37,7 +37,7 @@
 
 **文件应该住在哪里——而我又该提交它吗？**
 
-skill 把文件放在 repo 已经存放笔记的地方，除此之外没有更多意见。社区的意见相当一致：ADR 被保留，research 文件不被保留。它最锐利的版本，来自一个恰好讨论这个问题的 Discord thread："ADRs 保留。其余的在完成后归档或删除。否则它就会变成工作的 cruft，而且如果你已经偏离了 spec/research，它还可能毒害未来的 repo 阅读。"一份 research 文件记录的是它写就那天为真的东西，所以一份过期的比没有更糟。总体而言，这些 artifact 并不真正属于 git，它们也没有一个规范的家——人们改用 Obsidian、一个独立的知识 repo，或者 issue tracker。
+skill 把文件放在 repo 已经存放笔记的地方，除此之外没有更多意见。社区的意见相当一致：ADR 被保留，research 文件不被保留。它最锐利的版本，来自一个恰好讨论这个问题的 Discord thread："ADRs 保留。其余的在完成后归档或删除。否则它就会变成工作的 cruft，而且如果你已经偏离了 spec/research，它还可能毒害未来的 repo 阅读。"一份 research 文件记录的是它写就那天为真的东西，所以一份过期的比没有更糟。总体而言，这些 artifact 并不真正属于 git，它们也没有一个规范的家——人们改用 Obsidian 或独立的知识 repo。
 
 **什么才算"high-trust"的 primary source，又由谁来定？**
 
@@ -45,7 +45,7 @@ skill 把文件放在 repo 已经存放笔记的地方，除此之外没有更�
 
 **后来的 session 会复用之前某次运行的发现吗？**
 
-不会。没有任何东西会自动加载一份过去的 research 文件；它是一份坐在 repo 里的文档，直到某个人类或某个 skill 指向它。这一点在早期就被提出，是对该设计最强的挑战——"价值在于这份 markdown 成为 agent 之后会重新阅读的 context，而不是抓取本身。一份写过就死的文件只是一种花哨的搜索"——而随附的 skill 并没有解决它。在实践中，这份文件通过被刻意喂进下一步来挣得自己的存在：把它附到一份 spec 上、引用进一场 grilling session、用一个 [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) 指向它。
+不会。没有任何东西会自动加载一份过去的 research 文件；它是一份坐在 repo 里的文档，直到某个人类或某个 skill 指向它。这一点在早期就被提出，是对该设计最强的挑战——"价值在于这份 markdown 成为 agent 之后会重新阅读的 context，而不是抓取本身。一份写过就死的文件只是一种花哨的搜索"——而随附的 skill 并没有解决它。在实践中，这份文件通过被刻意喂进下一步来挣得自己的存在：把它附到一份 spec 上，或引用进一场 grilling session。
 
 **为什么不干脆让 agent 去读文档？**
 

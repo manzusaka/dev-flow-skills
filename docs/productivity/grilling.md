@@ -58,7 +58,7 @@ round-based 的默认设置确实存在争议。读得慢的实践者、用第�
 确认关卡恰恰为此而存在：当 frontier 清空时 skill 并没有结束，只有当你说理解已经共享时它才结束。更弱、更快的 [models](https://www.aihero.dev/ai-coding-dictionary/model) 仍然会破坏它——这在低 effort 或非 frontier 模型上最常被报告，它们会把「持续访谈直到共同理解」塌缩成几个问题加一份大纲。如果你的模型会这样，可靠的修复是在你自己的 `AGENTS.md` 或 `CLAUDE.md` 里加一行，告诉 agent 未经许可不要实施。
 
 **它自己回答了问题，而不是问我。**
-这是运行中的 bug，而不是预期的行为，这正是 facts 和 decisions 在 skill 文本中被分开的原因。它最常出现在另一个 skill 在 resolve-this-ticket 框架内运行 `grilling` 时，那里的外围任务看起来像允许它继续前进。同样的约束也是为什么没有 async 模式：人们曾要求一个读取 GitHub issue 并发布一份汇总 decision memo 的变体，而那是一个不同的 skill，因为一场无人回答的 grilling session 产出的是 agent 的意见，而不是你的。
+这是运行中的 bug，而不是预期的行为，这正是 facts 和 decisions 在 skill 文本中被分开的原因。它最常出现在另一个 skill 为外围任务运行 `grilling` 时，那项任务看起来像允许它继续前进。同样的约束也是为什么没有 async 模式：一场无人回答的 grilling session 产出的是 agent 的意见，而不是你的。
 
 **我能否限制问题的数量？**
 不能，而且上限是被刻意排除在 scope 之外的。有些计划需要三个问题，有些需要五十个；一个固定的天花板要么截断了困难的情况，要么在简单的情况下显得随意。用平白的语言引导是预期的控制方式——告诉它收尾，或者停下来接受当前的计划。如果一场 session 运行得非常久，原因通常是 scope 太大；把工作拆开，分别 grill 那些块。

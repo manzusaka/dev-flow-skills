@@ -2,7 +2,7 @@
 
 `resolving-merge-conflicts` 逐个 hunk 地处理正在进行的 git merge 或 rebase，然后运行项目自己的检查，并以一次 commit 完成整个操作。
 
-它拒绝把 conflict 当成文本问题。在触碰一个 hunk 之前，它会把每一侧追溯回其 **[primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source)**——commit message、PR、原始 issue——因此它是在两个 intent 之间做选择，而不是在两段文本之间做选择，并且在两者兼容的地方同时保留双方。在它们确实互不相容的地方，它选择与 merge 所声明目标相符的那一侧，并明确说出其中的取舍。它绝不发明新的行为来粉饰冲突，`--abort` 也不是它拥有的选项：merge 总是被一路推进到一个完成的 commit。
+它拒绝把 conflict 当成文本问题。在触碰一个 hunk 之前，它会把每一侧追溯回其 **[primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source)**——commit message、PR、原始需求记录——因此它是在两个 intent 之间做选择，而不是在两段文本之间做选择，并且在两者兼容的地方同时保留双方。在它们确实互不相容的地方，它选择与 merge 所声明目标相符的那一侧，并明确说出其中的取舍。它绝不发明新的行为来粉饰冲突，`--abort` 也不是它拥有的选项：merge 总是被一路推进到一个完成的 commit。
 
 ## When to reach for it
 
@@ -20,7 +20,7 @@
 
 这个 skill 存在所要消灭的失败模式，是按旗标来合并：`--ours`、`--theirs`，或手工删除看起来不太重要的那个块，于是冲突标记消失、build 能编译通过。这种合并结果在语法上可以完美，却仍然会悄悄丢掉某人刻意做出的改动。
 
-你无法保留一个你还没读过的 intent。所以这项工作从历史开始——commits、PRs、[tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)——然后才移动到 diff。loop 中还存在另一步，出于同样的原因：这个 skill 会找到 repo 自己的 [automated checks](https://www.aihero.dev/ai-coding-dictionary/automated-check)，并在提交前运行它们，因为在 git 中，merge 是最容易产出既满足两个 branch、又都过不了各自测试的代码的地方。
+你无法保留一个你还没读过的 intent。所以这项工作从历史开始——commits、PRs、原始需求——然后才移动到 diff。loop 中还存在另一步，出于同样的原因：这个 skill 会找到 repo 自己的 [automated checks](https://www.aihero.dev/ai-coding-dictionary/automated-check)，并在提交前运行它们，因为在 git 中，merge 是最容易产出既满足两个 branch、又都过不了各自测试的代码的地方。
 
 ## Common questions
 
@@ -32,7 +32,7 @@
 
 多数情况下不用。在并行任务之间把文件划分成区，花费要比节省的多，因为 agent 对 merge conflicts 足够好，所以这个权衡没有看起来那么严苛。值得保留的那一点纪律是：先把大型 refactor 做完。一个大型 rename 在十个 branch 从它分出之后才落地，才是始终昂贵的那个情形。
 
-来自一份关于并行 worktrees 的用户报告有一个 caveat：当并行的 [sessions](https://www.aihero.dev/ai-coding-dictionary/session) 各自在自己的 tree 里构建一个 ticket 时，merge 回来最好由写下那份改动的 session 来做，因为它就是那个已经知道 intent 的 session。到最后把所有冲突集中到一个 agent 身上，恰恰丢掉了本 skill 第 2 步不得不去重建的 [context](https://www.aihero.dev/ai-coding-dictionary/context)。
+来自一份关于并行 worktrees 的用户报告有一个 caveat：当并行的 [sessions](https://www.aihero.dev/ai-coding-dictionary/session) 各自在自己的 tree 里完成一项工作时，merge 回来最好由写下那份改动的 session 来做，因为它就是那个已经知道 intent 的 session。到最后把所有冲突集中到一个 agent 身上，恰恰丢掉了本 skill 第 2 步不得不去重建的 [context](https://www.aihero.dev/ai-coding-dictionary/context)。
 
 **为什么绝不用 `--abort`？**
 
@@ -40,7 +40,7 @@ Abort 会丢掉已完成的解决工作，并在你下次尝试时把你送回�
 
 ## It's working if
 
-- agent 在解决时引用 commits、PRs 或 issues 给你看，而不只是 diff hunks。
+- agent 在解决时引用 commits、PRs 或原始需求给你看，而不只是 diff hunks。
 - 每个 hunk 最终都保留双方的行为，或者带有一条明确说明丢掉了什么、为什么丢掉的注释。
 - 结果中没有出现任何两个 branch 上都不存在的东西。
 - Typecheck、tests 和 format 被找到，并在提交**之前**、而不是在你注意到有东西坏了之后跑出绿色。

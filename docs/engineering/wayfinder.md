@@ -2,7 +2,7 @@
 
 `wayfinder` 接手一个对单个 agent [session](https://www.aihero.dev/ai-coding-dictionary/session) 来说太大的 effort——一个你能说出其 **destination**、却还看不见路径的想法——并把它绘制成 `docs/wayfinding/` 下的一张由 **decision records** 组成的 **shared map**，然后一次一个地解决它们，直到路径清晰。
 
-它做 planning，不做执行。每个 record 都承载一个问题，其解决是一个 decision，而不是一个待执行的 build 切片；当在有人去构建这东西之前再没有什么需要决定时，map 就完成了。这一条规则就是 wayfinder decision 与普通实现 [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) 的区别，也是 agent 最常打破的规则——因此执行豁免只能由人类在 chart 时写进 map 的 Notes，agent 不得修改 Notes。当 map 清除时，wayfinder 交接；它不会继续进入代码。
+它做 planning，不做执行。每个 record 都承载一个问题，其解决是一个 decision，而不是一个待执行的 build 切片；当在有人去构建这东西之前再没有什么需要决定时，map 就完成了。agent 最常打破这条规则，因此执行豁免只能由人类在 chart 时写进 map 的 Notes，agent 不得修改 Notes。当 map 清除时，wayfinder 交接；它不会继续进入代码。
 
 ## When to reach for it
 
@@ -22,7 +22,7 @@ Greenfield 不是必要条件。Wayfinder 也常规地用于 legacy 和半成品
 
 ## Prerequisites
 
-Wayfinder 不需要任何外部配置：map 与 records 直接写进 `docs/wayfinding/<map-name>/`，committed 进 repo，随代码一起演进。没有 setup 步骤，也没有 tracker 依赖——frontier 就是目录里 open 且 unblocked 的 records，列一下目录就能看见。
+Wayfinder 不需要任何外部配置：map 与 records 直接写进 `docs/wayfinding/<map-name>/`，committed 进 repo，随代码一起演进。没有 setup 步骤——frontier 就是目录里 open 且 unblocked 的 records，列一下目录就能看见。
 
 ## The map, the fog, and the frontier
 
@@ -79,7 +79,7 @@ Frontier 就是用来向你展示哪些是可领取的，每个 record 的 Block
 没有官方指引，而 agent 的本能帮不上忙：它倾向于绕开那个坏 decision 去设计，而不是挑战它，所以你只能手动掌舵。真正有效的是直接告诉 wayfinder 什么变了——它会更新 map、修订受影响的 records，并在已 resolved 的 records 上修订 Resolution。map 中途的 scope 变更是可以恢复的。一张你*设计*成会变的 map，则是一种 scope 的坏味道。
 
 **`decision-mapping` 去哪了？**
-它就是当前这个 skill，在 v1.1 中改名为 `wayfinder`，并以 `/wayfinder` 调用。"Decision map" 是行话，而且也不准确，因为四种类型里只有一种真正是 decision。这次重构给了 skill 一套连贯的词汇——destination、fog of war、frontier、map——而不是在顶上再叠一层生造的词。不过单位保留了 "decision" 这个词：**decision record** 就是 wayfinder 工作单元的称呼，正是为了阻止人们把它读成实现 ticket。
+它就是当前这个 skill，在 v1.1 中改名为 `wayfinder`，并以 `/wayfinder` 调用。"Decision map" 是行话，而且也不准确，因为四种类型里只有一种真正是 decision。这次重构给了 skill 一套连贯的词汇——destination、fog of war、frontier、map——而不是在顶上再叠一层生造的词。不过单位保留了 "decision" 这个词：**decision record** 就是 wayfinder 工作单元的称呼，以区别于实现任务。
 
 ## It's working if
 

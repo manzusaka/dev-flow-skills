@@ -9,7 +9,7 @@
     {
       "name": "dev-flow-skills",
       "source": "./",
-      "description": "面向真实工程工作的 agent skills：持续追问、spec/ticket flows、TDD、代码审查、领域建模等。",
+      "description": "面向真实工程工作的 agent skills：持续追问、OpenSpec flows、TDD、代码审查、领域建模等。",
       "category": "engineering",
       "keywords": [
         "engineering",

@@ -1,12 +1,12 @@
 ---
 name: code-review
-description: 从固定点（commit、branch、tag 或 merge-base）开始，按 Standards（代码是否符合本仓库记录的编码标准？）和 Spec（代码是否符合来源 issue/spec 的要求？）两个轴线审查变更。两个审查会在并行子代理中运行，并并排报告。适用于用户想审查 branch、PR、进行中的变更，或要求 “review since X” 时。
+description: 从固定点（commit、branch、tag 或 merge-base）开始，按 Standards（代码是否符合本仓库记录的编码标准？）和 Spec（代码是否符合来源 spec 的要求？）两个轴线审查变更。两个审查会在并行子代理中运行，并并排报告。适用于用户想审查 branch、PR、进行中的变更，或要求 “review since X” 时。
 ---
 
 对用户提供的 fixed point 与 `HEAD` 之间的 diff 做双轴 review：
 
 - **Standards** — 代码是否符合这个 repo 记录下来的 coding standards？
-- **Spec** — 代码是否忠实实现来源 issue / spec？
+- **Spec** — 代码是否忠实实现来源 spec？
 
 两个轴线都作为**并行 sub-agents**运行，避免互相污染 context；然后这个 skill 聚合它们的 findings。
 
@@ -83,6 +83,6 @@ Repo 中任何记录代码应该如何写的内容，例如 `CODING_STANDARDS.md
 一个变更可能通过其中一个轴线，但失败在另一个轴线：
 
 - 代码符合所有 standard，但实现了错误的东西 -> **Standards pass, Spec fail.**
-- 代码完全符合 issue 要求，但破坏了项目约定 -> **Spec pass, Standards fail.**
+- 代码完全符合 spec 要求，但破坏了项目约定 -> **Spec pass, Standards fail.**
 
 分开报告能避免一个轴线掩盖另一个轴线。

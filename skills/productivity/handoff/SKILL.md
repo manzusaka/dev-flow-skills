@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 在文档中包含 "suggested skills" section，建议下一个 agent 应调用哪些 skills。
 
-不要重复已经被其他 artifacts 捕获的内容（specs、plans、ADRs、issues、commits、diffs）。改用 path 或 URL 引用它们。
+不要重复已经被其他 artifacts 捕获的内容（specs、plans、ADRs、commits、diffs）。改用 path 或 URL 引用它们。
 
 删去任何敏感信息，例如 API keys、passwords 或 personally identifiable information。
 

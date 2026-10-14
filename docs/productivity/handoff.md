@@ -31,7 +31,7 @@
 
 这份文档承载 live thread——进行着什么、为什么、下一步是什么——外加一个 **suggested skills** 小节，列出下一个 agent 应该调用什么。Secrets 在它被写出之前就被 redact。
 
-它刻意不承载任何已经写下来的东西。Specs、plans、ADRs、issues、commits 和 diffs 都通过路径或 URL 引用，绝不复制。这保持文件小巧，也把已定型的细节保持在一个地方，而不是两个会漂移的地方。
+它刻意不承载任何已经写下来的东西。Specs、plans、ADRs、commits 和 diffs 都通过路径或 URL 引用，绝不复制。这保持文件小巧，也把已定型的细节保持在一个地方，而不是两个会漂移的地方。
 
 ## Common questions
 
@@ -64,7 +64,7 @@
 
 ## It's working if
 
-- 文档只是对话的一小部分，而 specs、issues 和 diffs 以路径和 URL 的形式出现在其中，而不是被复制的文本。
+- 文档只是对话的一小部分，而 specs 和 diffs 以路径和 URL 的形式出现在其中，而不是被复制的文本。
 - 你不需要打开原始 session 就能冷读它，并且知道接下来该做什么。
 - 全新的 agent 开始工作，而不是让你重新解释 setup。
 - 在 fork 的情况下，你回来时你的原始 session 仍原封不动地待在那里。
