@@ -18,6 +18,11 @@
 - Web 保持 zoom 与用户字体设置可用；原生界面尊重 Dynamic Type 或系统字体缩放。
 - 变更 token 后更新 `DESIGN.draft.md`，检查所有受影响页面。局部例外写入页面实现契约。
 
+## 选型与表现边界
+
+- 为新方案选字体时，不用 Inter、Roboto、Arial、DM Sans、DM Serif、Plus Jakarta Sans、Outfit、Space Grotesk、Space Mono、IBM Plex（所有系列）、Fraunces、Instrument Serif、Playfair Display、Cormorant、Lora、Crimson、Newsreader、Syne；按产品语言、气质和阅读场景选择有明确职责的字体。
+- 文字不用渐变填充；用字体层级、字重和语义色表达重点。
+
 ## 字体主张
 - **建立体系化的设计思路：** 在同一个系统的 UI 设计中先建立体系化的设计思路，对主、次、辅助、标题、展示等类别的字体做统一的规划，再落地到具体场景中进行微调。
 - **少即是多：** 在视觉展现上能够用尽量少的样式去实现设计目的。避免毫无意义的使用大量字阶、颜色、字重强调视觉重点或对比关系。

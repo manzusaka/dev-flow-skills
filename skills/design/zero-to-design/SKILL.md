@@ -34,8 +34,8 @@ triggers:
 
 | 阶段 | 按需读取的内部能力 | 用途 |
 |-------|------------------|------|
-| 阶段 3 方向探索 | [shape](references/shape.md)、[bolder](references/bolder.md)、[critique](references/critique.md) | 明确方向主张、拉开差异、评审候选 |
-| 阶段 4 首屏 | [typeset](references/typeset.md)、[layout](references/layout.md)、[adapt](references/adapt.md)、[delight](references/delight.md)、[interaction-state](references/interaction-state.md) | 在已选方向内细化首屏，按需确认关键操作与状态并核对 Web/H5 关键工艺 |
+| 阶段 3 方向探索 | [shape](references/shape.md)、[bolder](references/bolder.md)、[critique](references/critique.md)；按候选内容读取 [typeset](references/typeset.md)、[colorize](references/colorize.md)、[layout](references/layout.md)、[clarify](references/clarify.md) | 明确方向主张、拉开差异、核对字体、颜色、布局与文案 |
+| 阶段 4 首屏 | [typeset](references/typeset.md)、[colorize](references/colorize.md)、[layout](references/layout.md)、[clarify](references/clarify.md)、[adapt](references/adapt.md)、[delight](references/delight.md)、[interaction-state](references/interaction-state.md) | 在已选方向内细化首屏，按需确认关键操作与状态并核对 Web/H5 关键工艺 |
 | 阶段 5 核心页面扩展 | [typeset](references/typeset.md)、[layout](references/layout.md)、[adapt](references/adapt.md)、[clarify](references/clarify.md)、[interaction-state](references/interaction-state.md) | 扩展页面、状态和复用组件，按需确认关键操作并核对跨页一致性 |
 | 阶段 6 跨页面打磨 | [clarify](references/clarify.md)、[colorize](references/colorize.md)、[typeset](references/typeset.md)、[layout](references/layout.md)、[harden](references/harden.md)、[adapt](references/adapt.md)、[animate](references/animate.md)、[audit](references/audit.md)、[interaction-state](references/interaction-state.md) | 按用户选择的维度检查和修改；涉及操作或状态时确认行为 |
 | 阶段 7 设计系统 | [audit](references/audit.md)、[clarify](references/clarify.md) | 核对实现约束和文案规则 |
@@ -44,13 +44,7 @@ triggers:
 
 **Node.js 辅助检查**：`<skill>` 代表本 `SKILL.md` 所在目录。`node <skill>/scripts/doctor.mjs --target <项目目录> --folder <端目录名>` 检查选定端的状态与阶段产物；Web 源码的机械线索使用 `node <skill>/scripts/scan.mjs --target <文件或目录> [--scope type|layout|audit]`。两者均支持 `--json`。脚本不能替代对运行界面、原生应用和用户路径的观察。
 
-以下负面约束与内部能力同时适用，不负责推导正面设计方向。用户明确要求优先；没有明确要求时，已核实的现有设计资产优先；其余字体和视觉选择来自产品定义与参考。
-
-- **字体禁忌**：不用 Inter、Roboto、Arial、DM Sans、DM Serif、Plus Jakarta Sans、Outfit、Space Grotesk、Space Mono、IBM Plex（所有系列）、Fraunces、Instrument Serif、Playfair Display、Cormorant、Lora、Crimson、Newsreader、Syne
-- **颜色禁忌**：不用紫蓝渐变背景；不用米白/骨白/米色背景搭配黄铜/陶土/深酒红色强调色的惯常“高端消费品”组合；不用霓虹光晕
-- **布局禁忌**：不在每节上方都放 eyebrow；不用 01/02/03 编号章节标记、相同的三卡功能行、hero 指标模板、渐变文字或默认装饰性的玻璃拟态
-- **文案禁忌**：不用 em dash；不用 “seamless”“elevate”“unleash”“empower”“next-gen” 或格言式三行排比
-- **通用规则**：不用 Lorem Ipsum、纯黑 `#000000`、纯白 `#FFFFFF` 或没有实际用途的大面积装饰阴影
+字体、颜色、布局与文案的避用模式分别见 [typeset](references/typeset.md)、[colorize](references/colorize.md)、[layout](references/layout.md) 和 [clarify](references/clarify.md)；它们不负责推导正面设计方向。用户明确要求优先；没有明确要求时，已核实的现有设计资产优先；其余选择来自产品定义与参考。最终只将适用的规则写入 `DESIGN.md` 的“该做与不该做”。
 
 ## 流程总览
 
@@ -359,7 +353,7 @@ triggers:
 
 **执行方式：**
 
-1. **读取本阶段内部能力。** 按 [shape](references/shape.md) 从 `01-product.md`、`02-references.md` 和已确认的关键页面提炼设计张力；按 [bolder](references/bolder.md) 拉开候选差异；生成后按 [critique](references/critique.md) 检查方向是否服务产品。无需扫描或询问用户选择外部 skill。
+1. **读取本阶段内部能力。** 按 [shape](references/shape.md) 从 `01-product.md`、`02-references.md` 和已确认的关键页面提炼设计张力；按 [bolder](references/bolder.md) 拉开候选差异；生成前按候选涉及的字体、颜色、布局与文案读取 [typeset](references/typeset.md)、[colorize](references/colorize.md)、[layout](references/layout.md)、[clarify](references/clarify.md)；生成后按 [critique](references/critique.md) 检查方向是否服务产品。无需扫描或询问用户选择外部 skill。
 
 2. **记录约束来源。** 在 `docs/prototype/{end}/design/state.md` 记录已使用的内部能力及用户明确指定的额外 skill。用户的明确偏好和已锁定决策始终优先。
 
@@ -438,10 +432,10 @@ triggers:
 
 **关键要求：**
 
-- 按内部 [typeset](references/typeset.md)、[layout](references/layout.md)、[delight](references/delight.md) 细化已选方向；Web/H5 还按 [adapt](references/adapt.md) 核对实际触控与焦点。只读取本轮实际需要的文件。
+- 按内部 [typeset](references/typeset.md)、[colorize](references/colorize.md)、[layout](references/layout.md)、[clarify](references/clarify.md)、[delight](references/delight.md) 细化已选方向；Web/H5 还按 [adapt](references/adapt.md) 核对实际触控与焦点。只读取本轮实际需要的文件。
 - 生成 v1 前，核对目标项目的框架、构建工具、组件库、可复用 UI 组件和主题入口；新项目采用上述 Web/H5 默认技术栈。把实际选择和预览运行方式写入 `docs/prototype/{end}/design/state.md`，并带入 `DESIGN.draft.md`。
 - Web/H5 在 `docs/prototype/{end}/design/<platform>/` 建立独立预览入口，使用对应组件库和项目样式，并把共用语义 tokens 映射到各端主题。新项目可由同一 Vite 原型工程运行两个入口；已有项目使用其现有构建工具。每轮保留带版本号的页面源码，入口指向当前版本，旧版本仍可复查。源码后缀沿用目标框架（Web/H5 新项目为 `.vue`）；原生平台沿用原有预览形式和 native 指引。
-- 每次迭代创建新版本源码（v1、v2、v3……），绝不覆盖旧版本。使用可信的示例数据，不用 Lorem Ipsum；本地状态只用于演示 UI 交互。
+- 每次迭代创建新版本源码（v1、v2、v3……），绝不覆盖旧版本。使用可信的示例数据；本地状态只用于演示 UI 交互。
 - 首屏有改变业务状态或操作可用性的关键动作时，生成 v1 前按 [interaction-state](references/interaction-state.md) 与用户确认；后续反馈改变相关规则时，只重新确认受影响的操作。
 
 **执行方式：**
