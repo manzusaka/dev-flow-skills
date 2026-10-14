@@ -23,7 +23,7 @@
 
 这个 skill 的描述读起来像是 session 的恢复：写一份摘要、在这里结束、在那里恢复。这样读起来它像是一个更差的 `/compact`，所以被一带而过。Fork 的情况才是值得了解的。你**留在自己的 session 里**，把积累的 context 的一份副本交给一个并行工作的第二个 agent。
 
-这正是经由 [prototype](https://aihero.dev/skills-prototype) 的绕行所利用的。你正深陷一场设计对话，遇到了一个只有运行代码才能解决的问题，而你不想把已经建立起来的 thread 花在查明它上。Hand off 到一个 prototype session，拿到答案，把答案交回来，并从原来的 thread 中引用它。两次跨越，一场活的对话，什么也不用重新解释。
+你正深陷一场设计对话，遇到了一个只有运行代码才能解决的问题，而你不想把已经建立起来的 thread 花在查明它上。Hand off 到一个独立 session，拿到答案，把答案交回来，并从原来的 thread 中引用它。两次跨越，一场活的对话，什么也不用重新解释。
 
 在 phase 边界上，五个选项中的三个保留的东西各不相同：`/compact` 保留你的意图，`/clear` 什么都不保留，`/handoff` 保留这项工作移动的能力。
 
@@ -73,4 +73,4 @@
 
 ## Where it fits
 
-`handoff` 是一个**随时可调用的 standalone**，它位于 sessions 之间的接缝处，而不是某条 build chain 内部——但它是窄窄一个，而诚实的图景是：在 phase 边界上，你用它会比用其他四个选项少得多。它最近的邻居是 [prototype](https://aihero.dev/skills-prototype)，因为 prototype 住在自己的目录里，而出出进进的往返正是这个 skill 所为之服务的跨越。当你处于一个边界、不确定是该 continue、clear、hand off、delegate 还是 compact 时，[ask-matt](https://aihero.dev/skills-ask-matt) 携带给那五个判序的 tree——并带你路由到该集合的其余部分。
+`handoff` 是一个**随时可调用的 standalone**，它位于 sessions 之间的接缝处，而不是某条 build chain 内部——但它是窄窄一个，而诚实的图景是：在 phase 边界上，你用它会比用其他四个选项少得多。当你处于一个边界、不确定是该 continue、clear、hand off、delegate 还是 compact 时，[ask-matt](https://aihero.dev/skills-ask-matt) 携带给那五个判序的 tree——并带你路由到该集合的其余部分。

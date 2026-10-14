@@ -35,9 +35,9 @@ triggers:
 | 阶段 | 按需读取的内部能力 | 用途 |
 |-------|------------------|------|
 | 阶段 3 方向探索 | [shape](references/shape.md)、[bolder](references/bolder.md)、[critique](references/critique.md) | 明确方向主张、拉开差异、评审候选 |
-| 阶段 4 首屏 | [typeset](references/typeset.md)、[layout](references/layout.md)、[adapt](references/adapt.md)、[delight](references/delight.md) | 在已选方向内细化首屏并核对 Web/H5 关键工艺 |
-| 阶段 5 核心页面扩展 | [typeset](references/typeset.md)、[layout](references/layout.md)、[adapt](references/adapt.md)、[clarify](references/clarify.md) | 扩展页面、状态和复用组件，核对关键工艺与跨页一致性 |
-| 阶段 6 跨页面打磨 | [clarify](references/clarify.md)、[colorize](references/colorize.md)、[typeset](references/typeset.md)、[layout](references/layout.md)、[harden](references/harden.md)、[adapt](references/adapt.md)、[animate](references/animate.md)、[audit](references/audit.md) | 按用户选择的维度检查和修改 |
+| 阶段 4 首屏 | [typeset](references/typeset.md)、[layout](references/layout.md)、[adapt](references/adapt.md)、[delight](references/delight.md)、[interaction-state](references/interaction-state.md) | 在已选方向内细化首屏，按需确认关键操作与状态并核对 Web/H5 关键工艺 |
+| 阶段 5 核心页面扩展 | [typeset](references/typeset.md)、[layout](references/layout.md)、[adapt](references/adapt.md)、[clarify](references/clarify.md)、[interaction-state](references/interaction-state.md) | 扩展页面、状态和复用组件，按需确认关键操作并核对跨页一致性 |
+| 阶段 6 跨页面打磨 | [clarify](references/clarify.md)、[colorize](references/colorize.md)、[typeset](references/typeset.md)、[layout](references/layout.md)、[harden](references/harden.md)、[adapt](references/adapt.md)、[animate](references/animate.md)、[audit](references/audit.md)、[interaction-state](references/interaction-state.md) | 按用户选择的维度检查和修改；涉及操作或状态时确认行为 |
 | 阶段 7 设计系统 | [audit](references/audit.md)、[clarify](references/clarify.md) | 核对实现约束和文案规则 |
 
 原生平台的排版、布局、适配、动效和审查还需按目标平台读取 [iOS](references/native/ios.md)、[Android](references/native/android.md)、[原生适配](references/native/adapt.native.md) 或 [原生审查](references/native/audit.native.md)。
@@ -442,6 +442,7 @@ triggers:
 - 生成 v1 前，核对目标项目的框架、构建工具、组件库、可复用 UI 组件和主题入口；新项目采用上述 Web/H5 默认技术栈。把实际选择和预览运行方式写入 `docs/prototype/{end}/design/state.md`，并带入 `DESIGN.draft.md`。
 - Web/H5 在 `docs/prototype/{end}/design/<platform>/` 建立独立预览入口，使用对应组件库和项目样式，并把共用语义 tokens 映射到各端主题。新项目可由同一 Vite 原型工程运行两个入口；已有项目使用其现有构建工具。每轮保留带版本号的页面源码，入口指向当前版本，旧版本仍可复查。源码后缀沿用目标框架（Web/H5 新项目为 `.vue`）；原生平台沿用原有预览形式和 native 指引。
 - 每次迭代创建新版本源码（v1、v2、v3……），绝不覆盖旧版本。使用可信的示例数据，不用 Lorem Ipsum；本地状态只用于演示 UI 交互。
+- 首屏有改变业务状态或操作可用性的关键动作时，生成 v1 前按 [interaction-state](references/interaction-state.md) 与用户确认；后续反馈改变相关规则时，只重新确认受影响的操作。
 
 **执行方式：**
 
@@ -493,6 +494,7 @@ triggers:
 - 以 `DESIGN.draft.md` 为当前事实来源。不得悄悄创造第二套颜色、字体、圆角、按钮或动效系统。
 - 使用可信的示例数据和内容。每页包含与职责相关的 default、loading、empty、error 及重要交互状态；只实现验证 UI 所需的本地交互。
 - 每页提供 UI 实现契约：平台与预览入口、组件库组件或自定义组件、布局、状态矩阵、交互、示例数据和无障碍要求；不要求真实路由、API 或业务状态管理。
+- 新增页面有关键操作时，生成 v1 前按 [interaction-state](references/interaction-state.md) 确认状态变化和界面反馈，并写入该页状态矩阵与实现契约。
 - 生成整组完整预览前，先维护页面地图和组件清单。
 - 页面暴露跨产品设计问题时，先更新 `DESIGN.draft.md`，再把决定应用到受影响页面。
 - 页面局部例外记录为 `Surface` 规则，不能只藏在预览源码中。
@@ -531,6 +533,8 @@ triggers:
 ## 阶段 6：跨页面打磨
 
 **目标**：把首屏与阶段 5 的核心页面作为一套系统，逐维度打磨。此阶段**可选**；如果用户在阶段 5 后已满意，可以直接进入阶段 7。它用于把一组基本可用的页面变成一致、无障碍且可供开发参考的界面家族。
+
+所选打磨项若改变页面操作条件、业务状态或失败后的恢复路径，生成受影响预览的新版本前按 [interaction-state](references/interaction-state.md) 确认；其他打磨项沿用已确认的规则。
 
 **三种模式：**
 

@@ -25,9 +25,9 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 这个 skill 给你用来思考的词是 **flow**：一条穿*过*多个 skills 的路径，而不是单个 skill。说出你的处境，就把你放到了某个 flow 的某一步上，这与「这就是匹配你关键字的 skill」是不同的答案。存在四种 route，而 skill 本身完整地携带它们：
 
-- **Main flow**，从 idea 到发布。Grill、proposal、OpenSpec planning、implement、review，其中还有两个分支：当一个疑问需要可运行的代码来敲定时，有一个 prototype 绕行；以及完整 planning 只有在 build 跨越不止一次 session 时，才配得上它的成本。
+- **Main flow**，从 idea 到发布。Grill、proposal、OpenSpec planning、implement、review；完整 planning 只有在 build 跨越不止一次 session 时，才配得上它的成本。
 - **On-ramps**，用于某种产生工作、随后并入 main flow 的处境：incoming bug reports、某个坏掉的东西、或一份太过模糊、大到一次 session 装不下的 effort。
-- **Standalones**，脱离所有 flow，按自身的条件被取用——prototype、questionnaire、你已经身处其中的 merge conflict。
+- **Standalones**，脱离所有 flow，按自身的条件被取用——questionnaire、你已经身处其中的 merge conflict。
 - **底下一层 vocabulary**，即当问题出在词语而非流程时，其他 skills 会引入的两个参考。
 
 ## The phase boundary

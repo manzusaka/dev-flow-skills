@@ -149,7 +149,7 @@ npx skills remove -g zero-to-design
 
 ## 内置设计能力与检查
 
-阶段 3–7 按需读取 `references/` 中的 12 项设计能力；iOS/Android 使用相应的 `references/native/` 指引。`scripts/doctor.mjs` 检查 `docs/prototype/{end}/design/state.md` 与阶段产物；`scripts/scan.mjs` 对 Web 源码提供有限的字体、布局和实现线索，结果仍需结合渲染核对。两个脚本只依赖 Node.js 内置模块。用户明确指定其他 skill 时可以额外使用。
+阶段 3–7 按需读取 `references/` 中的 13 项设计能力；其中 [interaction-state](references/interaction-state.md) 用于在阶段 4、5、6 确认设计页的关键操作与状态。iOS/Android 使用相应的 `references/native/` 指引。`scripts/doctor.mjs` 检查 `docs/prototype/{end}/design/state.md` 与阶段产物；`scripts/scan.mjs` 对 Web 源码提供有限的字体、布局和实现线索，结果仍需结合渲染核对。两个脚本只依赖 Node.js 内置模块。用户明确指定其他 skill 时可以额外使用。
 
 ```bash
 node <zero-to-design目录>/scripts/doctor.mjs --target <项目目录> --folder <端目录名> --json

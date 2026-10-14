@@ -44,7 +44,7 @@ map 上承载四样东西：
 | Type | Mode | 何时使用 | 如何解决 |
 | --- | --- | --- | --- |
 | `grilling` | HITL | 默认。这个问题可以通过谈清楚来敲定。 | [grilling](https://aihero.dev/skills-grilling) 加上 [domain-modeling](https://aihero.dev/skills-domain-modeling)，在一个全新的 session 中 |
-| `prototype` | HITL | "这应该长什么样"或"这该怎么表现"——一个谈话无法敲定的问题。 | [prototype](https://aihero.dev/skills-prototype)，把构建出的 artifact 作为 asset 从 record 链接过来 |
+| `prototype` | HITL | "这应该长什么样"或"这该怎么表现"——一个谈话无法敲定的问题。 | 构建具体 artifact，并从 record 链接过来 |
 | `research` | AFK | 工作目录之外的一个事实阻塞了一个 decision。 | 一个 [research](https://aihero.dev/skills-research) [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent)，在 charting 时启动，并在一个 `research/<name>` branch 上并行烧掉 |
 | `task` | Either | 没有要决定的事，但手动工作阻塞了一个 decision——开通访问权限、注册一个服务、移动数据以便看清它的形状。 | 能由 agent 独自完成的就独自完成，否则给人类一份精确的 checklist |
 
@@ -95,4 +95,4 @@ Frontier 就是用来向你展示哪些是可领取的，每个 record 的 Block
 
 `wayfinder` 是一个 **situational on-ramp**，而不是默认的正门。以 grill 为起点的 idea → ship 链条仍然是大多数工作的起点；当 idea 大到无法装进一个 session 时，你才爬上 wayfinder，而它会在 [to-spec](https://aihero.dev/skills-to-spec) 处重新汇入那条链条——decisions 逐个收束成 OpenSpec changes——因为一张已清除的 map 是交接，而不是继续构建。
 
-在底层，它主要是穿着 wayfinder 调度外衣的其他 skills：[grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling) 解决默认的 record 类型，[prototype](https://aihero.dev/skills-prototype) 解决谈话解决不了的 records，而 [research](https://aihero.dev/skills-research) 以 subagent 运行，让它的阅读永远不会落进你的 session。[handoff](https://aihero.dev/skills-handoff) 是进出的桥——从一个自我膨胀的 conversation 进入 map，或在 session 中途冒出支线任务时离开 map。至于其他一切，[ask-matt](https://aihero.dev/skills-ask-matt) 会在整套中为你引路。
+在底层，它主要是穿着 wayfinder 调度外衣的其他 skills：[grilling](https://aihero.dev/skills-grilling) 和 [domain-modeling](https://aihero.dev/skills-domain-modeling) 解决默认的 record 类型，而 [research](https://aihero.dev/skills-research) 以 subagent 运行，让它的阅读永远不会落进你的 session。Prototype record 则用具体 artifact 解决谈话解决不了的问题。[handoff](https://aihero.dev/skills-handoff) 是进出的桥——从一个自我膨胀的 conversation 进入 map，或在 session 中途冒出支线任务时离开 map。至于其他一切，[ask-matt](https://aihero.dev/skills-ask-matt) 会在整套中为你引路。

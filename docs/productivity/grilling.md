@@ -14,7 +14,6 @@
 | --- | --- |
 | 你在工作目录里 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)——同一个 session，并且它会边进行边写出 `CONTEXT.md` 和 ADRs |
 | 一个太大、一个 session 装不下的 effort | [wayfinder](https://aihero.dev/skills-wayfinder)——它绘制一张 map，并在 decision records 内部运行 grilling |
-| 一个交谈无法解决、关于某物该如何呈现或感觉的问题 | [prototype](https://aihero.dev/skills-prototype)——构建一次性版本，然后回来 |
 | 一个你自己的、需要访谈的 skill | 从它内部调用 `/grilling`，而不是另写一场访谈 |
 
 ## The round, the frontier, and who decides
