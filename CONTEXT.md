@@ -17,6 +17,14 @@
 **OpenSpec change** 的执行轨迹：change 目录下的 `trace.md`。由 `implement` 创建并写入、`finalize-spec` 追加，记录下游步骤需要且无法重推导的运行时事实（review fixed point、最终提交、审查结果、归档路径）。
 _Avoid_: execution log
 
+### zero-to-design
+
+**首次设计任务**:
+从尚无获批设计规范开始，到首批设计预览和设计规范获得批准的一次完整设计工作。
+
+**持续设计任务**:
+以已有的权威设计来源为起点，完成一个新增页面、组件或局部设计改动并取得批准的一次完整设计工作。
+
 ## Relationships
 
 - 一个 wayfinder **map** 包含多个 **Decision records**
