@@ -26,7 +26,6 @@ import {
 import { discoverSpecFiles, hasAnyFileUnder } from '../utils/spec-discovery.js';
 import {
   METADATA_FILENAME,
-  readChangeMetadata,
   readRetireCapabilitiesMarker,
   readSkipSpecsMarker,
 } from '../utils/change-metadata.js';
@@ -1173,13 +1172,6 @@ export class ArchiveCommand {
         available.length > 0
           ? `未找到变更 '${changeName}'。可用的变更：${available.join(', ')}`
           : `未找到变更 '${changeName}'。此根目录下不存在活跃的变更。`
-      );
-    }
-
-    if (readChangeMetadata(changeDir, root.path)?.planning_invalidated) {
-      throw new ArchiveBlockedError(
-        'archive_planning_invalidated',
-        `变更 '${changeName}' 的规划已失效；请先运行 /to-plan ${changeName} 复核并验证 design.md、tasks.md。`
       );
     }
 

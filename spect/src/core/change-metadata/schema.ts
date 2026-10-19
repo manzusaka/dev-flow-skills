@@ -39,9 +39,6 @@ export const ChangeMetadataSchema = z.object({
   // complete - that path prefix, not the artifact id, is the contract custom
   // schemas inherit.
   skip_specs: z.boolean().optional(),
-  // Set when proposal or delta specs change after planning. to-plan clears it
-  // only after reviewing and validating the downstream planning artifacts.
-  planning_invalidated: z.boolean().optional(),
   // Declares that this change may retire a capability: when its REMOVED entries
   // take the last requirement a capability has, archive deletes that
   // capability's main spec instead of aborting on a spec it could not write

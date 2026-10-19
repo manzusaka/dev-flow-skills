@@ -1,17 +1,17 @@
 ---
 name: to-plan
-description: 读取 `/to-spec` 确认的 OpenSpec proposal 与 delta specs，编写或复核 design.md、tasks.md 及长期领域文档。
+description: 读取 `/to-spec` 确认的 OpenSpec proposal 与 delta specs，编写 design.md、tasks.md 及长期领域文档。
 disable-model-invocation: true
 ---
 
 # To Plan
 
-把已经确认的 OpenSpec proposal 与 delta specs 推进为可执行的 `design.md` 和 `tasks.md`；重入时复核因上游变化而失效的计划。调用形式是 `/to-plan [change-name]`。
+把已经确认的 OpenSpec proposal 与 delta specs 推进为可执行的 `design.md` 和 `tasks.md`。调用形式是 `/to-plan [change-name]`。
 
 本 skill 的边界：
 
 - 不创建 change，也不实现项目代码；完成后停止。
-- 只授权写入 design、tasks 和经用户批准的 durable docs；行为需要调整时交回用户显式运行 `/to-spec <change-name>`。
+- 只授权写入首次规划的 design、tasks 和经用户批准的 durable docs；行为需要调整时列出冲突并停止，由用户决定后续处理。
 - 缺少 flow docs 或 proposal 时停止，让用户显式运行 `/setup-skills` 或 `/to-spec`。
 
 ## Process
@@ -50,19 +50,20 @@ spect templates --json
 在此基础上读取并验证：
 
 - `CONTEXT.md` 或 `CONTEXT-MAP.md` 指向的相关 context
+- 与本次 change 相关的当前版本 PRD（如存在；不读取旧版本作为当前依据）
 - 相关 `docs/adr/` 和 context-scoped ADRs
 - change 中的 `.openspec.yaml` 与 `proposal.md`
 - proposal 声明的现有 capability specs、相关代码和测试
 
 本流程要求当前 schema 生成 `specs/**/*.md`、`design.md` 和 `tasks.md`，并以 `tasks.md` 作为 implement tracking artifact；目标项目的 `openspec/` 文件是 single source of truth。
 
-如果 `spect status` 报告错误、proposal 留有会改变行为的未决项，或 proposal 中的 capability 没有且仅有一个对应 delta spec（合法 `skip_specs: true` 除外），停止并准确报告缺口，要求用户重新从 `/to-spec <change-name>` 处理。已有 `design.md` 或 `tasks.md` 时（`existingOutputPaths` 非空），展示现状并让用户确认复核和修改范围；未经确认不覆盖。`planningInvalidated: true` 时必须复核两份下游产物与已勾选任务。
+如果 `spect status` 报告错误、proposal 留有会改变行为的未决项，或 proposal 中的 capability 没有且仅有一个对应 delta spec（合法 `skip_specs: true` 除外），停止并准确报告缺口。发现当前 PRD 内部或当前 PRD、现行 ADR 与本次 change 之间的决定不一致时，列出冲突双方的文件位置和内容，停止规划，由用户决定是否回到 `/to-prd` 修订或另行处理 change。已有 `design.md` 或 `tasks.md` 时停止；本 skill 不复核或覆盖已有计划。
 
-完成条件：proposal、delta specs、schema、templates 和已有 artifacts 已盘点，行为契约完整，下一次写入的文件集合已获用户确认。
+完成条件：proposal、delta specs、schema 和 templates 已盘点，行为契约完整，且目标 change 尚无 design 和 tasks。
 
 ### 3. Grill the design
 
-围绕 proposal、confirmed specs、代码现状、测试 seams、domain docs 和 ADRs 运行一次完整的 `/grilling` session。持续遍历 design tree，直到所有会改变方案或任务拆分的 decisions 都已解决，并由用户明确确认共同理解已经达成。若讨论发现行为契约需要变化，停止 planning，交回用户显式运行 `/to-spec <change-name>`；随后再进入本 skill 复核。
+围绕 proposal、confirmed specs、代码现状、测试 seams、domain docs 和 ADRs 运行一次完整的 `/grilling` session。持续遍历 design tree，直到所有会改变方案或任务拆分的 decisions 都已解决，并由用户明确确认共同理解已经达成。若讨论发现行为契约需要变化，指出具体来源并停止 planning，由用户决定后续处理。
 
 探索环境事实是 agent 的工作；架构和设计取舍交给用户决定。讨论至少覆盖实际相关的模块边界、数据流、兼容性、迁移/回滚、安全、性能和测试策略，不为不相关的类别发明工作。
 
@@ -71,9 +72,7 @@ spect templates --json
 - 项目特有、已经解决的 canonical domain terms
 - 同时满足 hard to reverse、surprising without context、real trade-off 的 ADR decisions
 
-重入且任务已有勾选时，对照新规格与当前代码复核受影响的已完成任务：仍满足要求的保留勾选，不满足的取消勾选；没有任务覆盖的新行为补充任务。将这些修改纳入 tasks 草稿供用户确认。
-
-完成条件：design tree frontier 为空，用户确认讨论充分，受影响的已完成任务已复核，durable-doc candidates 已明确列出。
+完成条件：design tree frontier 为空，用户确认讨论充分，durable-doc candidates 已明确列出。
 
 ### 4. Write `design.md`
 
@@ -135,9 +134,9 @@ spect validate <change-name> --strict --no-interactive
 - proposal 中每个 capability 都由 delta spec 覆盖，或 `skip_specs: true` 合法生效；delta specs 已由 `/to-spec` 确认。
 - artifacts 中没有未完成的 template comments、占位符或会影响实施的 open question。
 - durable docs 的 diff 与用户批准内容一致。
-- 已勾选任务仍满足当前规格，不满足的任务已取消勾选；新行为已被 tasks 覆盖。
+- tasks 覆盖当前 proposal、specs 和 design 中的行为。
 
-运行 `git diff --check`。全部验证通过后清除 `.openspec.yaml` 的 `planning_invalidated` 标志（移除该字段或设为 false），再运行 `spect status --change <change-name> --json` 确认 `isPlanningComplete: true`。验证失败时保留标志。报告 change name、生成或更新的 artifact paths、durable docs 和验证结果。
+运行 `git diff --check`。全部验证通过后运行 `spect status --change <change-name> --json` 确认 `isPlanningComplete: true`。报告 change name、生成的 artifact paths、durable docs 和验证结果。
 
 完成条件：所有检查通过；失败时保留已批准的 artifacts，准确报告失败项和安全的继续位置。
 

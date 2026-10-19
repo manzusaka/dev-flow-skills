@@ -1,5 +1,5 @@
 interface:
   display_name: "转为 Spec"
-  short_description: "创建或修改 OpenSpec proposal 与 delta specs"
+  short_description: "创建 OpenSpec proposal 与 delta specs"
 policy:
   allow_implicit_invocation: false

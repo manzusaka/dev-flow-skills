@@ -177,8 +177,6 @@ export interface ChangeStatus {
   actionContext: ActionContext;
   /** Whether all planning artifacts are complete */
   isPlanningComplete: boolean;
-  /** Whether changed proposal/specs require design and tasks to be reviewed */
-  planningInvalidated: boolean;
   /** Compatibility alias for isPlanningComplete */
   isComplete: boolean;
   /** Artifact IDs required before implement phase (from schema's implement.requires) */
@@ -517,7 +515,6 @@ export function formatChangeStatus(
   const orderMap = new Map(buildOrder.map((id, idx) => [id, idx]));
   artifactStatuses.sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0));
   const isComplete = context.graph.isComplete(context.completed);
-  const planningInvalidated = context.metadata?.planning_invalidated === true;
   const artifactIds = artifactStatuses.map((artifact) => artifact.id);
 
   return {
@@ -526,18 +523,15 @@ export function formatChangeStatus(
     planningHome: summarizePlanningHome(context.planningHome),
     changeRoot: context.changeDir,
     artifactPaths,
-    isPlanningComplete: isComplete && !planningInvalidated,
-    planningInvalidated,
-    isComplete: isComplete && !planningInvalidated,
+    isPlanningComplete: isComplete,
+    isComplete,
     implementRequires,
-    nextSteps: planningInvalidated
-      ? [`运行 /to-plan ${context.changeName} 复核 design.md、tasks.md 和已完成任务。`]
-      : buildNextSteps({
-          changeName: context.changeName,
-          artifactStatuses,
-          allArtifactsComplete: isComplete,
-          ...(options.storeId ? { storeId: options.storeId } : {}),
-        }),
+    nextSteps: buildNextSteps({
+      changeName: context.changeName,
+      artifactStatuses,
+      allArtifactsComplete: isComplete,
+      ...(options.storeId ? { storeId: options.storeId } : {}),
+    }),
     actionContext: buildActionContext({
       projectRoot: context.projectRoot,
       artifactIds,

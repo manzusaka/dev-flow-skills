@@ -18,7 +18,7 @@ disable-model-invocation: true
 
 ### 2. Gate on planning
 
-运行 `spect status --change <change-name> --json`：`tasks.md` 缺失、`planningInvalidated: true` 或 planning 未完成时停止，指向 `/to-plan <change-name>`。`skip_specs: true` 的 change 不要求 specs。随后若 `spect instructions implement` 返回 `blocked`，同样停止并报告原因。
+运行 `spect status --change <change-name> --json`：`tasks.md` 缺失或 planning 未完成时停止，指向 `/to-plan <change-name>`。`skip_specs: true` 的 change 不要求 specs。随后若 `spect instructions implement` 返回 `blocked`，同样停止并报告原因。
 
 ### 3. Load context
 

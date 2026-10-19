@@ -423,10 +423,7 @@ export async function generateImplementInstructions(
   let state: ImplementInstructions['state'];
   let instruction: string;
 
-  if (context.metadata?.planning_invalidated) {
-    state = 'blocked';
-    instruction = `规划已失效：proposal 或 delta specs 已变更。请先运行 /to-plan ${changeName} 复核 design.md、tasks.md 和已完成任务。`;
-  } else if (missingArtifacts.length > 0) {
+  if (missingArtifacts.length > 0) {
     state = 'blocked';
     instruction = `暂时无法实施此变更。缺少产出物：${missingArtifacts.join(', ')}。\n请先使用 openspec-continue-change skill 创建缺失的产出物。`;
   } else if (tracksFile && !tracksFileExists) {

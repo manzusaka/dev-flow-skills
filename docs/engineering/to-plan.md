@@ -1,6 +1,6 @@
 ## What it does
 
-`to-plan` 读取 `/to-spec` 已确认的 proposal 与 delta specs，编写或复核 `design.md` 和 `tasks.md`。这次调用止于 planning 和获批的 durable docs，不实现项目代码。
+`to-plan` 读取 `/to-spec` 已确认的 proposal 与 delta specs，编写 `design.md` 和 `tasks.md`。这次调用止于 planning 和获批的 durable docs，不实现项目代码。
 
 ```text
 proposal.md + delta specs → architecture grilling → design.md → tasks.md
@@ -29,7 +29,7 @@ Exact match 会直接选择 `openspec/changes/<change-name>/`。参数没有 exa
 - OpenSpec config、schema 和 artifact templates
 - `openspec/specs/` 与 `openspec/changes/`
 
-选中的 change 必须已经由 `/to-spec` 创建 `.openspec.yaml`、`proposal.md` 和对应的 delta specs；`skip_specs: true` 时无需 delta specs。缺少前置产物时，`to-plan` 停止并提示重新从 `/to-spec <change-name>` 处理。
+选中的 change 必须已经由 `/to-spec` 创建 `.openspec.yaml`、`proposal.md` 和对应的 delta specs；`skip_specs: true` 时无需 delta specs。缺少前置产物时，`to-plan` 停止并报告缺口。已有 design 或 tasks 时也停止，不复核或覆盖已有计划。
 
 整个流程依赖 `spect` CLI：change discovery 用 `spect list`，artifact graph 用 `spect status`，各阶段指令用 `spect instructions`，最终验证用 `spect validate`。命令缺失时经用户确认由 `/init-cli` 安装。
 
@@ -41,13 +41,11 @@ Proposal 的 Capabilities 是已确认的行为契约。`to-plan` 检查每个 N
 - Modified Capability 从 canonical spec 复制完整 requirement block 后修改。
 - Specs 只记录 observable behavior，不携带架构方案或执行步骤。
 
-纯重构、工具链或文档 change 只有在 `.openspec.yaml` 已明确设置 `skip_specs: true` 时才跳过 specs。行为需要改变时，交回用户显式运行 `/to-spec <change-name>`。
+纯重构、工具链或文档 change 只有在 `.openspec.yaml` 已明确设置 `skip_specs: true` 时才跳过 specs。当前 PRD、现行 ADR 与本次 change 的决定不一致时，`to-plan` 列出双方准确位置并停止，由用户决定后续处理。
 
 ## Architecture grilling and design
 
 Specs 确认后，skill 围绕代码、测试 seams、domain docs、ADRs 和 change 运行一次完整 `/grilling` session。它不是固定一轮问答：design tree 会持续推进，直到所有会改变方案或 tasks 的问题都解决，用户确认共同理解已经达成。
-
-若 `.openspec.yaml` 标记 `planning_invalidated: true`，还要复核已有 design、tasks 和受影响的已勾选任务：不再满足新规格的任务取消勾选，缺少任务的新行为补充任务。
 
 之后严格使用目标项目模板生成 `design.md`。每个 change 都生成 design；简单 change 可以很短，但不能为了填模板发明 decision。只有不会改变 specs、方案或 tasks 的问题才能留在 Open Questions。
 
@@ -84,7 +82,7 @@ Skill 会展示 proposed diffs；用户确认后才写入。没有合格内容�
 2. `tasks.md` 草稿
 3. `CONTEXT.md` / ADR proposed diffs
 
-已有 artifact 不会被静默覆盖。每个 checkpoint 都允许用户修改或停止，后续 artifact 只建立在已经确认的前置 artifact 上。
+本 skill 不覆盖已有 artifact。每个 checkpoint 都允许用户修改或停止，后续 artifact 只建立在已经确认的前置 artifact 上。
 
 ## Verification
 
@@ -96,7 +94,7 @@ Skill 会展示 proposed diffs；用户确认后才写入。没有合格内容�
 - Durable docs 只包含用户批准的长期知识。
 - `git diff --check` 通过。
 
-验证通过后清除 `planning_invalidated`，再用 `spect status` 确认 planning 完成；验证失败时保留标志，`/implement` 与 `spect archive` 继续被阻止。
+验证通过后用 `spect status` 确认 planning 完成。
 
 ## Where it fits
 
