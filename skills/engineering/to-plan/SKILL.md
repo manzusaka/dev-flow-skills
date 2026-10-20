@@ -6,118 +6,95 @@ disable-model-invocation: true
 
 # To Plan
 
-把已经确认的 OpenSpec proposal 与 delta specs 推进为可执行的 `design.md` 和 `tasks.md`。调用形式是 `/to-plan [change-name]`。
-
-本 skill 的边界：
-
-- 不创建 change，也不实现项目代码；完成后停止。
-- 只授权写入首次规划的 design、tasks 和经用户批准的 durable docs；行为需要调整时列出冲突并停止，由用户决定后续处理。
-- 缺少 flow docs 或 proposal 时停止，让用户显式运行 `/setup-skills` 或 `/to-spec`。
+将已确认的 proposal 和 delta specs 写成可执行的 `design.md`、`tasks.md`。调用：`/to-plan [change-name]`。仅写首次规划的 design、tasks 和获批的长期文档；不创建 change 或实现代码。缺 flow docs 或 proposal 时停止，提示用户显式运行 `/setup-skills` 或 `/to-spec`；行为契约需变更时报告冲突并停止。
 
 ## Process
 
 ### 1. Resolve the change
 
-先运行 `spect --version` 确认 CLI 可用；报 command not found 时调用 `/init-cli` 安装 `spect`，安装完成前不继续。
+先运行 `spect --version`；若 command not found，调用 `/init-cli`，安装完成前不继续。
 
-在目标 repository root 运行：
+在项目根目录运行：
 
 ```bash
 spect list --json
 ```
 
-命令列出 `openspec/changes/` 下的 active changes（不含 `archive/` 与隐藏目录），输出 `changes + root` JSON shape，含名称、任务完成度和状态。本流程的 change discovery、artifact resolution 和 validation 都通过 `spect` 完成。
+用 `spect` 完成 change discovery、artifact resolution 和 validation。`spect list` 返回 `changes + root` JSON，列出非隐藏、未归档 changes 的名称、任务完成度与状态。
 
-- 传入 `change-name` 且存在 exact directory match 时，直接选择。
-- 把 invocation 中 change name 后的剩余文本视为一个完整 query。Normalized matching 将 query 转为小写，把空格与下划线替换为连字符，并折叠重复连字符；然后依次检查 normalized exact、prefix、substring 和 fuzzy match。需要 semantic matching 时读取候选的 `proposal.md` 摘要。
-- 没有 exact match 时，按上述相关度而不是列表顺序排列全部合理候选，展示名称、匹配理由和 proposal 摘要，让用户确认，不静默选择近似结果。
-- 未传参数时，展示全部 active changes 并让用户选择。
-- 没有 active change 时停止；本 skill 不创建 change。
+- `change-name` 与目录精确匹配时直接选用；无参数则列出全部 active changes 供用户选择。
+- 其余输入视为完整 query：转小写、将空格和下划线改为连字符、折叠重复连字符，依次尝试 normalized exact、prefix、substring、fuzzy；语义匹配时读取候选 proposal 摘要。
+- 无精确目录匹配时按相关度排列合理候选，展示名称、匹配理由和 proposal 摘要供用户确认，不自行选近似项。
+- 无 active change 则停止，不创建 change。
 
 完成条件：用户已确认唯一的 `<change-name>`，目标目录是 `openspec/changes/<change-name>/`。
 
 ### 2. Check the artifact contract
 
-在目标 repository root 运行：
+在项目根目录运行：
 
 ```bash
 spect status --change <change-name> --json
 spect templates --json
 ```
 
-`spect status` 输出 artifact graph 的当前状态：每个 artifact 的 `outputPath`、`resolvedOutputPath`、`existingOutputPaths`、`isPlanningComplete` 与 `implementRequires`；config 与 schema 的一致性、依赖顺序和输出位置由 `spect` 解析，不手工读取。`spect templates` 输出 proposal、specs、design、tasks 的已解析模板路径。
+从 `spect status` 读取 artifact graph 的 `outputPath`、`resolvedOutputPath`、`existingOutputPaths`、`isPlanningComplete`、`implementRequires`；由 `spect` 解析 config/schema、依赖和输出位置。`spect templates` 给出各 artifact 的模板路径。
 
-在此基础上读取并验证：
+据此读取并验证：
 
 - `CONTEXT.md` 或 `CONTEXT-MAP.md` 指向的相关 context
-- 与本次 change 相关的当前版本 PRD（如存在；不读取旧版本作为当前依据）
+- 相关当前版本 PRD（如存在；旧版不作当前依据）
 - 相关 `docs/adr/` 和 context-scoped ADRs
 - change 中的 `.openspec.yaml` 与 `proposal.md`
 - proposal 声明的现有 capability specs、相关代码和测试
 
-本流程要求当前 schema 生成 `specs/**/*.md`、`design.md` 和 `tasks.md`，并以 `tasks.md` 作为 implement tracking artifact；目标项目的 `openspec/` 文件是 single source of truth。
+当前 schema 须生成 `specs/**/*.md`、`design.md`、`tasks.md`，且以 `tasks.md` 追踪 implement；项目 `openspec/` 文件是唯一依据。
 
-如果 `spect status` 报告错误、proposal 留有会改变行为的未决项，或 proposal 中的 capability 没有且仅有一个对应 delta spec（合法 `skip_specs: true` 除外），停止并准确报告缺口。发现当前 PRD 内部或当前 PRD、现行 ADR 与本次 change 之间的决定不一致时，列出冲突双方的文件位置和内容，停止规划，由用户决定是否回到 `/to-prd` 修订或另行处理 change。已有 `design.md` 或 `tasks.md` 时停止；本 skill 不复核或覆盖已有计划。
+`spect status` 报错、proposal 有行为未决项、capability 未恰好对应一个 delta spec（合法 `skip_specs: true` 除外）时，停止并报告缺口。当前 PRD 内部或 PRD、现行 ADR、change 决定冲突时，列出双方文件位置和内容，停止并让用户决定是否回 `/to-prd` 或处理 change。已有 `design.md` 或 `tasks.md` 时停止，不复核或覆盖。
 
 完成条件：proposal、delta specs、schema 和 templates 已盘点，行为契约完整，且目标 change 尚无 design 和 tasks。
 
 ### 3. Grill the design
 
-围绕 proposal、confirmed specs、代码现状、测试 seams、domain docs 和 ADRs 运行一次完整的 `/grilling` session。持续遍历 design tree，直到所有会改变方案或任务拆分的 decisions 都已解决，并由用户明确确认共同理解已经达成。若讨论发现行为契约需要变化，指出具体来源并停止 planning，由用户决定后续处理。
+围绕 proposal、已确认 specs、代码、测试接缝、领域文档和 ADR 运行完整的 `/grilling`。遍历 design tree，解决所有影响方案或任务拆分的决定，直到用户确认共同理解。行为契约需变化时指出来源并停止规划。环境事实由 agent 调查，架构和设计取舍交用户；覆盖适用的模块边界、数据流、兼容性、迁移/回滚、安全、性能与测试，不凭空增加工作。
 
-探索环境事实是 agent 的工作；架构和设计取舍交给用户决定。讨论至少覆盖实际相关的模块边界、数据流、兼容性、迁移/回滚、安全、性能和测试策略，不为不相关的类别发明工作。
+在对话中暂存、此时不写入的长期文档候选：
 
-在 conversation 中暂存两类 durable-doc candidates，此时不写文件：
-
-- 项目特有、已经解决的 canonical domain terms
-- 同时满足 hard to reverse、surprising without context、real trade-off 的 ADR decisions
+- 已确定的项目特有 canonical domain terms
+- 同时满足 hard to reverse、surprising without context、real trade-off 的 ADR 决定
 
 完成条件：design tree frontier 为空，用户确认讨论充分，durable-doc candidates 已明确列出。
 
 ### 4. Write `design.md`
 
-严格使用目标项目的 design template。即使 change 很小也生成精简的 `design.md`，但不为填满模板发明 decision。
+严格按项目 design template 写入；小 change 也创建精简 `design.md`，即使 schema 将其标为 conditional，但不编造决定。运行 `spect instructions design --change <change-name>`，按依赖清单重读磁盘文件。
 
-运行 `spect instructions design --change <change-name>`，按其依赖清单重新从磁盘读取相关文件。即使 schema instruction 把 design 标为 conditional，本 workflow 仍按用户确认始终创建精简 design。
+- Context 写理解方案所需的现状和约束，动机引用 proposal；Goals / Non-Goals 只补设计边界。
+- Decisions 写获确认的方案、理由和真实备选；Risks / Trade-offs 写风险与缓解。
+- Migration Plan 仅在适用时写；Open Questions 仅留不影响 specs、方案或 tasks 的未知项。
 
-- Context 只记录理解方案所需的现状和约束，动机引用 proposal。
-- Goals / Non-Goals 只补充设计边界。
-- Decisions 记录确认的方案、理由和真实备选方案。
-- Risks / Trade-offs 记录风险及缓解方式。
-- Migration Plan 只在适用时出现。
-- Open Questions 只能保留不会改变 specs、方案或 tasks 的未知项。
-
-先展示完整草稿，让用户确认后写入；写入后运行 `spect status --change <change-name> --json` 确认输出已登记，并查看解锁的下一步。
-
-完成条件：`design.md` 符合目标 template，所有会影响实现的 decision 都已确认，且没有未授权的假设或占位符。
+展示完整草稿，获用户确认后写入；运行 `spect status --change <change-name> --json` 确认登记并查看下一步。完成条件：符合模板，影响实现的决定均获确认，无未授权假设或占位符。
 
 ### 5. Write `tasks.md`
 
-严格使用目标项目的 tasks template 和 checkbox 格式。每个 `## N. ...` group 是一个 tracer-bullet vertical slice：贯穿交付该 observable behavior 所涉及的全部层，可独立验证，并适合一个 fresh context window。
+严格按项目 tasks template 和 checkbox 格式编写。每个 `## N. ...` group 是贯穿相关层、可独立验证、适合一个 fresh context window 的 tracer-bullet vertical slice。
 
-运行 `spect instructions tasks --change <change-name>`，按其依赖清单重新从磁盘读取 proposal、specs、design 等文件。
+运行 `spect instructions tasks --change <change-name>`，按依赖清单重读 proposal、specs、design 等文件。
 
-- 每项使用 `- [ ] N.M ...`。
-- 按真实依赖顺序排列 groups 和 tasks；标准模板不增加 `Blocked by` 字段。
-- 每项说明可验证的完成结果，不写无法独立判断的工作。
-- 必要的 prefactoring 放在其解锁的 slice 之前。
-- Wide refactor 使用 expand → migrate batches → contract；只有无法独立保持 green 时才增加最终 integrate-and-verify task。
+- 每项用 `- [ ] N.M ...` 描述可验证结果；按真实依赖排序，不加 `Blocked by` 字段。
+- 必要的 prefactoring 放在所解锁 slice 前；wide refactor 用 expand → migrate batches → contract，仅在无法独立保持 green 时加最终 integrate-and-verify task。
 
-展示完整计划，询问 vertical slices、粒度、顺序和验证方式是否正确；迭代到用户批准后再写入。写入后运行 `spect status --change <change-name> --json` 确认 planning 完成状态。
-
-完成条件：每个 task 都是合法 checkbox、可在单次 session 内完成且可验证；所有 proposal stories、spec requirements 和 confirmed design decisions 都被覆盖。
+展示完整计划，确认 slices、粒度、顺序和验证方式；获批后写入并运行 `spect status --change <change-name> --json` 确认 planning 状态。完成条件：每项均为合法 checkbox，可在单次 session 完成并验证，覆盖所有 proposal stories、spec requirements 和 design 决定。
 
 ### 6. Confirm durable docs
 
-使用 `/domain-modeling` 的内容边界和格式处理 Step 3 暂存的 candidates：
+按 `/domain-modeling` 的内容边界和格式处理 Step 3 的候选：
 
-- `CONTEXT.md` 只补充项目特有的 canonical terms；不写业务行为、spec、实现细节或设计摘要。
-- 只为同时满足三项门槛的 decisions 创建 ADR；change-specific decisions 只保留在 `design.md`。
-- 新 ADR 引用相关 OpenSpec change；需要时在 `design.md` 中补充 ADR reference，避免复制两份完整论证。
+- `CONTEXT.md` 只补项目特有 canonical terms，不写业务行为、spec、实现细节或设计摘要。
+- 仅为 Step 3 中同时满足三项门槛的决定建 ADR；change-specific 决定留在 `design.md`。
+- 新 ADR 引用 OpenSpec change，必要时在 `design.md` 引用 ADR，不复制论证。
 
-先展示 `CONTEXT.md`、ADR 和必要的 `design.md` proposed diffs。用户确认后才写入；没有合格 candidate 时不创建空文件。
-
-完成条件：durable docs 只包含用户批准的长期知识，且与 specs 和 design 不矛盾。
+展示 `CONTEXT.md`、ADR 及必要的 `design.md` diff，获批后才写入；无合格候选则不建空文件。完成条件：只含获批的长期知识，与 specs 和 design 一致。
 
 ### 7. Verify and report
 
@@ -127,18 +104,12 @@ spect templates --json
 spect validate <change-name> --strict --no-interactive
 ```
 
-结构验证交给 `spect`：按 `requires` 检查依赖闭包，按 `generates` 检查输出存在，按 `implement.tracks` 检查 `tasks.md`，并校验 proposal 与 delta specs 的章节结构。
+由 `spect` 检查 `requires` 依赖、`generates` 输出、`implement.tracks` 的 `tasks.md`，以及 proposal 和 delta specs 章节结构。另检查：
 
-在结构验证之外补充语义检查：
+- 每个 capability 有 delta spec，或合法使用 `skip_specs: true`；delta specs 已经 `/to-spec` 确认。
+- 无模板注释、占位符或影响实现的 open question；durable docs diff 与批准内容一致；tasks 覆盖 proposal、specs 和 design。
 
-- proposal 中每个 capability 都由 delta spec 覆盖，或 `skip_specs: true` 合法生效；delta specs 已由 `/to-spec` 确认。
-- artifacts 中没有未完成的 template comments、占位符或会影响实施的 open question。
-- durable docs 的 diff 与用户批准内容一致。
-- tasks 覆盖当前 proposal、specs 和 design 中的行为。
-
-运行 `git diff --check`。全部验证通过后运行 `spect status --change <change-name> --json` 确认 `isPlanningComplete: true`。报告 change name、生成的 artifact paths、durable docs 和验证结果。
-
-完成条件：所有检查通过；失败时保留已批准的 artifacts，准确报告失败项和安全的继续位置。
+运行 `git diff --check`；通过后运行 `spect status --change <change-name> --json` 确认 `isPlanningComplete: true`。报告 change name、artifact 路径、durable docs 和结果。失败时保留获批 artifacts，报告失败项及安全的继续位置。
 
 ## Handoff Next Step
 
