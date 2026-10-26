@@ -16,7 +16,7 @@ disable-model-invocation: true
 
 1. **`/grill-with-docs`** - 通过访谈打磨想法。在 **working directory** 中工作时从这里开始：它是 stateful 的，会把学到的内容保存在 `CONTEXT.md` 和 ADRs 中。（没有 working directory？直接调用 `/grilling`，见 Standalone。`grill-with-docs` 是会留下文档痕迹的版本，只要有 repo 可记录，它就是更好的那个。）
 2. **分支 - 这是 multi-session build 吗？**
-   - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md` 与 delta specs；再运行 **`/to-plan <change-name>`**，补齐 design 和 tracer-bullet tasks；用 **`/implement <change-name>`** 按 tasks 实现、中断可续做，以统一提交和 **`/code-review`** 收尾。
+   - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md` 与 delta specs；再运行 **`/to-plan <change-name>`**，补齐 design、按需设计 stack 和 tracer-bullet tasks；用 **`/implement <change-name>`** 按 tasks 实现、中断可续做，以统一提交和 **`/code-review`** 收尾。
    - **否** -> 在当前 context window 里直接运行 **`/implement`**。
 
    无论哪种方式，**`/implement`** 都会在内部驱动 **`/tdd`** 构建每个 task slice：一次一个 red-green slice，边做边勾选；全部任务完成后统一提交一次，再由 **`/code-review`** 对提交的 diff 做 Standards + Spec 双轴 review。只想在没有完整 spec 的情况下 test-first 构建一个具体 behavior 时，单独用 **`/tdd`**；想按固定点 review branch 或 PR 时，单独用 **`/code-review`**。

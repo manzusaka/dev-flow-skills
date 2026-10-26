@@ -22,7 +22,7 @@ function runHelper(projectRoot) {
   });
 }
 
-test('a new project receives an empty glossary and root ADR directory', async () => {
+test('a new project receives an empty glossary and document directories', async () => {
   const projectRoot = await makeProject();
 
   const result = runHelper(projectRoot);
@@ -33,9 +33,10 @@ test('a new project receives an empty glossary and root ADR directory', async ()
   assert.match(context, /^## Language/m);
   assert.doesNotMatch(context, /Business Rules|Domain Invariants/);
   assert.equal((await stat(path.join(projectRoot, 'docs', 'adr'))).isDirectory(), true);
+  assert.equal((await stat(path.join(projectRoot, 'docs', 'architecture'))).isDirectory(), true);
 });
 
-test('a context map keeps existing files and still creates the root ADR directory', async () => {
+test('a context map keeps existing files and still creates document directories', async () => {
   const projectRoot = await makeProject();
   const existing = '# Existing\n';
   const map = '# Context Map\n';
@@ -48,6 +49,7 @@ test('a context map keeps existing files and still creates the root ADR director
   assert.equal(await readFile(path.join(projectRoot, 'CONTEXT.md'), 'utf8'), existing);
   assert.equal(await readFile(path.join(projectRoot, 'CONTEXT-MAP.md'), 'utf8'), map);
   assert.equal((await stat(path.join(projectRoot, 'docs', 'adr'))).isDirectory(), true);
+  assert.equal((await stat(path.join(projectRoot, 'docs', 'architecture'))).isDirectory(), true);
 });
 
 test('a context map skips CONTEXT.md creation but still initializes the ADR directory', async () => {

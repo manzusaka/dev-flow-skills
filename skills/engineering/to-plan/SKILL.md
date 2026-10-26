@@ -1,12 +1,12 @@
 ---
 name: to-plan
-description: 读取 `/to-spec` 确认的 OpenSpec proposal 与 delta specs，编写 design.md、tasks.md 及长期领域文档。
+description: 读取 `/to-spec` 确认的 OpenSpec proposal 与 delta specs，编写 design.md、按需设计 stack、tasks.md 及长期领域文档。
 disable-model-invocation: true
 ---
 
 # To Plan
 
-将已确认的 proposal 和 delta specs 写成可执行的 `design.md`、`tasks.md`。调用：`/to-plan [change-name]`。仅写首次规划的 design、tasks 和获批的长期文档；不创建 change 或实现代码。缺 flow docs 或 proposal 时停止，提示用户显式运行 `/setup-skills` 或 `/to-spec`；行为契约需变更时报告冲突并停止。
+将已确认的 proposal 和 delta specs 写成可执行的 `design.md`、按需编写的 stack 实现文档和 `tasks.md`。调用：`/to-plan [change-name]`。仅写首次规划的 design、stack、tasks 和获批的长期文档；不创建 change 或实现代码。缺 flow docs 或 proposal 时停止，提示用户显式运行 `/setup-skills` 或 `/to-spec`；行为契约需变更时报告冲突并停止。
 
 ## Process
 
@@ -45,6 +45,7 @@ spect templates --json
 - `CONTEXT.md` 或 `CONTEXT-MAP.md` 指向的相关 context
 - 相关当前版本 PRD（如存在；旧版不作当前依据）
 - 相关 `docs/adr/` 和 context-scoped ADRs
+- 相关现有 `docs/architecture/` 文档（如存在）
 - change 中的 `.openspec.yaml` 与 `proposal.md`
 - proposal 声明的现有 capability specs、相关代码和测试
 
@@ -67,36 +68,23 @@ spect templates --json
 
 ### 4. Write `design.md`
 
-严格按项目 design template 写入；小 change 也创建精简 `design.md`，即使 schema 将其标为 conditional，但不编造决定。运行 `spect instructions design --change <change-name>`，按依赖清单重读磁盘文件。
+Step 3 的设计决定确认后，读取并执行 [references/write-design.md](references/write-design.md)。完成条件：`design.md` 符合项目模板，影响实现的决定均获确认，无未授权假设或占位符。
 
-- Context 写理解方案所需的现状和约束，动机引用 proposal；Goals / Non-Goals 只补设计边界。
-- Decisions 写获确认的方案、理由和真实备选；Risks / Trade-offs 写风险与缓解。
-- Migration Plan 仅在适用时写；Open Questions 仅留不影响 specs、方案或 tasks 的未知项。
+### 5. Decide whether to design the stack
 
-展示完整草稿，获用户确认后写入；运行 `spect status --change <change-name> --json` 确认登记并查看下一步。完成条件：符合模板，影响实现的决定均获确认，无未授权假设或占位符。
+根据已确认的 specs、`design.md` 和现有代码判断是否需要单独的实现落地文档，并说明依据。独立业务的单表常规 CRUD 通常跳过；多表、领域建模、设计模式、关键对外 interface、重构或数据迁移任一出现即触发。其他需要预先明确的重要实现约束也应触发，这些例子不是封闭清单。
 
-### 5. Write `tasks.md`
+需要时读取并执行 [references/design-stack.md](references/design-stack.md)；跳过时简述原因，不创建空文件。完成条件：判断有依据；需要的 `docs/architecture/<change-name>-stack.md` 已获确认，可用于拆分 tasks。
 
-严格按项目 tasks template 和 checkbox 格式编写。每个 `## N. ...` group 是贯穿相关层、可独立验证、适合一个 fresh context window 的 tracer-bullet vertical slice。
+### 6. Write `tasks.md`
 
-运行 `spect instructions tasks --change <change-name>`，按依赖清单重读 proposal、specs、design 等文件。
+Step 5 的 stack 判断完成后，读取并执行 [references/write-tasks.md](references/write-tasks.md)；生成了 stack 文档时将其作为输入。完成条件：`tasks.md` 中每项均为合法 checkbox、可在单次 session 完成并验证，覆盖 proposal、specs、design 和适用的 stack 实现约束。
 
-- 每项用 `- [ ] N.M ...` 描述可验证结果；按真实依赖排序，不加 `Blocked by` 字段。
-- 必要的 prefactoring 放在所解锁 slice 前；wide refactor 用 expand → migrate batches → contract，仅在无法独立保持 green 时加最终 integrate-and-verify task。
+### 7. Confirm durable docs
 
-展示完整计划，确认 slices、粒度、顺序和验证方式；获批后写入并运行 `spect status --change <change-name> --json` 确认 planning 状态。完成条件：每项均为合法 checkbox，可在单次 session 完成并验证，覆盖所有 proposal stories、spec requirements 和 design 决定。
+`tasks.md` 确认后，读取并执行 [references/confirm-durable-docs.md](references/confirm-durable-docs.md)，处理 Step 3 暂存的候选。完成条件：长期文档只含获批的知识，与 specs 和 design 一致。
 
-### 6. Confirm durable docs
-
-按 `/domain-modeling` 的内容边界和格式处理 Step 3 的候选：
-
-- `CONTEXT.md` 只补项目特有 canonical terms，不写业务行为、spec、实现细节或设计摘要。
-- 仅为 Step 3 中同时满足三项门槛的决定建 ADR；change-specific 决定留在 `design.md`。
-- 新 ADR 引用 OpenSpec change，必要时在 `design.md` 引用 ADR，不复制论证。
-
-展示 `CONTEXT.md`、ADR 及必要的 `design.md` diff，获批后才写入；无合格候选则不建空文件。完成条件：只含获批的长期知识，与 specs 和 design 一致。
-
-### 7. Verify and report
+### 8. Verify and report
 
 在目标 repository root 运行：
 
@@ -107,9 +95,9 @@ spect validate <change-name> --strict --no-interactive
 由 `spect` 检查 `requires` 依赖、`generates` 输出、`implement.tracks` 的 `tasks.md`，以及 proposal 和 delta specs 章节结构。另检查：
 
 - 每个 capability 有 delta spec，或合法使用 `skip_specs: true`；delta specs 已经 `/to-spec` 确认。
-- 无模板注释、占位符或影响实现的 open question；durable docs diff 与批准内容一致；tasks 覆盖 proposal、specs 和 design。
+- 无模板注释、占位符或影响实现的 open question；durable docs diff 与批准内容一致；tasks 覆盖 proposal、specs、design 和适用的 stack 文档。
 
-运行 `git diff --check`；通过后运行 `spect status --change <change-name> --json` 确认 `isPlanningComplete: true`。报告 change name、artifact 路径、durable docs 和结果。失败时保留获批 artifacts，报告失败项及安全的继续位置。
+运行 `git diff --check`；通过后运行 `spect status --change <change-name> --json` 确认 `isPlanningComplete: true`。报告 change name、artifact 路径、stack 判断、durable docs 和结果。失败时保留获批 artifacts，报告失败项及安全的继续位置。
 
 ## Handoff Next Step
 

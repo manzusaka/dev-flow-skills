@@ -75,7 +75,7 @@ spect archive <change-name> -y
 - archive path: openspec/changes/archive/<日期>-<change-name>/
 ```
 
-然后：
+然后运行以下命令；若 `docs/architecture/<change-name>-stack.md` 存在，在 `git commit` 前额外暂存该文件：
 
 ```bash
 git reset --soft <fixed point>
@@ -83,9 +83,9 @@ git add openspec/ <本次 /domain-modeling 写入的文件>
 git commit  # 复用被压缩的最老 change commit 的 message
 ```
 
-- 未找到起点 → 把未提交的收尾产物（含 `trace.md` 的 finalize-spec section）提交为新提交，message 为 `chore: finalize <change-name>`。
+- 未找到起点 → 把未提交的收尾产物（含 `trace.md` 的 finalize-spec section 和本次 stack 文档，如存在）提交为新提交，message 为 `chore: finalize <change-name>`。
 
-只提交本次 change 相关的文件（`openspec/` 目录与本次 `/domain-modeling` 写入的文件）；工作区中无关的未提交文件保持不动。
+只提交本次 change 相关的文件（`openspec/` 目录、本次 `/domain-modeling` 写入的文件与 `docs/architecture/<change-name>-stack.md`，如存在）；工作区中无关的未提交文件保持不动。
 
 ### 7. Report
 

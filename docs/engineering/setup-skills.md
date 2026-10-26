@@ -1,6 +1,6 @@
 ## What it does
 
-`setup-skills` 为一个 repository 建立本仓库 flows 依赖的工程前置：安装或更新 `spect`（精简版 OpenSpec CLI），初始化或整合 root `AGENTS.md` 与 `CLAUDE.md`，并搭建 `CONTEXT.md`、`docs/adr/` 与 `openspec/` 脚手架。
+`setup-skills` 为一个 repository 建立本仓库 flows 依赖的工程前置：安装或更新 `spect`（精简版 OpenSpec CLI），初始化或整合 root `AGENTS.md` 与 `CLAUDE.md`，并搭建 `CONTEXT.md`、`docs/adr/`、`docs/architecture/` 与 `openspec/` 脚手架。
 
 它是一个 prompt 驱动的 skill，而不是一个确定性的脚本。它探索仓库的现有结构与内容，提出它发现的内容，并在写入任何东西之前等你确认。重复运行是安全的：每个阶段保留已经完成的内容。
 
@@ -20,7 +20,7 @@
 | root `AGENTS.md` | shared instructions 的唯一权威版本 |
 | root `CLAUDE.md` | 以 `@AGENTS.md` 导入，只承载 Claude Code 专属内容 |
 | OpenSpec 脚手架 | `openspec/`（`spect init`） |
-| root `CONTEXT.md` 与 `docs/adr/` | 无 `CONTEXT-MAP.md` 的仓库创建 `CONTEXT.md`；已有 `CONTEXT-MAP.md` 的仓库结构原样保留 |
+| root `CONTEXT.md` 与 `docs/adr/`、`docs/architecture/` | 无 `CONTEXT-MAP.md` 的仓库创建 `CONTEXT.md`；已有 `CONTEXT-MAP.md` 的仓库结构原样保留 |
 
 全部都是已提交的 markdown 与仓库结构。没有 user-level 或 global 模式：一切就在 repo 里，所以每个 repo 都有自己的副本。
 
@@ -46,7 +46,7 @@
 
 - `/init-cli` 随附版本的 `spect` 可以执行。
 - root `AGENTS.md` 是 shared instructions 的唯一权威版本，没有空 section 或 placeholder；root `CLAUDE.md` 以 `@AGENTS.md` 开头。
-- `openspec/` 结构存在并通过校验，`docs/adr/` 存在；无 `CONTEXT-MAP.md` 的仓库有 root `CONTEXT.md`，有 `CONTEXT-MAP.md` 的仓库结构原样保留。
+- `openspec/` 结构存在并通过校验，`docs/adr/` 与 `docs/architecture/` 存在；无 `CONTEXT-MAP.md` 的仓库有 root `CONTEXT.md`，有 `CONTEXT-MAP.md` 的仓库结构原样保留。
 - skill 文件本身没有任何变化。如果 setup 编辑了一个 `SKILL.md`，那一定出错了。
 
 ## Where it fits

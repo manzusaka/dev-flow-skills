@@ -48,7 +48,7 @@ async function main() {
 
   const multiContext = await exists(contextMapTarget);
 
-  for (const directory of ['adr', 'prds', 'prototype']) {
+  for (const directory of ['adr', 'architecture', 'prds', 'prototype']) {
     await mkdir(path.join(projectRoot, 'docs', directory), { recursive: true });
   }
 

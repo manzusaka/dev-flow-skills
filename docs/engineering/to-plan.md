@@ -1,9 +1,9 @@
 ## What it does
 
-`to-plan` 读取 `/to-spec` 已确认的 proposal 与 delta specs，编写 `design.md` 和 `tasks.md`。这次调用止于 planning 和获批的 durable docs，不实现项目代码。
+`to-plan` 读取 `/to-spec` 已确认的 proposal 与 delta specs，编写 `design.md`、按需生成 stack 实现文档和 `tasks.md`。这次调用止于 planning 和获批的 durable docs，不实现项目代码。
 
 ```text
-proposal.md + delta specs → architecture grilling → design.md → tasks.md
+proposal.md + delta specs → architecture grilling → design.md → stack 判断与按需设计 → tasks.md
 ```
 
 它不创建 change；最终的执行计划遵守 OpenSpec schema，写入 `tasks.md`。
@@ -49,9 +49,11 @@ Specs 确认后，skill 围绕代码、测试 seams、domain docs、ADRs 和 cha
 
 之后严格使用目标项目模板生成 `design.md`。每个 change 都生成 design；简单 change 可以很短，但不能为了填模板发明 decision。只有不会改变 specs、方案或 tasks 的问题才能留在 Open Questions。
 
+写完 design 后，agent 根据 specs、design 和代码判断是否需要单独的 stack 实现文档。独立业务的单表常规 CRUD 通常跳过；多表、领域建模、设计模式、关键对外 interface、重构或数据迁移任一出现即触发。其他需要提前明确的数据一致性、跨系统集成、并发与失败处理、安全、兼容性、性能、可观测性或发布迁移实现也会触发。这是 `/to-plan` 内的条件分支：需要时说明已确认方案如何落到代码、数据和运行环境，展示草稿并获确认后写入 `docs/architecture/<change-name>-stack.md`，再据此编排 tasks；跳过时说明原因。
+
 ## `tasks.md` as tracer bullets
 
-计划使用标准 OpenSpec checkbox 格式：
+计划使用已确认的 specs、design 和适用的 stack 文档，采用标准 OpenSpec checkbox 格式：
 
 ```markdown
 ## 1. <vertical slice>
@@ -70,17 +72,18 @@ Grilling 中发现的长期知识先暂存在 conversation，等 specs、design 
 
 - `CONTEXT.md` 只接收项目特有的 canonical domain terms。
 - ADR 只记录难以逆转、缺少背景会令人意外、并且确有真实 trade-off 的 decisions。
-- Change-specific decisions 留在 `design.md`。
+- Change-specific decisions 留在 `design.md`；stack 文档说明已确认方案的实现落点。
 
 Skill 会展示 proposed diffs；用户确认后才写入。没有合格内容时，不创建空 ADR 或 glossary 条目。
 
 ## Approval boundaries
 
-写入分三个独立 checkpoint：
+写入分以下独立 checkpoint：
 
 1. `design.md` 草稿
-2. `tasks.md` 草稿
-3. `CONTEXT.md` / ADR proposed diffs
+2. 需要时的 stack 实现文档草稿
+3. `tasks.md` 草稿
+4. `CONTEXT.md` / ADR proposed diffs
 
 本 skill 不覆盖已有 artifact。每个 checkpoint 都允许用户修改或停止，后续 artifact 只建立在已经确认的前置 artifact 上。
 
@@ -90,6 +93,7 @@ Skill 会展示 proposed diffs；用户确认后才写入。没有合格内容�
 
 - Proposal capabilities 与 delta specs 一一对应，或 `skip_specs` 合法生效。
 - `design.md` 没有会影响实现的未决问题。
+- 需要 stack 时，该文档与 specs、design 一致，tasks 覆盖其实现约束。
 - `tasks.md` 中每项都是 OpenSpec 可追踪的 checkbox、可验证且适合单次 session。
 - Durable docs 只包含用户批准的长期知识。
 - `git diff --check` 通过。

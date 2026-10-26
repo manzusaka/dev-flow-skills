@@ -22,7 +22,7 @@ disable-model-invocation: true
 
 ### 3. Load context
 
-运行 `spect instructions implement --change <change-name>`，按输出的上下文清单读取 proposal、delta specs、`design.md` 与 `tasks.md`。
+运行 `spect instructions implement --change <change-name>`，按输出的上下文清单读取 proposal、delta specs、`design.md` 与 `tasks.md`；若存在 `docs/architecture/<change-name>-stack.md`，也读取该文档。
 
 ### 4. Read the state
 
