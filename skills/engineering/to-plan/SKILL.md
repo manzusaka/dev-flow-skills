@@ -74,7 +74,7 @@ Step 3 的设计决定确认后，读取并执行 [references/write-design.md](r
 
 根据已确认的 specs、`design.md` 和现有代码判断是否需要单独的实现落地文档，并说明依据。独立业务的单表常规 CRUD 通常跳过；多表、领域建模、设计模式、关键对外 interface、重构或数据迁移任一出现即触发。其他需要预先明确的重要实现约束也应触发，这些例子不是封闭清单。
 
-需要时读取并执行 [references/design-stack.md](references/design-stack.md)；跳过时简述原因，不创建空文件。完成条件：判断有依据；需要的 `docs/architecture/<change-name>-stack.md` 已获确认，可用于拆分 tasks。
+需要时读取并执行 [references/write-stack.md](references/write-stack.md)；跳过时简述原因，不创建空文件。完成条件：判断有依据；需要的 `docs/architecture/<change-name>-stack.md` 已获确认，可用于拆分 tasks。
 
 ### 6. Write `tasks.md`
 
