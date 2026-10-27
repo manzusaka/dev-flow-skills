@@ -42,14 +42,13 @@ npx skills@latest add manzusaka/dev-flow-skills
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)** - 创建 OpenSpec proposal 与 delta specs，确认行为契约。
 - **[to-plan](./skills/engineering/to-plan/SKILL.md)** - 基于已确认的 proposal 与 delta specs，经过架构 grilling 编写 design、按需设计 stack 与 tracer-bullet tasks。
-- **[implement](./skills/engineering/implement/SKILL.md)** - 实现 OpenSpec change 或 spec 中指定的工作：按 `tasks.md` checkbox 状态续做，收尾统一提交并以 `/code-review` 审查。
+- **[implement](./skills/engineering/implement/SKILL.md)** - 实现 OpenSpec change 或 spec 中指定的工作：对可观察行为和核心业务规则的变更使用内置 TDD 指引，按 `tasks.md` checkbox 状态续做，收尾统一提交并以 `/code-review` 审查。
 - **[finalize-spec](./skills/engineering/finalize-spec/SKILL.md)** - 收尾已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 归档并合并规格，并把本次 change 的提交压成单个 commit。
 
 **Model-invoked**
 
 - **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：构建一个会对这个 bug 变红的 feedback loop → minimise → hypothesise → instrument → fix → regression-test。
 - **[research](./skills/engineering/research/SKILL.md)** - 对照 high-trust primary sources 调研问题，并把带引用的 findings 保存为 Markdown 文件。
-- **[tdd](./skills/engineering/tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
 - **[init-cli](./skills/engineering/init-cli/SKILL.md)** - 检查、安装或更新 spect（精简版 OpenSpec CLI）命令；单文件可执行程序与 OpenSpec 模板随 skill 分发，安装无需联网与 npm。
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** - 主动构建和打磨项目 domain model：挑战术语、用 edge-case scenarios 做压力测试，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** - 设计 deep modules 的共享纪律和词汇：小 interface、clean seam、通过 interface 测试。

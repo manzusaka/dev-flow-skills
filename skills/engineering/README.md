@@ -13,7 +13,7 @@
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** - 追问式访谈，同时构建项目的 domain model、打磨术语，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[to-spec](./to-spec/SKILL.md)** - 创建 OpenSpec proposal 与 delta specs，确认行为契约。
 - **[to-plan](./to-plan/SKILL.md)** - 基于已确认的 proposal 与 delta specs，经过架构 grilling 编写 design、按需设计 stack 与 tracer-bullet tasks。
-- **[implement](./implement/SKILL.md)** - 实现 OpenSpec change 或 spec 中指定的工作：按 `tasks.md` checkbox 状态续做，收尾统一提交并以 `/code-review` 审查。
+- **[implement](./implement/SKILL.md)** - 实现 OpenSpec change 或 spec 中指定的工作：对可观察行为和核心业务规则的变更使用内置 TDD 指引，按 `tasks.md` checkbox 状态续做，收尾统一提交并以 `/code-review` 审查。
 - **[finalize-spec](./finalize-spec/SKILL.md)** - 收尾已完成的 OpenSpec change：沉淀知识、生成摘要、委托 `spect archive` 归档并合并规格，并把本次 change 的提交压成单个 commit。
 
 ## Model-invoked
@@ -22,7 +22,6 @@
 
 - **[diagnosing-bugs](./diagnosing-bugs/SKILL.md)** - 面向棘手 bug 和性能回退的纪律化诊断循环：reproduce -> minimise -> hypothesise -> instrument -> fix -> regression-test。
 - **[research](./research/SKILL.md)** - 对照高可信 primary sources 调研问题，并把带引用的 findings 保存为 repo 中的 Markdown 文件，作为 background agent 运行。
-- **[tdd](./tdd/SKILL.md)** - 使用 red-green-refactor 循环做 test-driven development；一次一个 vertical slice 地构建功能或修复 bug。
 - **[init-cli](./init-cli/SKILL.md)** - 检查、安装或更新 spect（精简版 OpenSpec CLI）命令；单文件可执行程序与 OpenSpec 模板随 skill 分发，安装无需联网与 npm。
 - **[domain-modeling](./domain-modeling/SKILL.md)** - 主动构建和打磨项目的 domain model：挑战术语、用场景做压力测试，并内联更新 `CONTEXT.md` 与 ADRs。
 - **[codebase-design](./codebase-design/SKILL.md)** - 用于设计 deep modules 的共享纪律和词汇：小 interface、清晰 seam、通过 interface 测试。

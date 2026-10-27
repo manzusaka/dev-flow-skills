@@ -12,7 +12,7 @@
 | --- | --- |
 | 存在一个 diff，你想知道它是否*构建得对* *并且*是正确的东西 | `code-review` |
 | 你想在 diff 里猎杀 bugs——null paths、races、off-by-one | Claude Code 自己的内置 review，而不是这一个（见下面的命名冲突） |
-| 什么都还没写，你想让它 test-first 地写出来 | [tdd](https://aihero.dev/skills-tdd) |
+| 什么都还没写，你想让它 test-first 地写出来 | [implement](https://aihero.dev/skills-implement) 的内置 TDD 指引 |
 | 一整份 spec 需要被构建，review 包括在内 | [implement](https://aihero.dev/skills-implement)，它自己会调用这个 skill |
 | 是整个 codebase 漂移了，而不是一个 diff | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) |
 | 某个东西坏了，而你不知道为什么 | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |

@@ -52,7 +52,7 @@ Router 只点名 skills，它不安装它们。它指向的一切都必须已安
 
 **它告诉我一半的 skills 没安装。**
 
-一个已知 bug，未修复。Router 让你路由经过的大多数 skills 都设置了 `disable-model-invocation: true`，这意味着 harness 会把它们从注入到 agent context 的 skill 列表中排除。Agent 认为那张列表是穷尽的，于是报告它们缺失。有人报告过一次会话里它判定整个 spec-and-planning flow 不存在，转而路由到光秃秃的 `/grilling` 和 `/tdd`。插件的二十二个 skills 中有十三个携带这个 flag，所以这是常见情况而非边缘情况。它们已经安装了。照常输入那个 slash command，或者检查 `.claude-plugin/plugin.json`——那才是「有什么存在」的权威。
+一个已知 bug，未修复。Router 让你路由经过的大多数 skills 都设置了 `disable-model-invocation: true`，这意味着 harness 会把它们从注入到 agent context 的 skill 列表中排除。Agent 认为那张列表是穷尽的，于是报告它们缺失。有人报告过一次会话里它判定整个 spec-and-planning flow 不存在，转而路由到光秃秃的 `/grilling`。这些 user-invoked skills 已经安装了。照常输入相应的 slash command，或者检查 `.claude-plugin/plugin.json`——那才是「有什么存在」的权威。
 
 **它描述了一个 skill 的行为，而那个 skill 并不那么做。**
 

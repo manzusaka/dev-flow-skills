@@ -18,7 +18,7 @@
 | *领域的词*——"account" 意味着三件事，两个人对 "cancellation" 的意思不同 | [domain-modeling](https://aihero.dev/skills-domain-modeling) |
 | 你还不知道要重新设计*哪个* module | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture)——那份找出候选的 survey |
 | 你想让设计被辩驳，而不只是被命名 | [grilling](https://aihero.dev/skills-grilling) |
-| 有一份具体的 behavior 要构建，你想要能在重构中存活的 tests | [tdd](https://aihero.dev/skills-tdd) |
+| 有一份具体的 behavior 要构建，你想要能在重构中存活的 tests | [implement](https://aihero.dev/skills-implement) 的内置 TDD 指引 |
 
 ## The vocabulary
 
@@ -53,7 +53,7 @@ Depth 刻意*不*被定义为 implementation 行数对 interface 行数的比值
 
 **我把一场 session 指向它，它烧掉了 100k [tokens](https://www.aihero.dev/ai-coding-dictionary/token) 去重新设计我从没问过的东西。**
 
-已知，并作为 [issue #449](https://github.com/mattpocock/skills/issues/449) 提交。这个 skill 是 model-invoked 的，把自己描述为词汇，但其中没有任何东西硬性阻止 agent 把它当作一个可运行的流程。被嘱咐「resume in /codebase-design and drive the open decisions」后，一个 agent 去抓它能找到的最行动形状的内容——`DESIGN-IT-TWICE.md` 里的并行 sub-agents——重新探索了一场以前 session 已经映射过的代码，跑了很远才问任何东西。一个 driver skill 拥有的护栏（checkpoints、一次一个问题、不自推进）在这里一个都不存在，因为一个参考没有它们。Workaround 是点名一个 driver skill，让这个坐在它底下：`/grill-with-docs`、`/improve-codebase-architecture` 或 `/tdd`，以 `codebase-design` 作为词汇。Issue 是开着的。
+已知，并作为 [issue #449](https://github.com/mattpocock/skills/issues/449) 提交。这个 skill 是 model-invoked 的，把自己描述为词汇，但其中没有任何东西硬性阻止 agent 把它当作一个可运行的流程。被嘱咐「resume in /codebase-design and drive the open decisions」后，一个 agent 去抓它能找到的最行动形状的内容——`DESIGN-IT-TWICE.md` 里的并行 sub-agents——重新探索了一场以前 session 已经映射过的代码，跑了很远才问任何东西。一个 driver skill 拥有的护栏（checkpoints、一次一个问题、不自推进）在这里一个都不存在，因为一个参考没有它们。Workaround 是点名一个 driver skill，让这个坐在它底下：`/grill-with-docs`、`/improve-codebase-architecture` 或 `/implement`，以 `codebase-design` 作为词汇。Issue 是开着的。
 
 **`design-an-interface` 去哪了？有没有一个 `/interface-design` skill？**
 
@@ -63,9 +63,9 @@ Depth 刻意*不*被定义为 implementation 行数对 interface 行数的比值
 
 不是，而且 skill 在反复遭到反对之下一直坚持这条线。[Issue #95](https://github.com/mattpocock/skills/issues/95) 提出把一种形式化的 fractal-tree 文件结构作为 deep modules 的具体实现；答复是两者正交——「deep modules are about the design of the interface and accessing through a strict interface, no matter what the file system looks like. It seems perfectly possible that you could have shallow modules with this approach.」#458 里也出现了同样的话：「I think you might be tying the concept of modules too closely to the file system. The file system can certainly be a useful hint to the shape of modules, but there's no need to use the file system in the construction of deep modules.」Glossary 刻意把 **module** 定义为与规模无关。
 
-**`tdd` 真的用这套词汇吗？**
+**`implement` 的 TDD 指引真的用这套词汇吗？**
 
-它现在用了。很长一段时间它没有。曾经住在 `tdd` 里的内联 deep-module 笔记在 v1.0 中被移除，以支持这个共享 skill，但替换它们的指针从未被加上——所以 `tdd` 为自己定义了 "seam"，且不引用任何东西。这个缺口已经合上：指针现在在 skill 里，在 interface 的形状是公开问题、而非 tests 是公开问题时被够到。`tdd` 仍然拥有作为你*测试*所在的边界的 "seam"；这个 skill 拥有它背后的 module 形状。
+它现在用了。很长一段时间它没有。曾经住在独立 TDD skill 里的内联 deep-module 笔记在 v1.0 中被移除，以支持这个共享 skill，但替换它们的指针从未被加上——所以 TDD 指引为自己定义了 "seam"，且不引用任何东西。这个缺口已经合上：指针现在在 `implement` 的 TDD 指引里，在 interface 的形状是公开问题、而非 tests 是公开问题时被够到。TDD 指引仍然拥有作为你*测试*所在的边界的 "seam"；这个 skill 拥有它背后的 module 形状。
 
 **Design-it-twice 模式在 Claude Code 之外能工作吗？**
 

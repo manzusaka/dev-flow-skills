@@ -15,7 +15,7 @@
 | 一个你能描述为症状的具体缺陷 | 这个 skill |
 | 一个已知 before-and-after 的慢 endpoint 或时间相关 regression | 这个 skill——它有一个 performance 分支（先量一个 baseline，再 bisect） |
 | 「这个 codebase 的瓶颈在哪里？」——没有具体症状 | 不是这个 skill。它诊断一个已知失败，它不做 audit |
-| Test-first 构建一个有计划的 behavior | [tdd](https://aihero.dev/skills-tdd) |
+| Test-first 构建一个有计划的 behavior | [implement](https://aihero.dev/skills-implement) 的内置 TDD 指引 |
 | 没有好的 seam 能锁住这个 bug | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture)——这个 skill 自己会向它移交 |
 
 ## The tight loop is the skill

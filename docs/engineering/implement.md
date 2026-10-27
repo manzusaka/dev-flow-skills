@@ -1,6 +1,6 @@
 ## What it does
 
-`implement` 构建那些已经被决定好的工作。你把它指向一个 OpenSpec change、一份 [spec](https://www.aihero.dev/ai-coding-dictionary/spec)，或你在对话里刚刚达成的计划，它就写代码、在 seams 上驱动 [tdd](https://aihero.dev/skills-tdd)、落地前运行完整测试套件，然后运行 [code-review](https://aihero.dev/skills-code-review)，并提交到当前 branch。
+`implement` 构建那些已经被决定好的工作。你把它指向一个 OpenSpec change、一份 [spec](https://www.aihero.dev/ai-coding-dictionary/spec)，或你在对话里刚刚达成的计划，它就写代码、对可观察行为和核心业务规则的变更使用内置 TDD 指引、提交前运行完整测试套件，然后运行 [code-review](https://aihero.dev/skills-code-review)，并提交到当前 branch。
 
 它从不重新打开计划。没有访谈、没有澄清轮、没有提出不同方案。上游敲定的任何东西就是输入，这个 skill 的全部工作就是把它变成提交。这正是它区别于对一个全新的 [agent](https://www.aihero.dev/ai-coding-dictionary/agent) 输入"build this"的地方——后者会在构建的同时乐于重新设计这件工作。
 
@@ -18,7 +18,7 @@ OpenSpec 输入通过 `spect` 解析：change discovery、planning gate、artifa
 | 是一份 spec，而且构建很小 | 直接对着 spec 走 `/implement` |
 | 只存在于你刚刚那场对话里，而且仍然很小 | 就在那里、在同一个 window 里走 `/implement` |
 | 还没有写在任何地方 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs)，如果没有 codebase 则用 [grilling](https://aihero.dev/skills-grilling) |
-| 是一个你想 test-first 的具体行为，没有 spec | 直接 [tdd](https://aihero.dev/skills-tdd) |
+| 是一个你想 test-first 的具体行为，没有 spec | 直接用 `/implement`，说明行为与验收条件 |
 | 已经构建好了，你想让它被检查 | 直接 [code-review](https://aihero.dev/skills-code-review) |
 
 同一个 session 的情况值得点名。如果计划只活在对话线程里，调用时就说清楚；如果来源是 OpenSpec，传入 change name；省略参数时，skill 会列出全部 active changes 让你选择。
@@ -35,7 +35,7 @@ OpenSpec 输入假设 `spect` 可用——`/setup-skills`、`/to-spec` 与 `/to-
 
 | 状态 | 行为 |
 | --- | --- |
-| 存在未勾选任务 | 实现：在未勾选任务上驱动 `/tdd`，边做边勾选 |
+| 存在未勾选任务 | 实现：对可观察行为和核心业务规则的变更使用内置 TDD 指引，相关测试通过后勾选 |
 | 全部勾选，有未提交变更 | 跳到收尾闸：完整套件 → 提交 → 审查 |
 | 全部勾选，工作区干净 | 重跑审查闸 |
 
@@ -43,23 +43,23 @@ OpenSpec 输入假设 `spect` 可用——`/setup-skills`、`/to-spec` 与 `/to-
 
 1. 解析 change（`spect list --json`，exact match 优先，不静默选择近似结果），然后做 planning gate：`tasks.md` 缺失或 planning 未完成，停止并指向 `/to-plan`。
 2. 通过 `spect instructions implement` 读取上下文——proposal、delta specs、design 与 tasks。
-3. 复述 seams：`specs/**/*.md` 的 Scenarios 是主要测试锚点，`design.md` Decisions 中已确认的 test seams 作为参考；两处都没有时警告，并由 `/tdd` 当场发问。
-4. 在未勾选任务上驱动 [tdd](https://aihero.dev/skills-tdd)，优先级按依赖顺序与代码现状判断。每完成一项任务即时勾选对应 checkbox；不勾选未实际完成的相邻任务。
+3. 对最小、可观察的行为增量，以及稳定的业务规则、关键计算或状态转移函数的行为变更，确定并复述测试边界：`specs/**/*.md` 的 Scenarios 是主要锚点，`design.md` Decisions 中已确认的 test seams 作为参考；两处都没有时参考现有可调用接口和 tests，仍无法确定边界时询问用户。
+4. 对上述行为变更按[内置 TDD 指引](../../skills/engineering/implement/references/tdd.md)逐个运行聚焦测试，确认因目标行为缺失而 RED，再写最小代码并确认 GREEN；纯重构先确认当前行为测试为 GREEN、改后仍为 GREEN。纯文档或低影响编辑不强制先写测试。相关测试通过后即时勾选对应 checkbox；不勾选未实际完成的相邻任务。
 
 收尾闸：
 
-5. 运行完整测试套件；失败则回到实现。
+5. 运行项目约定的完整自动化测试套件；失败则回到实现。
 6. 记录当前 `HEAD` 为 review fixed point——change 完成前不做任何提交，`HEAD` 全程不动。把代码与 `tasks.md` 勾选作为一次提交落在当前 branch，commit message 引用 change name。
-7. 对 fixed point 运行 [code-review](https://aihero.dev/skills-code-review)，显式传入本 change 的 delta specs 与 proposal 作为 Spec 轴来源。修复 findings、重新通过测试后再次提交；review 只跑一轮，不循环。
+7. 对 fixed point 运行 [code-review](https://aihero.dev/skills-code-review)，显式传入本 change 的 delta specs 与 proposal 作为 Spec 轴来源。双轴并行审查无法完成时停在此步，不以自审记录通过。行为缺陷的 findings 也按内置 TDD 指引修复，完整测试套件通过后再次提交；review 只跑一轮，不循环。
 8. 在 change 目录写入 `trace.md` 执行记录：review fixed point、最终提交与审查结果——重入审查与 `/finalize-spec` 的压缩直接读取它，不再从 commit messages 重新推导。
 
 因为没有 checkpoint 提交，中断的运行会把一切留在工作区；再次调用 `/implement <change-name>` 凭 checkbox 状态续做。全部任务已勾选但提交未发生时，重跑直达收尾闸；提交已落地但审查没跑时，重跑会补跑审查：先读 `trace.md` 记录的 review fixed point，缺失时从最老引用该 change name 的 commit 推导。
 
-## Pre-agreed seams
+## Test seams
 
-这个 skill 赖以运行的观念是 **seam**：你在其上观察行为的公开边界，而不伸手进去。测试活在 seams 上。在写任何代码之前就认可一个 seam、并在其上工作，正是让测试保持持久的原因，因为底下的实现可以被重写，而测试不必跟着变动。
+这个 skill 赖以运行的观念是 **seam**：你在其上观察行为的公开边界，而不伸手进去。测试优先放在 seams 上；稳定的业务规则函数已可调用时，也可以直接验证其输入输出，不只为测试私有 helper 而新增 public API。
 
-OpenSpec 输入为 seams 提供了 canonical 的家：spec Scenarios 是主要锚点——`specs/**/*.md` 中每个 Scenario 都是一个可测试的行为单元——而 `design.md` Decisions 记录 `to-plan` grilling 中确认的 test seams。`implement` 读取两者，并在 `/tdd` 写任何测试之前复述将要测试的 seams。两处都找不到时，它明确警告并让 `/tdd` 当场发问——不硬停，但也不再悄悄退化成"就是把代码写了"。
+OpenSpec 输入为 seams 提供了 canonical 的家：spec Scenarios 是主要锚点——`specs/**/*.md` 中每个 Scenario 都是一个可测试的行为单元——而 `design.md` Decisions 记录 `to-plan` grilling 中确认的 test seams。`implement` 读取两者，并在写任何测试之前复述将要测试的 seams。两处都找不到时，它参考现有 public interfaces 和 tests；边界仍不清楚时询问用户。
 
 ## Common questions
 
@@ -86,7 +86,7 @@ OpenSpec 输入在任务完成时即时勾选 `tasks.md` checkboxes——在提�
 ## It's working if
 
 - session 以解析 change、读取它的 artifacts、复述它将构建什么来开场，而不是问你该构建什么。
-- 你能在 trace 里看到一次真实的 `/tdd` 调用，而不只是在 diff 里出现测试。
+- 适用 TDD 的行为变更实际运行测试，确认目标行为缺失时 RED、最小实现后 GREEN，而不只是在 diff 里出现测试。
 - checkboxes 随任务完成即时勾选，中断的运行能凭它们续做。
 - 完整测试套件在提交之前跑过一次。
 - 运行在你当前 branch 上到达一次引用 change name 的提交，其后的审查能看到整个 change 的 diff。
@@ -99,7 +99,7 @@ OpenSpec 输入在任务完成时即时勾选 `tasks.md` checkboxes——在提�
 grill-with-docs → to-spec → to-plan → implement → code-review
 ```
 
-它的邻居是 `to-plan`——产出它所消费的 OpenSpec tasks；[tdd](https://aihero.dev/skills-tdd)——它在每个 seam 上内部驱动它；以及 [code-review](https://aihero.dev/skills-code-review)——它在提交之后运行它。它位于 planning 下游并信任已确认的 specs、design 和 tasks，不重新打开方案。
+它的邻居是 `to-plan`——产出它所消费的 OpenSpec tasks；以及 [code-review](https://aihero.dev/skills-code-review)——它在提交之后运行它。TDD 指引位于 `implement` 内部。它位于 planning 下游并信任已确认的 specs、design 和 tasks，不重新打开方案。
 
 这份信任正是 [wayfinder](https://aihero.dev/skills-wayfinder) 在 [to-spec](https://aihero.dev/skills-to-spec) 处并入这条 chain、而不是把它的地图直接循环进 `implement` 的原因。只有当场得出 effort 确实很小时，才从一张地图直接去 `implement`。
 

@@ -1,8 +1,8 @@
-# Good and Bad Tests
+# TypeScript / Jest Test Template
 
-## Good Tests
+BAD 与 GOOD 是替代示例；只保留符合行为要求的测试。
 
-**Integration-style**：通过真实 interfaces 测试，而不是 mock internal parts。
+## Behavior test
 
 ```typescript
 // GOOD: Tests observable behavior
@@ -14,35 +14,18 @@ test("user can checkout with valid cart", async () => {
 });
 ```
 
-Characteristics：
-
-- 测试 users/callers 关心的 behavior
-- 只使用 public API
-- 能承受 internal refactors
-- 描述 WHAT，而不是 HOW
-- 每个 test 一个 logical assertion
-
-## Bad Tests
-
-**Implementation-detail tests**：与 internal structure 耦合。
+## Implementation-detail test
 
 ```typescript
-// BAD: Tests implementation details
+// BAD: Tests an internal collaborator
 test("checkout calls paymentService.process", async () => {
-  const mockPayment = jest.mock(paymentService);
-  await checkout(cart, payment);
-  expect(mockPayment.process).toHaveBeenCalledWith(cart.total);
+  const process = jest.spyOn(paymentService, "process");
+  await checkout(cart, paymentMethod);
+  expect(process).toHaveBeenCalledWith(cart.total);
 });
 ```
 
-Red flags：
-
-- Mocking internal collaborators
-- Testing private methods
-- Asserting on call counts/order
-- Refactor 但 behavior 未变时 test breaks
-- Test name 描述 HOW 而不是 WHAT
-- 绕过 interface 用外部方式验证
+## Verify through the interface
 
 ```typescript
 // BAD: Bypasses interface to verify
@@ -60,7 +43,7 @@ test("createUser makes user retrievable", async () => {
 });
 ```
 
-**Tautological tests**：expected value 复述了 implementation，因此 test 天然通过。
+## Independent expected value
 
 ```typescript
 // BAD: Expected value is recomputed the way the code computes it
@@ -75,3 +58,5 @@ test("calculateTotal sums line items", () => {
   expect(calculateTotal([{ price: 10 }, { price: 5 }])).toBe(15);
 });
 ```
+
+聚焦运行示例：`npx jest -t 'calculateTotal sums line items'`。

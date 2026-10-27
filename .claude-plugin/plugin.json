@@ -27,7 +27,6 @@
     "./skills/engineering/init-cli",
     "./skills/engineering/research",
     "./skills/engineering/resolving-merge-conflicts",
-    "./skills/engineering/tdd",
     "./skills/engineering/using-git-worktrees",
     "./skills/engineering/wizard",
     "./skills/engineering/grill-with-docs",

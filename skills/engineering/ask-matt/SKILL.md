@@ -19,7 +19,7 @@ disable-model-invocation: true
    - **是** -> **`/to-spec`**，把 thread 固化为 `openspec/changes/<change-name>/proposal.md` 与 delta specs；再运行 **`/to-plan <change-name>`**，补齐 design、按需设计 stack 和 tracer-bullet tasks；用 **`/implement <change-name>`** 按 tasks 实现、中断可续做，以统一提交和 **`/code-review`** 收尾。
    - **否** -> 在当前 context window 里直接运行 **`/implement`**。
 
-   无论哪种方式，**`/implement`** 都会在内部驱动 **`/tdd`** 构建每个 task slice：一次一个 red-green slice，边做边勾选；全部任务完成后统一提交一次，再由 **`/code-review`** 对提交的 diff 做 Standards + Spec 双轴 review。只想在没有完整 spec 的情况下 test-first 构建一个具体 behavior 时，单独用 **`/tdd`**；想按固定点 review branch 或 PR 时，单独用 **`/code-review`**。
+   无论哪种方式，**`/implement`** 都会对可验证的行为变更使用内置 TDD 指引构建每个 task slice：一次一个 red-green slice，边做边勾选；全部任务完成后统一提交一次，再由 **`/code-review`** 对提交的 diff 做 Standards + Spec 双轴 review。只想在没有完整 spec 的情况下 test-first 构建一个具体 behavior 时，也用 **`/implement`**，直接说明行为与验收条件；想按固定点 review branch 或 PR 时，单独用 **`/code-review`**。
 
 ### Context hygiene
 
@@ -48,7 +48,7 @@ disable-model-invocation: true
 两个 model-invoked references 在其他 skills 下层运行，分别是自己词汇的 single source of truth。问题在于**词语**而不是流程时直接用它们；也可以让上面的 skills 自动拉起它们。
 
 - **`/domain-modeling`** - 打磨项目的 _domain_ language：挑战模糊术语、解决 overloaded word（例如一个 "account" 承担三件事）、把难以逆转的决策记录为 ADR。它是 `/grill-with-docs` 用来保持 `CONTEXT.md` glossary 干净的主动纪律。
-- **`/codebase-design`** - deep-module vocabulary（module、interface、depth、seam、adapter、leverage、locality），用于设计 module 的 _shape_：把大量 behavior 放在 clean seam 上的小 interface 后面。`/tdd` 和 `/improve-codebase-architecture` 都使用这套语言。
+- **`/codebase-design`** - deep-module vocabulary（module、interface、depth、seam、adapter、leverage、locality），用于设计 module 的 _shape_：把大量 behavior 放在 clean seam 上的小 interface 后面。`/implement` 的 TDD 指引和 `/improve-codebase-architecture` 都使用这套语言。
 
 ## Phase boundaries
 
